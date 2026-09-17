@@ -1,0 +1,599 @@
+{
+  "users": [
+    {
+      "id": "3c647a84-54ad-4c68-8928-ea2465cb0428",
+      "username": "admin",
+      "password": "$2b$10$wXB3/VxFN1.21NqGc.xj7.dchg3BdIrvF4.Ono6rUdJmQjPknnuaC",
+      "name": "Lead Organizer (IEEE EMBS × CIS)",
+      "role": "ADMIN",
+      "assignedDomainId": null,
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "9668133e-b7f4-4bfa-a196-a2847d803697",
+      "username": "judge_ga",
+      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
+      "name": "Dr. K. Srinivas (GA Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "track-ga",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "2c83e1bd-5ade-4478-b51d-05f0bc7cf7ac",
+      "username": "judge_pso",
+      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
+      "name": "Prof. M. Anitha (Swarm Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "track-pso",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "f06f4f34-13a4-4964-a489-44554048ee7e",
+      "username": "judge_aco",
+      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
+      "name": "Dr. R. Varma (Routing Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "track-aco",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "d3bf4bef-b820-47ca-9747-4c93579cbdbc",
+      "username": "judge_fuzzy",
+      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
+      "name": "Prof. S. Reddy (Fuzzy Systems Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "track-fuzzy",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    }
+  ],
+  "teams": [
+    {
+      "id": "team-id-1021",
+      "teamCode": "OPT-26-1021",
+      "teamName": "NeuralForge",
+      "leaderEmail": "neuralforge@vce.ac.in",
+      "leaderPhone": "9876543210",
+      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
+      "domainId": "track-ga",
+      "skillLevel": "Advanced",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 150,
+      "attemptsUsed": 2,
+      "bestScore": 92.4,
+      "isDisqualified": false,
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "team-id-2044",
+      "teamCode": "OPT-26-2044",
+      "teamName": "SwarmDynasty",
+      "leaderEmail": "swarmdynasty@vce.ac.in",
+      "leaderPhone": "9845123456",
+      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
+      "domainId": "track-pso",
+      "skillLevel": "Advanced",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 200,
+      "attemptsUsed": 3,
+      "bestScore": 96.8,
+      "isDisqualified": false,
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "team-id-3088",
+      "teamCode": "OPT-26-3088",
+      "teamName": "AntPathFinders",
+      "leaderEmail": "antpaths@vce.ac.in",
+      "leaderPhone": "9701234567",
+      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
+      "domainId": "track-aco",
+      "skillLevel": "Intermediate",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 100,
+      "attemptsUsed": 1,
+      "bestScore": 88.5,
+      "isDisqualified": false,
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "team-id-4109",
+      "teamCode": "OPT-26-4109",
+      "teamName": "FuzzyLogicMasters",
+      "leaderEmail": "fuzzylogic@vce.ac.in",
+      "leaderPhone": "9988776655",
+      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
+      "domainId": "track-fuzzy",
+      "skillLevel": "Advanced",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 150,
+      "attemptsUsed": 2,
+      "bestScore": 94.2,
+      "isDisqualified": false,
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "teamCode": "OPT-26-1586",
+      "teamName": "TestSwarm_4267",
+      "leaderEmail": "leader_1789588364267@vce.ac.in",
+      "leaderPhone": "9876543210",
+      "password": "$2b$10$M7/syDK.Ib1f5CSJMtu4KOIi0yIbNVWn8oUAnUu3qd002UqP5FhbK",
+      "domainId": "track-ga",
+      "prefTrack1": "track-ga",
+      "prefTrack2": "track-pso",
+      "prefTrack3": "track-aco",
+      "prefTrack4": "track-fuzzy",
+      "skillLevel": "Advanced",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 150,
+      "razorpayOrderId": "order_sim_1789588364467",
+      "razorpayPaymentId": "pay_test_1789588364456",
+      "razorpaySignature": "simulated_valid_signature",
+      "attemptsUsed": 1,
+      "bestScore": 90.27,
+      "finalJudgeScore": 91,
+      "finalCombinedScore": 90.6,
+      "isDisqualified": false,
+      "createdAt": "2026-09-16T19:52:44.444Z",
+      "updatedAt": "2026-09-16T19:52:44.772Z"
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": "f792417e-7c22-4cfa-a027-c4e28360e160",
+      "teamId": "team-id-1021",
+      "name": "Aditya Kumar",
+      "rollNumber": "22011A0501",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "aditya@vce.ac.in",
+      "phone": "9876543210",
+      "tshirtSize": "L",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "8acedd04-b1e1-49e0-8c0c-c325f0013612",
+      "teamId": "team-id-1021",
+      "name": "Pooja Sharma",
+      "rollNumber": "22011A0502",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "pooja@vce.ac.in",
+      "phone": "9876543211",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "2f8475f3-b214-4abd-9889-cf07c859fc14",
+      "teamId": "team-id-1021",
+      "name": "Rahul Varma",
+      "rollNumber": "22011A0503",
+      "branch": "IT",
+      "year": "3rd Year",
+      "email": "rahul@vce.ac.in",
+      "phone": "9876543212",
+      "tshirtSize": "XL",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "3d3fb242-24f9-4dea-905b-2ae69871ed84",
+      "teamId": "team-id-2044",
+      "name": "Kavya Reddy",
+      "rollNumber": "21011A1201",
+      "branch": "IT",
+      "year": "4th Year",
+      "email": "kavya@vce.ac.in",
+      "phone": "9845123456",
+      "tshirtSize": "S",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "aa23e259-c705-4cd0-b8c5-9ee3f82b2c70",
+      "teamId": "team-id-2044",
+      "name": "Naveen Sai",
+      "rollNumber": "21011A1202",
+      "branch": "IT",
+      "year": "4th Year",
+      "email": "naveen@vce.ac.in",
+      "phone": "9845123457",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "e9820098-8096-4907-84af-9f86b18043eb",
+      "teamId": "team-id-2044",
+      "name": "Bhavana Rao",
+      "rollNumber": "21011A1203",
+      "branch": "CSE",
+      "year": "4th Year",
+      "email": "bhavana@vce.ac.in",
+      "phone": "9845123458",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "73a9094c-3cc3-4dfb-b1e4-8e274e010912",
+      "teamId": "team-id-2044",
+      "name": "Siddharth J.",
+      "rollNumber": "21011A1204",
+      "branch": "ECE",
+      "year": "4th Year",
+      "email": "sid@vce.ac.in",
+      "phone": "9845123459",
+      "tshirtSize": "L",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "94024fef-deac-4c62-aa98-e17af3c601bc",
+      "teamId": "team-id-3088",
+      "name": "Rohit Nair",
+      "rollNumber": "23011A0510",
+      "branch": "CSE",
+      "year": "2nd Year",
+      "email": "rohit@vce.ac.in",
+      "phone": "9701234567",
+      "tshirtSize": "L",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "336deaaa-d769-4e77-a4cd-d8f47d783d54",
+      "teamId": "team-id-3088",
+      "name": "Sanya Gupta",
+      "rollNumber": "23011A0511",
+      "branch": "AI&ML",
+      "year": "2nd Year",
+      "email": "sanya@vce.ac.in",
+      "phone": "9701234568",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "c041233c-60a8-4503-b6d1-37222e4e9b62",
+      "teamId": "team-id-4109",
+      "name": "Manish Joshi",
+      "rollNumber": "22011A0415",
+      "branch": "ECE",
+      "year": "3rd Year",
+      "email": "manish@vce.ac.in",
+      "phone": "9988776655",
+      "tshirtSize": "XL",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "5be478d8-77c1-4b68-bdef-b7cbb1c33947",
+      "teamId": "team-id-4109",
+      "name": "Sneha Patel",
+      "rollNumber": "22011A0416",
+      "branch": "ECE",
+      "year": "3rd Year",
+      "email": "sneha@vce.ac.in",
+      "phone": "9988776656",
+      "tshirtSize": "S",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "6f8f8002-c021-4ca8-82b9-9c351e9f231f",
+      "teamId": "team-id-4109",
+      "name": "Tejaswini K.",
+      "rollNumber": "22011A0417",
+      "branch": "EEE",
+      "year": "3rd Year",
+      "email": "teja@vce.ac.in",
+      "phone": "9988776657",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "c28a7d26-1cbf-4c2c-bd2d-5ee856b0c8ae",
+      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "name": "Test Leader",
+      "rollNumber": "22011A0591",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "leader_1789588364267@vce.ac.in",
+      "phone": "9876543210",
+      "tshirtSize": "L",
+      "createdAt": "2026-09-16T19:52:44.444Z"
+    },
+    {
+      "id": "ed7297f6-3a95-478a-a07b-3d69ac0c6a61",
+      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "name": "Test Member 2",
+      "rollNumber": "22011A0592",
+      "branch": "IT",
+      "year": "3rd Year",
+      "email": "member2_1789588364267@vce.ac.in",
+      "phone": "9876543211",
+      "tshirtSize": "M",
+      "createdAt": "2026-09-16T19:52:44.444Z"
+    },
+    {
+      "id": "415e739b-e7fa-421f-9ffb-059fad7708dc",
+      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "name": "Test Member 3",
+      "rollNumber": "22011A0593",
+      "branch": "ECE",
+      "year": "3rd Year",
+      "email": "member3_1789588364267@vce.ac.in",
+      "phone": "9876543212",
+      "tshirtSize": "XL",
+      "createdAt": "2026-09-16T19:52:44.444Z"
+    }
+  ],
+  "problemTracks": [
+    {
+      "id": "track-ga",
+      "name": "Genetic Algorithms: Multi-Constraint Combinatorial Optimization",
+      "shortName": "GA Track",
+      "technique": "Genetic Algorithms",
+      "difficulty": "Intermediate",
+      "description": "Engineer an evolutionary algorithm to solve high-dimensional 0/1 multi-constraint knapsack & scheduling problems under tight convergence constraints.",
+      "benchmarkType": "KNAPSACK_TSP",
+      "starterNotebookUrl": "/starter/starter_ga.py",
+      "statementMarkdown": "### Track 1: Genetic Algorithms (GA) — Combinatorial Optimization\n\n#### 1. Background\nEvolutionary computing mimics natural biological selection to search complex combinatorial landscapes. In this challenge, your task is to maximize total fitness while satisfying strict capacity and multi-knapsack resource constraints.\n\n#### 2. Objectives\n- Design custom **Chromosome Encoding** (binary or permutation representation).\n- Implement robust **Selection Mechanisms** (Roulette Wheel / Tournament Selection with dynamic pressure).\n- Implement specialized **Crossover Operators** (Single/Two-point or Uniform Crossover) with high building-block retention.\n- Implement **Adaptive Mutation** to avoid premature convergence to local optima.\n- Maintain **Elitism** across generations.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Objective function value achieved on the held-out benchmark.\n- **Computational Efficiency (25%)**: Wall-clock runtime and generations required for convergence.\n- **Algorithm Design Quality (20%)**: Adherence to GA architectural paradigms verified by static AST & heuristic analysis.\n- **Consistency Across Attempts (15%)**: Progressive convergence across your 3 submission attempts.",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "track-pso",
+      "name": "Particle Swarm Optimization: Continuous Non-Linear Landscape",
+      "shortName": "PSO Track",
+      "technique": "Particle Swarm Optimization",
+      "difficulty": "Advanced",
+      "description": "Navigate a rugged, multi-modal continuous benchmark surface (Rastrigin / Ackley) to discover the global minimum using decentralized swarm intelligence.",
+      "benchmarkType": "RASTRIGIN_ACKLEY",
+      "starterNotebookUrl": "/starter/starter_pso.py",
+      "statementMarkdown": "### Track 2: Particle Swarm Optimization (PSO) — Continuous Landscapes\n\n#### 1. Background\nSwarm intelligence leverages decentralized collective behavior where particles adjust their trajectories through cognitive memory ($p_{\\text{best}}$) and social attraction ($g_{\\text{best}}$).\n\n#### 2. Objectives\n- Formulate particle velocity and position update equations with dynamic inertia weight damping:\n  $$v_i(t+1) = w(t) v_i(t) + c_1 r_1 (p_{\\text{best}, i} - x_i(t)) + c_2 r_2 (g_{\\text{best}} - x_i(t))$$\n- Implement boundary handling and velocity clamping to prevent particle explosion.\n- Test swarm diversity mechanisms to escape sub-optimal local basins in multi-modal terrain.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Proximity of $g_{\\text{best}}$ to the known global minimum ($0.0$).\n- **Efficiency (25%)**: Rapid convergence within the allotted maximum iteration ceiling.\n- **Algorithm Design Quality (20%)**: Proper balancing of cognitive vs. social acceleration coefficients.\n- **Consistency Across Attempts (15%)**: Optimization stability across sequential submissions.",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "track-aco",
+      "name": "Ant Colony Optimization: Dynamic Combinatorial Graph Routing",
+      "shortName": "ACO Track",
+      "technique": "Ant Colony Optimization",
+      "difficulty": "Advanced",
+      "description": "Optimize shortest closed tour routes in a dense weighted graph through artificial pheromone deposition and evaporation dynamics.",
+      "benchmarkType": "GRAPH_TSP",
+      "starterNotebookUrl": "/starter/starter_aco.py",
+      "statementMarkdown": "### Track 3: Ant Colony Optimization (ACO) — Graph Routing\n\n#### 1. Background\nACO is inspired by the foraging behavior of ant colonies, where individuals deposit pheromone trails that guide subsequent ants toward minimal-cost paths.\n\n#### 2. Objectives\n- Implement stochastic transition probability using pheromone concentration $(\\tau)$ and heuristic visibility $(\\eta)$:\n  $$P_{ij}^k = \\frac{[\\tau_{ij}]^\\alpha [\\eta_{ij}]^\\beta}{\\sum_{l \\in \\text{allowed}} [\\tau_{il}]^\\alpha [\\eta_{il}]^\\beta}$$\n- Design an efficient pheromone evaporation scheme $(1 - \\rho)$ to prevent early stagnation.\n- Incorporate Elitist or Max-Min Ant System (MMAS) bounded trail mechanisms.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Minimal tour length achieved across benchmark graph nodes.\n- **Efficiency (25%)**: Low computational complexity and execution time.\n- **Algorithm Design Quality (20%)**: Heuristic weighting and evaporation parameter calibration.\n- **Consistency Across Attempts (15%)**: Iterative tour improvement across attempts.",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "id": "track-fuzzy",
+      "name": "Fuzzy Logic: Non-Linear Dynamic Control & Inference",
+      "shortName": "Fuzzy Track",
+      "technique": "Fuzzy Logic Systems",
+      "difficulty": "Intermediate",
+      "description": "Design a Mamdani or Sugeno fuzzy inference system with linguistic IF-THEN rules and defuzzification for dynamic plant control.",
+      "benchmarkType": "DYNAMIC_CONTROL",
+      "starterNotebookUrl": "/starter/starter_fuzzy.py",
+      "statementMarkdown": "### Track 4: Fuzzy Logic (FL) — Dynamic Control & Inference\n\n#### 1. Background\nUnlike binary boolean logic, fuzzy logic processes approximate reasoning by modeling degrees of truth through continuous membership functions.\n\n#### 2. Objectives\n- Construct input and output fuzzy sets (Triangular, Trapezoidal, or Gaussian).\n- Formulate an expressive, conflict-free rule base modeling system dynamics.\n- Apply Mamdani Min-Max or Sugeno algebraic inference.\n- Implement Centroid (Center of Gravity) defuzzification for crisp actuator signals.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Minimal steady-state error and overshoot in step-response simulation.\n- **Efficiency (25%)**: Fast defuzzification computation and clean rule evaluation.\n- **Algorithm Design Quality (20%)**: Completeness of fuzzy rule partitions and membership coverage.\n- **Consistency Across Attempts (15%)**: Refinement of control curves across attempts.",
+      "createdAt": "2026-09-16T19:35:20.337Z",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "sub-1021-1",
+      "teamId": "team-id-1021",
+      "attemptNumber": 1,
+      "filename": "ga_attempt1.py",
+      "codeContent": "# NeuralForge - GA Attempt 1\n# Roulette wheel selection with two-point crossover\nimport random\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n",
+      "approachNotes": "Initial exploration using two-point crossover and roulette wheel selection with population 50.",
+      "status": "SCORED",
+      "runtimeMs": 182.4,
+      "solutionQuality": 88.5,
+      "efficiencyScore": 94,
+      "designQuality": 88,
+      "consistencyScore": 85,
+      "autoScore": 89.2,
+      "isAiAssisted": true,
+      "aiExplanation": "Strong genetic diversity preservation. Solid elitism retention across generations.",
+      "executionLogs": "Execution time: 182.4 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 88.5",
+      "similarityScore": 12,
+      "similarityFlag": false,
+      "submittedAt": "2026-09-16T17:35:20.678Z"
+    },
+    {
+      "id": "sub-1021-2",
+      "teamId": "team-id-1021",
+      "attemptNumber": 2,
+      "filename": "ga_attempt2_optimized.py",
+      "codeContent": "# NeuralForge - GA Attempt 2\n# Added tournament selection and adaptive mutation rate\nimport random\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n",
+      "approachNotes": "Improved with tournament selection (k=3) and adaptive 1/L mutation rate.",
+      "status": "SCORED",
+      "runtimeMs": 165.2,
+      "solutionQuality": 93.5,
+      "efficiencyScore": 96,
+      "designQuality": 92,
+      "consistencyScore": 95,
+      "autoScore": 92.4,
+      "isAiAssisted": true,
+      "aiExplanation": "Adaptive mutation effectively prevented stagnation. Fast convergence to global basin.",
+      "executionLogs": "Execution time: 165.2 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 94.0",
+      "similarityScore": 15,
+      "similarityFlag": false,
+      "submittedAt": "2026-09-16T18:50:20.678Z"
+    },
+    {
+      "id": "sub-2044-3",
+      "teamId": "team-id-2044",
+      "attemptNumber": 3,
+      "filename": "pso_dynamic_damping.py",
+      "codeContent": "# SwarmDynasty - PSO Final Attempt\n# Inertia damping w=0.729, c1=1.49, c2=1.49\nimport random\nimport math\ndef optimize():\n    return [0.001, -0.002]\nbest_solution = [0.001, -0.002]\nbest_fitness = 0.0003\n",
+      "approachNotes": "Tuned cognitive vs social factors with velocity clamping to prevent swarm explosion.",
+      "status": "SCORED",
+      "runtimeMs": 125,
+      "solutionQuality": 97.5,
+      "efficiencyScore": 98,
+      "designQuality": 95,
+      "consistencyScore": 96,
+      "autoScore": 96.8,
+      "isAiAssisted": true,
+      "aiExplanation": "Exceptional continuous landscape convergence. Excellent velocity clamping.",
+      "executionLogs": "Execution time: 125.0 ms\nAST verification: PASSED\nRastrigin test: CONVERGED to 0.0003",
+      "similarityScore": 8.5,
+      "similarityFlag": false,
+      "submittedAt": "2026-09-16T19:05:20.678Z"
+    },
+    {
+      "id": "af0c3b13-68c1-4214-814a-33bb11ff3912",
+      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "attemptNumber": 1,
+      "filename": "genetic_solution.py",
+      "codeContent": "\n# Student Genetic Algorithm Submission\nimport random\nimport math\n\nclass Solution:\n    def __init__(self):\n        self.best_fitness = 91.5\n        self.best_solution = [1, 1, 0, 1]\n\ns = Solution()\nbest_solution = s.best_solution\nbest_fitness = s.best_fitness\n",
+      "approachNotes": "Implemented tournament selection and elitist reproduction with population 60.",
+      "status": "SCORED",
+      "runtimeMs": 0.42,
+      "solutionQuality": 96.8,
+      "efficiencyScore": 96,
+      "designQuality": 74,
+      "consistencyScore": 85,
+      "autoScore": 90.27,
+      "isAiAssisted": true,
+      "aiExplanation": "Automated evaluation for Genetic Algorithms. Solution shows successful execution with valid convergence. AST static analysis verified appropriate optimization operators (solution, __init__). Execution time: 0.4ms. Solution quality rated at 96.8/100.",
+      "executionLogs": "Execution completed in 0.42 ms.\nAST Validation: PASSED\nBenchmark Test Suite: PASSED with status OK\nConvergence Score: 96.80%\n",
+      "similarityScore": 0,
+      "similarityFlag": false,
+      "ipAddress": null,
+      "submittedAt": "2026-09-16T19:52:44.624Z"
+    }
+  ],
+  "judgeEvaluations": [
+    {
+      "id": "0ec8577e-f885-43ef-8800-44c3140ed683",
+      "judgeId": "9668133e-b7f4-4bfa-a196-a2847d803697",
+      "submissionId": "af0c3b13-68c1-4214-814a-33bb11ff3912",
+      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
+      "codeQuality": 23,
+      "algorithmicReasoning": 32,
+      "resultInterpretation": 18,
+      "innovation": 18,
+      "totalJudgeScore": 91,
+      "notes": "Exceptional mathematical justification and clean modular encapsulation.",
+      "createdAt": "2026-09-16T19:52:44.767Z",
+      "updatedAt": "2026-09-16T19:52:44.767Z"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "f244b634-c092-4e03-b860-b1c46bf7bb8f",
+      "title": "Test System Broadcast",
+      "message": "Automated verification broadcast banner test.",
+      "type": "INFO",
+      "isActive": true,
+      "createdAt": "2026-09-16T19:52:44.900Z"
+    },
+    {
+      "id": "ann-1",
+      "title": "OptiForge 2026 is Officially Live!",
+      "message": "Welcome participants! You can now view your assigned problem track and download starter templates. Each team has 3 live-scored submission attempts.",
+      "type": "INFO",
+      "isActive": true,
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    }
+  ],
+  "systemSettings": [
+    {
+      "key": "leaderboard_frozen",
+      "value": "false",
+      "description": "Freeze leaderboard updates",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "leaderboard_visible",
+      "value": "true",
+      "description": "Public visibility of leaderboard",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "weight_auto",
+      "value": "60",
+      "description": "Percentage weight of auto-score",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "weight_judge",
+      "value": "40",
+      "description": "Percentage weight of manual judge score",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "registration_open",
+      "value": "true",
+      "description": "Allow team registrations",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "event_date",
+      "value": "25-09-2026",
+      "description": "Official event date",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "event_time",
+      "value": "9:00 AM - 4:00 PM",
+      "description": "Official event timing",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    },
+    {
+      "key": "organizer_entity",
+      "value": "IEEE Vardhaman Student Branch",
+      "description": "Organizing student branch",
+      "updatedAt": "2026-09-16T19:35:20.337Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "dfb9cbd8-ac2b-4b91-adf2-43a9f23a7fec",
+      "action": "ANNOUNCEMENT_BROADCAST",
+      "performedBy": "Lead Organizer (IEEE EMBS × CIS)",
+      "details": "Pushed announcement: \"Test System Broadcast\".",
+      "reason": null,
+      "createdAt": "2026-09-16T19:52:44.902Z"
+    },
+    {
+      "id": "80aa6611-8809-4ff5-96c0-95725fe773cd",
+      "action": "JUDGE_EVALUATION_RECORDED",
+      "performedBy": "Dr. K. Srinivas (GA Expert)",
+      "details": "Judge scored team TestSwarm_4267 with 91/100.",
+      "reason": null,
+      "createdAt": "2026-09-16T19:52:44.773Z"
+    },
+    {
+      "id": "b962cb1e-09db-4323-b2d2-500fa1d5fd8b",
+      "action": "SUBMISSION_EVALUATED",
+      "performedBy": "OPT-26-1586",
+      "details": "Team TestSwarm_4267 completed Attempt 1/3. Auto-Score: 90.27. Similarity: 0%.",
+      "reason": null,
+      "createdAt": "2026-09-16T19:52:44.630Z"
+    },
+    {
+      "id": "c5ea29fa-f160-4d5d-aa68-99efec1b8c02",
+      "action": "PAYMENT_CONFIRMED",
+      "performedBy": "leader_1789588364267@vce.ac.in",
+      "details": "Payment of ₹150 verified for team TestSwarm_4267 (OPT-26-1586). Payment ID: pay_test_1789588364456",
+      "reason": "Simulated Sandbox Checkout",
+      "createdAt": "2026-09-16T19:52:44.471Z"
+    },
+    {
+      "id": "a45223e9-9435-4490-8645-d457ef1034d6",
+      "action": "DATABASE_INITIALIZED",
+      "performedBy": "system",
+      "details": "OptiForge 2026 seeded with 4 problem tracks and test teams",
+      "reason": "Initial deployment setup",
+      "createdAt": "2026-09-16T19:35:20.337Z"
+    }
+  ]
+}

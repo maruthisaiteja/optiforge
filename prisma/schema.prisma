@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String            @id @default(uuid())
+  username     String            @unique
+  password     String
+  name         String
+  role         String            @default("JUDGE") // ADMIN, JUDGE
+  assignedDomainId String?
+  evaluations  JudgeEvaluation[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model Team {
+  id                 String            @id @default(uuid())
+  teamCode           String            @unique // e.g. OPT-26-8941
+  teamName           String
+  leaderEmail        String            @unique
+  leaderPhone        String
+  password           String
+  domainId           String?
+  track              ProblemTrack?     @relation(fields: [domainId], references: [id])
+  prefTrack1         String?
+  prefTrack2         String?
+  prefTrack3         String?
+  prefTrack4         String?
+  skillLevel         String            @default("Intermediate")
+  paymentStatus      String            @default("PENDING_PAYMENT") // PENDING_PAYMENT, CONFIRMED, FAILED
+  paymentAmount      Float             @default(100)
+  razorpayOrderId    String?
+  razorpayPaymentId  String?
+  razorpaySignature  String?
+  attemptsUsed       Int               @default(0)
+  bestScore          Float             @default(0)
+  finalJudgeScore    Float?
+  finalCombinedScore Float?
+  isDisqualified     Boolean           @default(false)
+  members            TeamMember[]
+  submissions        Submission[]
+  evaluations        JudgeEvaluation[]
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+}
+
+model TeamMember {
+  id         String   @id @default(uuid())
+  teamId     String
+  team       Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  name       String
+  rollNumber String
+  branch     String
+  year       String
+  email      String
+  phone      String
+  tshirtSize String?
+  createdAt  DateTime @default(now())
+}
+
+model ProblemTrack {
+  id                 String       @id // "track-ga", "track-pso", "track-aco", "track-fuzzy"
+  name               String
+  shortName          String
+  technique          String
+  difficulty         String
+  description        String
+  statementMarkdown  String
+  starterNotebookUrl String?
+  benchmarkType      String
+  teams              Team[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+}
+
+model Submission {
+  id               String            @id @default(uuid())
+  teamId           String
+  team             Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  attemptNumber    Int
+  filename         String
+  codeContent      String
+  approachNotes    String?
+  status           String            @default("SCORED") // QUEUED, RUNNING, SCORED, FAILED
+  runtimeMs        Float             @default(0)
+  solutionQuality  Float             @default(0) // 40% weight
+  efficiencyScore  Float             @default(0) // 25% weight
+  designQuality    Float             @default(0) // 20% weight
+  consistencyScore Float             @default(0) // 15% weight
+  autoScore        Float             @default(0)
+  isAiAssisted     Boolean           @default(true)
+  aiExplanation    String?
+  executionLogs    String?
+  similarityScore  Float?            @default(0)
+  similarityFlag   Boolean           @default(false)
+  ipAddress        String?
+  evaluations      JudgeEvaluation[]
+  submittedAt      DateTime          @default(now())
+}
+
+model JudgeEvaluation {
+  id                   String     @id @default(uuid())
+  judgeId              String
+  judge                User       @relation(fields: [judgeId], references: [id])
+  submissionId         String
+  submission           Submission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  teamId               String
+  team                 Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  codeQuality          Float      @default(0) // 25% max
+  algorithmicReasoning Float      @default(0) // 35% max
+  resultInterpretation Float      @default(0) // 20% max
+  innovation           Float      @default(0) // 20% max
+  totalJudgeScore      Float      @default(0) // 0 - 100
+  notes                String?
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
+}
+
+model Announcement {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  type      String   @default("INFO") // INFO, WARNING, URGENT
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model SystemSetting {
+  key         String   @id
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  action      String
+  performedBy String
+  details     String
+  reason      String?
+  createdAt   DateTime @default(now())
+}

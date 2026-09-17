@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #0B0F1A;
+  --bg-secondary: #131A2B;
+  --navy-deep: #1F2A63;
+  --teal-accent: #2FE6D6;
+  --orange-accent: #E15A2C;
+  --electric-violet: #7B5CFA;
+  --white: #F5F7FA;
+  --grey-muted: #8B93A7;
+  --success-green: #3ED598;
+  --error-red: #FF5C5C;
+  --font-orbitron: 'Orbitron', 'Chakra Petch', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--white);
+  font-family: var(--font-inter);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B0F1A;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1F2A63;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2FE6D6;
+}
+
+/* Signature Glow Helpers */
+.shadow-glow {
+  box-shadow: 0 0 24px rgba(47, 230, 214, 0.35);
+}
+
+.shadow-glow-violet {
+  box-shadow: 0 0 24px rgba(123, 92, 250, 0.35);
+}
+
+.shadow-glow-orange {
+  box-shadow: 0 0 24px rgba(225, 90, 44, 0.35);
+}
+
+/* Print Rules for Certificates */
+@media print {
+  body {
+    background-color: #0c101d !important;
+    color: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
