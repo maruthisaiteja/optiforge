@@ -10,68 +10,103 @@ import {
   Plus,
   Trash2,
   AlertCircle,
-  Sparkles,
   CreditCard,
   Layers,
   GraduationCap,
+  Check,
 } from "lucide-react";
 
 interface MemberForm {
   name: string;
+  collegeName: string;
   rollNumber: string;
   branch: string;
   year: string;
   email: string;
   phone: string;
-  tshirtSize: string;
 }
 
 export default function RegisterPage() {
   const router = useRouter();
 
   const [teamName, setTeamName] = useState("");
-  const [skillLevel, setSkillLevel] = useState("Intermediate");
+  const [selectedProblem, setSelectedProblem] = useState("p1-hospital-scheduling");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Preference ranking across all 6 official problem statements
-  const tracksList = [
-    { id: "p1-hospital-scheduling", name: "P1: Hospital Staff Scheduling (GA + Fuzzy)" },
-    { id: "p2-drone-delivery", name: "P2: Drone-Based Emergency Medical Supply Delivery (ACO + GA)" },
-    { id: "p3-emergency-hospital", name: "P3: Emergency Hospital Destination Selection (Fuzzy + PSO)" },
-    { id: "p4-blood-inventory", name: "P4: Hospital Blood Inventory & Allocation (GA / PSO)" },
-    { id: "p5-search-and-rescue", name: "P5: Multi-Robot Search & Rescue (Flagship Showcase)" },
-    { id: "p6-fuzzy-triage", name: "P6: Fuzzy ER Triage with Adaptive Rule Optimization (Fuzzy + GA)" },
+  // 6 Official Problem Statements
+  const problemStatements = [
+    {
+      id: "p1-hospital-scheduling",
+      code: "P1",
+      title: "Hospital Staff Scheduling with Fatigue-Aware Optimization",
+      technique: "Genetic Algorithm + Fuzzy Fatigue Model",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "ICU shift coverage & nurse fatigue minimization under non-linear operational constraints",
+    },
+    {
+      id: "p2-drone-delivery",
+      code: "P2",
+      title: "Drone-Based Emergency Medical Supply Delivery",
+      technique: "Ant Colony Optimization + Genetic Algorithm",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "3D urban pathing, dynamic no-fly zones & non-linear battery discharge limits",
+    },
+    {
+      id: "p3-emergency-hospital",
+      code: "P3",
+      title: "Emergency Hospital Destination Selection Under Dynamic Capacity",
+      technique: "Fuzzy Logic + Particle Swarm Optimization",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Multi-hospital surge balancing, ambulance diversion & real-time congestion routing",
+    },
+    {
+      id: "p4-blood-inventory",
+      code: "P4",
+      title: "Hospital Blood Inventory & Compatibility-Aware Allocation",
+      technique: "Genetic Algorithm / Particle Swarm Optimization",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Perishable cold-chain logistics, multi-depot emergency demand & shelf-life degradation",
+    },
+    {
+      id: "p5-search-and-rescue",
+      code: "P5",
+      flagship: true,
+      title: "Multi-Robot Search-and-Rescue Area Coverage",
+      technique: "Distributed Swarm (PSO / ACO / Multi-Agent GA)",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Probabilistic heat-signature map, collapsing corridors & communication dropouts",
+    },
+    {
+      id: "p6-fuzzy-triage",
+      code: "P6",
+      title: "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
+      technique: "Fuzzy Expert System + Genetic Algorithm",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Clinical priority ranking under vital sign noise & critical ICU bed constraints",
+    },
   ];
-  const [prefTracks, setPrefTracks] = useState<string[]>([
-    "p1-hospital-scheduling",
-    "p2-drone-delivery",
-    "p3-emergency-hospital",
-    "p4-blood-inventory",
-    "p5-search-and-rescue",
-    "p6-fuzzy-triage",
-  ]);
 
   // Dynamic members (2 to 4)
   const [members, setMembers] = useState<MemberForm[]>([
     {
       name: "",
+      collegeName: "",
       rollNumber: "",
       branch: "CSE",
       year: "3rd Year",
       email: "",
       phone: "",
-      tshirtSize: "M",
     },
     {
       name: "",
+      collegeName: "",
       rollNumber: "",
       branch: "CSE",
       year: "3rd Year",
       email: "",
       phone: "",
-      tshirtSize: "L",
     },
   ]);
 
@@ -81,12 +116,12 @@ export default function RegisterPage() {
         ...members,
         {
           name: "",
+          collegeName: members[0]?.collegeName || "",
           rollNumber: "",
           branch: "IT",
           year: "3rd Year",
           email: "",
           phone: "",
-          tshirtSize: "M",
         },
       ]);
     }
@@ -104,17 +139,6 @@ export default function RegisterPage() {
     setMembers(updated);
   };
 
-  const handlePreferenceChange = (index: number, newTrackId: string) => {
-    const updated = [...prefTracks];
-    const oldVal = updated[index];
-    const swapIdx = updated.indexOf(newTrackId);
-    if (swapIdx !== -1) {
-      updated[swapIdx] = oldVal;
-    }
-    updated[index] = newTrackId;
-    setPrefTracks(updated);
-  };
-
   const totalFee = members.length * 50;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,6 +148,35 @@ export default function RegisterPage() {
     if (!teamName.trim()) {
       setErrorMsg("Please provide a team name.");
       return;
+    }
+
+    if (!selectedProblem) {
+      setErrorMsg("Please select one problem statement from the 6 available tracks.");
+      return;
+    }
+
+    for (let i = 0; i < members.length; i++) {
+      const m = members[i];
+      if (!m.name.trim()) {
+        setErrorMsg(`Please enter Full Name for Member ${i + 1}.`);
+        return;
+      }
+      if (!m.collegeName.trim()) {
+        setErrorMsg(`Please enter College Name for Member ${i + 1}.`);
+        return;
+      }
+      if (!m.rollNumber.trim()) {
+        setErrorMsg(`Please enter College Roll Number for Member ${i + 1}.`);
+        return;
+      }
+      if (!m.email.trim()) {
+        setErrorMsg(`Please enter Email Address for Member ${i + 1}.`);
+        return;
+      }
+      if (!m.phone.trim() || m.phone.trim().replace(/\\D/g, "").length !== 10) {
+        setErrorMsg(`Please enter a valid 10-digit Phone Number for Member ${i + 1}.`);
+        return;
+      }
     }
 
     if (!agreedToTerms) {
@@ -140,8 +193,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           teamName: teamName.trim(),
           members,
-          prefTracks,
-          skillLevel,
+          selectedProblem,
           agreedToTerms,
         }),
       });
@@ -156,7 +208,7 @@ export default function RegisterPage() {
 
       // Redirect to payment
       router.push(`/payment?teamCode=${data.teamCode}`);
-    } catch (err) {
+    } catch {
       setErrorMsg("Network error during registration. Please try again.");
       setLoading(false);
     }
@@ -200,35 +252,18 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-brand-white">
-                Team Name <span className="text-teal-accent">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                placeholder="e.g. SwarmIntelligenceVCE"
-                className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-xs font-medium text-brand-white">
-                Self-Assessed Skill Level
-              </label>
-              <select
-                value={skillLevel}
-                onChange={(e) => setSkillLevel(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white focus:outline-none focus:border-teal-accent"
-              >
-                <option value="Beginner">Beginner (Basic Python / Heuristic concepts)</option>
-                <option value="Intermediate">Intermediate (Familiar with GA, PSO, or Fuzzy)</option>
-                <option value="Advanced">Advanced (Extensive optimization experience)</option>
-              </select>
-            </div>
+          <div className="space-y-2">
+            <label className="block text-xs font-medium text-brand-white">
+              Team Name <span className="text-teal-accent">*</span>
+            </label>
+            <input
+              type="text"
+              required
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              placeholder="e.g. SwarmIntelligenceVCE"
+              className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent"
+            />
           </div>
         </div>
 
@@ -284,7 +319,7 @@ export default function RegisterPage() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
                   <div>
                     <label className="block text-brand-muted mb-1">Full Name *</label>
                     <input
@@ -293,6 +328,18 @@ export default function RegisterPage() {
                       value={m.name}
                       onChange={(e) => updateMember(idx, "name", e.target.value)}
                       placeholder="Full Name"
+                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-brand-muted mb-1">College Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={m.collegeName}
+                      onChange={(e) => updateMember(idx, "collegeName", e.target.value)}
+                      placeholder="e.g. Vardhaman College of Engineering"
                       className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
                     />
                   </div>
@@ -361,65 +408,91 @@ export default function RegisterPage() {
                       </select>
                     </div>
                   </div>
-
-                  <div>
-                    <label className="block text-brand-muted mb-1">T-Shirt Size</label>
-                    <select
-                      value={m.tshirtSize}
-                      onChange={(e) => updateMember(idx, "tshirtSize", e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
-                    >
-                      <option value="S">S (Small)</option>
-                      <option value="M">M (Medium)</option>
-                      <option value="L">L (Large)</option>
-                      <option value="XL">XL (Extra Large)</option>
-                      <option value="XXL">XXL</option>
-                    </select>
-                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Section 3: Domain Preference Ranking */}
+        {/* Section 3: Problem Statement Selection (1 of 6) */}
         <div className="rounded-2xl bg-bg-card border border-navy-border/80 p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="flex items-center gap-3 border-b border-navy-border/60 pb-4">
-            <div className="w-9 h-9 rounded-xl bg-navy-deep flex items-center justify-center text-electric-violet">
+            <div className="w-9 h-9 rounded-xl bg-navy-deep flex items-center justify-center text-teal-accent">
               <Layers className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-display font-bold text-base text-brand-white">
-                Domain Preference Ranking
+                Choose Problem Statement
               </h3>
               <p className="text-xs text-brand-muted">
-                Rank your choices from 1st to 6th. Used for domain allocation and track balancing.
+                Select 1 of the 6 official problem statements your team will solve during the competition.
               </p>
             </div>
           </div>
 
-          <div className="space-y-3">
-            {[0, 1, 2, 3, 4, 5].map((pos) => (
-              <div
-                key={pos}
-                className="flex items-center gap-3 p-3.5 rounded-xl bg-bg-secondary/60 border border-navy-border/60 text-xs"
-              >
-                <span className="w-7 h-7 rounded-lg bg-navy-deep flex items-center justify-center font-mono font-bold text-teal-accent shrink-0">
-                  #{pos + 1}
-                </span>
-                <select
-                  value={prefTracks[pos]}
-                  onChange={(e) => handlePreferenceChange(pos, e.target.value)}
-                  className="flex-1 px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent text-xs"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {problemStatements.map((ps) => {
+              const isSelected = selectedProblem === ps.id;
+              return (
+                <div
+                  key={ps.id}
+                  onClick={() => setSelectedProblem(ps.id)}
+                  className={`cursor-pointer p-4 rounded-xl border transition-all text-left relative flex flex-col justify-between space-y-3 ${
+                    isSelected
+                      ? "bg-teal-accent/10 border-teal-accent shadow-[0_0_20px_rgba(47,230,214,0.15)] ring-1 ring-teal-accent/50"
+                      : "bg-bg-secondary/60 border-navy-border/60 hover:border-teal-accent/40 hover:bg-bg-secondary"
+                  }`}
                 >
-                  {tracksList.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            ))}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold ${
+                          isSelected
+                            ? "bg-teal-accent text-bg-primary"
+                            : "bg-navy-deep text-teal-accent border border-teal-accent/30"
+                        }`}
+                      >
+                        {ps.code}
+                      </span>
+                      {ps.flagship && (
+                        <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-orange-accent/20 text-orange-accent border border-orange-accent/30 uppercase tracking-wide">
+                          Flagship
+                        </span>
+                      )}
+                    </div>
+
+                    <div
+                      className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                        isSelected
+                          ? "border-teal-accent bg-teal-accent text-bg-primary"
+                          : "border-navy-border bg-bg-primary"
+                      }`}
+                    >
+                      {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-display font-bold text-xs sm:text-sm text-brand-white leading-snug">
+                      {ps.title}
+                    </h4>
+                    <p className="text-[11px] text-teal-accent/90 font-mono mt-1">
+                      {ps.technique}
+                    </p>
+                    <p className="text-[11px] text-brand-muted mt-1 line-clamp-2">
+                      {ps.focus}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-navy-border/40 flex items-center justify-between text-[10px] text-brand-dim font-mono">
+                    <span>{ps.society}</span>
+                    <span className={isSelected ? "text-teal-accent font-semibold" : "text-brand-muted"}>
+                      {isSelected ? "Selected" : "Click to select"}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -461,7 +534,7 @@ export default function RegisterPage() {
             />
             <label htmlFor="terms" className="text-xs text-brand-muted cursor-pointer leading-relaxed">
               We agree to the OptiForge 2026 Code of Conduct, confirm that all submitted code will be
-              our team's authentic work, understand the 3-attempt submission ceiling, and acknowledge
+              our team&apos;s authentic work, understand the 3-attempt submission ceiling, and acknowledge
               that registrations are non-refundable.
             </label>
           </div>

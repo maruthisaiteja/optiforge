@@ -22,6 +22,7 @@ export interface TeamMemberRecord {
   id: string;
   teamId: string;
   name: string;
+  collegeName?: string | null;
   rollNumber: string;
   branch: string;
   year: string;
@@ -357,6 +358,7 @@ export const db = {
             id: crypto.randomUUID(),
             teamId,
             name: m.name,
+            collegeName: (m as any).collegeName || null,
             rollNumber: m.rollNumber,
             branch: m.branch,
             year: m.year,

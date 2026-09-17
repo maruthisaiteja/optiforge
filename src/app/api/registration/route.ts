@@ -6,7 +6,7 @@ import { generateTeamCode } from "@/lib/utils";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { teamName, members, prefTracks, skillLevel, agreedToTerms } = body;
+    const { teamName, members, selectedProblem, chosenProblem, prefTracks, skillLevel, agreedToTerms } = body;
 
     if (!teamName || !teamName.trim()) {
       return NextResponse.json({ error: "Team name is required." }, { status: 400 });
@@ -36,6 +36,9 @@ export async function POST(req: Request) {
       const m = members[i];
       if (!m.name || !m.name.trim()) {
         return NextResponse.json({ error: `Member ${i + 1} name is required.` }, { status: 400 });
+      }
+      if (!m.collegeName || !m.collegeName.trim()) {
+        return NextResponse.json({ error: `Member ${i + 1} college name is required.` }, { status: 400 });
       }
       if (!m.rollNumber || !m.rollNumber.trim()) {
         return NextResponse.json({ error: `Member ${i + 1} college roll number is required.` }, { status: 400 });
@@ -93,8 +96,8 @@ export async function POST(req: Request) {
     // Dynamic fee: ₹50 per member
     const paymentAmount = members.length * 50;
 
-    // Preferred domain
-    const assignedDomain = prefTracks && prefTracks.length > 0 ? prefTracks[0] : "track-ga";
+    // Assigned problem statement (single chosen PS, with fallback to prefTracks or default)
+    const assignedDomain = selectedProblem || chosenProblem || (prefTracks && prefTracks.length > 0 ? prefTracks[0] : "p1-hospital-scheduling");
 
     const newTeam = await db.team.create({
       data: {
@@ -104,11 +107,11 @@ export async function POST(req: Request) {
         leaderPhone,
         password: hashedPassword,
         domainId: assignedDomain,
-        prefTrack1: prefTracks?.[0] || "track-ga",
-        prefTrack2: prefTracks?.[1] || "track-pso",
-        prefTrack3: prefTracks?.[2] || "track-aco",
-        prefTrack4: prefTracks?.[3] || "track-fuzzy",
-        skillLevel: skillLevel || "Intermediate",
+        prefTrack1: assignedDomain,
+        prefTrack2: null,
+        prefTrack3: null,
+        prefTrack4: null,
+        skillLevel: skillLevel || "Standard",
         paymentStatus: "PENDING_PAYMENT",
         paymentAmount,
         attemptsUsed: 0,
@@ -117,12 +120,13 @@ export async function POST(req: Request) {
         members: {
           create: members.map((m: any) => ({
             name: m.name.trim(),
+            collegeName: m.collegeName ? m.collegeName.trim() : null,
             rollNumber: m.rollNumber.trim().toUpperCase(),
-            branch: m.branch?.trim() || "CSE/IT",
+            branch: m.branch?.trim() || "CSE",
             year: m.year?.trim() || "3rd Year",
             email: m.email.trim().toLowerCase(),
             phone: m.phone.trim(),
-            tshirtSize: m.tshirtSize || "M",
+            tshirtSize: null,
           })),
         },
       },

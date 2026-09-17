@@ -62,48 +62,40 @@ async function runVerification() {
     assert(prob.livePatchSurprise === undefined, `Problem ${prob.id} hides confidential livePatchSurprise`);
   }
 
-  // 3. Test Team Registration across 6 Problems
-  console.log("\n--- 3. Testing Team Registration with Preference Ranking ---");
+  // 3. Test Team Registration with Single Problem Selection & College Name
+  console.log("\n--- 3. Testing Team Registration with Single Problem Selection ---");
   const testTeamName = `ApexOptimization_${Date.now().toString().slice(-4)}`;
   const regPayload = {
     teamName: testTeamName,
-    prefTracks: [
-      "p5-search-and-rescue",
-      "p1-hospital-scheduling",
-      "p2-drone-delivery",
-      "p3-emergency-hospital",
-      "p4-blood-inventory",
-      "p6-fuzzy-triage",
-    ],
-    skillLevel: "Advanced",
+    selectedProblem: "p5-search-and-rescue",
     agreedToTerms: true,
     members: [
       {
         name: "Dev Leader",
+        collegeName: "Vardhaman College of Engineering",
         rollNumber: "22011A0581",
         branch: "CSE",
         year: "3rd Year",
         email: `devleader_${Date.now()}@vce.ac.in`,
         phone: "9876543210",
-        tshirtSize: "L",
       },
       {
         name: "Dev Member 2",
+        collegeName: "Vardhaman College of Engineering",
         rollNumber: "22011A0582",
         branch: "IT",
         year: "3rd Year",
         email: `devmember2_${Date.now()}@vce.ac.in`,
         phone: "9876543211",
-        tshirtSize: "M",
       },
       {
         name: "Dev Member 3",
+        collegeName: "Vardhaman College of Engineering",
         rollNumber: "22011A0583",
         branch: "ECE",
         year: "3rd Year",
         email: `devmember3_${Date.now()}@vce.ac.in`,
         phone: "9876543212",
-        tshirtSize: "XL",
       },
     ],
   };
