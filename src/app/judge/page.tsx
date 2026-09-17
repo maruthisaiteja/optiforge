@@ -12,8 +12,8 @@ import {
   Send,
   Trophy,
   AlertCircle,
-  Eye,
-  Award,
+  HelpCircle,
+  ShieldAlert,
 } from "lucide-react";
 import CodeViewer from "@/components/CodeViewer";
 
@@ -24,6 +24,7 @@ export default function JudgePortal() {
   const [assignedTrack, setAssignedTrack] = useState("");
   const [queue, setQueue] = useState<any[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<any>(null);
+  const [selectedSubIndex, setSelectedSubIndex] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   // Rubric Scores
@@ -62,6 +63,7 @@ export default function JudgePortal() {
 
   const selectTeamForReview = (teamItem: any) => {
     setSelectedTeam(teamItem);
+    setSelectedSubIndex(0);
     setSuccessMsg(null);
 
     if (teamItem.evaluation) {
@@ -108,14 +110,13 @@ export default function JudgePortal() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        alert(data.error || "Failed to save evaluation.");
+        alert(data.error || "Failed to submit evaluation.");
         setSubmittingScore(false);
         return;
       }
 
-      setSuccessMsg(`Evaluation saved successfully (${totalScore}/100). Leaderboard updated.`);
+      setSuccessMsg(`Evaluation saved successfully! Total Judge Score: ${data.totalJudgeScore} / 100`);
       setSubmittingScore(false);
 
       // Refresh queue
@@ -138,6 +139,8 @@ export default function JudgePortal() {
   const evaluatedCount = queue.filter((q) => q.hasEvaluated).length;
   const progressPercent = queue.length > 0 ? Math.round((evaluatedCount / queue.length) * 100) : 0;
 
+  const currentSub = selectedTeam?.submissions?.[selectedSubIndex] || selectedTeam?.finalSubmission || null;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Top Header */}
@@ -145,13 +148,13 @@ export default function JudgePortal() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-electric-violet/10 border border-electric-violet/30 text-electric-violet text-xs font-mono mb-2">
             <UserCheck className="w-3.5 h-3.5" />
-            <span>Expert Judge Evaluation Console</span>
+            <span>Expert Judge Evaluation Console · Stage 8 Viva Q&A</span>
           </div>
           <h1 className="font-display font-black text-2xl sm:text-3xl text-brand-white">
             {judgeName || "Domain Evaluator"}
           </h1>
           <p className="text-xs text-brand-muted mt-1">
-            Evaluating: <span className="text-teal-accent font-semibold">{assignedTrack}</span>
+            Track Domain: <span className="text-teal-accent font-semibold">{assignedTrack}</span>
           </p>
         </div>
 
@@ -235,53 +238,102 @@ export default function JudgePortal() {
               <div className="p-6 rounded-2xl bg-bg-card border border-navy-border/80 flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <span className="text-[10px] font-mono uppercase text-teal-accent font-bold px-2 py-0.5 rounded bg-teal-accent/10 border border-teal-accent/30">
-                    Evaluating Final Submission
+                    Evaluating Team
                   </span>
                   <h2 className="font-display font-black text-2xl text-brand-white mt-1">
                     {selectedTeam.teamName}
                   </h2>
                   <p className="text-xs font-mono text-brand-muted">
-                    Team Code: <span className="text-brand-white">{selectedTeam.teamCode}</span> ·{" "}
+                    Team ID: <span className="text-brand-white">{selectedTeam.teamCode}</span> ·{" "}
                     Track: <span className="text-teal-accent">{selectedTeam.trackName}</span>
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-bg-secondary border border-navy-border text-center font-mono">
-                  <span className="text-[10px] text-brand-dim uppercase block">Auto-Score</span>
+                  <span className="text-[10px] text-brand-dim uppercase block">Best Auto-Score</span>
                   <span className="font-display font-bold text-xl text-teal-accent">
                     {selectedTeam.bestScore.toFixed(1)} / 100
                   </span>
                 </div>
               </div>
 
-              {/* Written Approach Notes */}
-              {selectedTeam.finalSubmission?.approachNotes && (
-                <div className="p-4 rounded-xl bg-navy-deep/40 border border-teal-accent/20 space-y-1.5">
-                  <span className="text-xs font-mono font-semibold text-teal-accent flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Team's Written Approach & Tuning Notes:
-                  </span>
-                  <p className="text-xs text-brand-white/90 leading-relaxed font-sans">
-                    {selectedTeam.finalSubmission.approachNotes}
+              {/* Submissions Tab Selector */}
+              {selectedTeam.submissions && selectedTeam.submissions.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs font-mono text-brand-dim mr-1">Inspect Attempt:</span>
+                  {selectedTeam.submissions.map((sub: any, idx: number) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setSelectedSubIndex(idx)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-mono border transition-all ${
+                        selectedSubIndex === idx
+                          ? "bg-teal-accent/20 border-teal-accent text-teal-accent font-bold shadow-glow"
+                          : "bg-bg-secondary border-navy-border text-brand-muted hover:text-brand-white"
+                      }`}
+                    >
+                      {sub.isLivePatch ? "Stage 7 Live Patch" : `Attempt #${sub.attemptNumber}`} ({sub.autoScore.toFixed(1)} pts)
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Written Reflection / 'What Changed & Why' */}
+              {currentSub && (
+                <div className="p-4 rounded-xl bg-navy-deep/50 border border-teal-accent/30 space-y-2">
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-teal-accent font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      {currentSub.isLivePatch
+                        ? "Live Patch Written Notes:"
+                        : currentSub.attemptNumber > 1
+                        ? `What Changed & Why (Attempt #${currentSub.attemptNumber} Reflection):`
+                        : "Baseline Approach Notes:"}
+                    </span>
+                    <span className="text-brand-dim">
+                      AST Design: {currentSub.designQuality}/100 · Similarity: {currentSub.similarityScore || 0}%
+                    </span>
+                  </div>
+                  <p className="text-xs text-brand-white font-sans leading-relaxed pl-5">
+                    {currentSub.whatChangedNotes || currentSub.approachNotes || "No notes submitted for this attempt."}
                   </p>
                 </div>
               )}
 
+              {/* Confidential Viva Questions Panel */}
+              {selectedTeam.vivaQuestions && selectedTeam.vivaQuestions.length > 0 && (
+                <div className="p-4 sm:p-5 rounded-2xl bg-electric-violet/10 border border-electric-violet/30 space-y-2.5">
+                  <div className="flex items-center gap-2 text-xs font-mono font-bold text-electric-violet uppercase tracking-wider">
+                    <HelpCircle className="w-4 h-4" />
+                    <span>Confidential Domain Viva Q&A Guide (Judge Reference)</span>
+                  </div>
+                  <p className="text-xs text-brand-muted">
+                    Pointed questions to probe algorithmic representation, shift adaptation, and parameter tuning:
+                  </p>
+                  <ul className="space-y-1.5 text-xs text-brand-white font-sans pt-1">
+                    {selectedTeam.vivaQuestions.map((q: string, i: number) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <span className="text-electric-violet font-bold font-mono">Q{i + 1}:</span>
+                        <span>{q}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {/* Code Inspection Viewer */}
-              {selectedTeam.finalSubmission ? (
+              {currentSub ? (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs font-mono text-brand-muted">
                     <span className="flex items-center gap-1.5">
                       <FileCode className="w-4 h-4 text-teal-accent" />
-                      Submitted Code: {selectedTeam.finalSubmission.filename} (Attempt #
-                      {selectedTeam.finalSubmission.attemptNumber})
+                      Code: {currentSub.filename} ({currentSub.isLivePatch ? "Live Patch" : `Attempt #${currentSub.attemptNumber}`})
                     </span>
-                    <span>Runtime: {selectedTeam.finalSubmission.runtimeMs} ms</span>
+                    <span>Runtime: {currentSub.runtimeMs} ms</span>
                   </div>
                   <CodeViewer
-                    code={selectedTeam.finalSubmission.codeContent}
-                    filename={selectedTeam.finalSubmission.filename}
-                    maxHeight="380px"
+                    code={currentSub.codeContent}
+                    filename={currentSub.filename}
+                    maxHeight="360px"
                   />
                 </div>
               ) : (
@@ -308,7 +360,7 @@ export default function JudgePortal() {
                     </div>
 
                     <div className="flex items-baseline gap-1 font-mono text-sm">
-                      <span className="text-brand-dim">Score:</span>
+                      <span className="text-brand-dim">Total:</span>
                       <span className="font-display font-bold text-xl text-electric-violet">
                         {totalScore}
                       </span>
@@ -350,7 +402,7 @@ export default function JudgePortal() {
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
                         <label className="font-medium text-brand-white">
-                          Algorithmic Reasoning
+                          Algorithmic Reasoning & Viva
                         </label>
                         <span className="font-mono font-bold text-electric-violet">
                           {algorithmicReasoning} / 35
@@ -365,7 +417,7 @@ export default function JudgePortal() {
                         className="w-full accent-electric-violet cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Theoretical correctness of the CI technique and operator choice.
+                        Selection of operators, fitness design, shift handling, and viva defense.
                       </p>
                     </div>
 
@@ -373,7 +425,7 @@ export default function JudgePortal() {
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
                         <label className="font-medium text-brand-white">
-                          Result Interpretation
+                          Convergence & Result Interpretation
                         </label>
                         <span className="font-mono font-bold text-status-green">
                           {resultInterpretation} / 20
@@ -388,7 +440,7 @@ export default function JudgePortal() {
                         className="w-full accent-status-green cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Justification of tuning parameters and convergence characteristics.
+                        Interpretation of fitness curves, diversity preservation, and sensitivity.
                       </p>
                     </div>
 
@@ -396,9 +448,11 @@ export default function JudgePortal() {
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
                         <label className="font-medium text-brand-white">
-                          Innovation & Creativity
+                          Innovation & Shift Adaptability
                         </label>
-                        <span className="font-mono font-bold text-orange-accent">{innovation} / 20</span>
+                        <span className="font-mono font-bold text-orange-accent">
+                          {innovation} / 20
+                        </span>
                       </div>
                       <input
                         type="range"
@@ -409,49 +463,48 @@ export default function JudgePortal() {
                         className="w-full accent-orange-accent cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Novel operators, adaptive heuristics, and unique optimization strategies.
+                        Novel representations, hybrid operators, and Stage 7 live patch performance.
                       </p>
                     </div>
                   </div>
 
-                  {/* Qualitative Feedback Textarea */}
+                  {/* Written Feedback / Notes */}
                   <div className="space-y-2">
                     <label className="block text-xs font-medium text-brand-white">
-                      Qualitative Feedback & Notes for Team:
+                      Judge Qualitative Feedback & Viva Observations:
                     </label>
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       rows={3}
-                      placeholder="e.g., Commendable dynamic inertia damping formulation. Consider exploring tournament selection with higher pressure..."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-electric-violet"
+                      placeholder="e.g. Team demonstrated solid grasp of roulette selection and defended fuzzy membership boundaries convincingly during viva..."
+                      className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-electric-violet resize-none"
                     />
                   </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={submittingScore}
-                    className="w-full py-3.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-xs shadow-glow hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                  >
-                    {submittingScore ? (
-                      <span>Saving Evaluation...</span>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4" />
-                        <span>Submit Final Evaluation ({totalScore}/100)</span>
-                      </>
-                    )}
-                  </button>
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-2">
+                    <button
+                      type="submit"
+                      disabled={submittingScore}
+                      className="px-6 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-xs shadow-glow hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>{submittingScore ? "Submitting Evaluation..." : "Save Evaluation Score"}</span>
+                    </button>
+                  </div>
                 </form>
               )}
             </div>
           ) : (
-            <div className="p-12 rounded-2xl bg-bg-card border border-navy-border text-center space-y-3">
-              <UserCheck className="w-12 h-12 text-brand-muted mx-auto" />
-              <h3 className="font-display font-bold text-brand-white">No Team Selected</h3>
-              <p className="text-xs text-brand-muted">
-                Please select a team from the assigned queue on the left to begin evaluation.
+            <div className="p-16 rounded-2xl bg-bg-card border border-navy-border text-center space-y-3">
+              <Trophy className="w-10 h-10 text-brand-dim mx-auto" />
+              <h3 className="font-display font-bold text-lg text-brand-white">
+                No Team Selected
+              </h3>
+              <p className="text-xs text-brand-muted max-w-sm mx-auto">
+                Select a team from the queue on the left to review their submissions, written reflections,
+                and record your viva scores.
               </p>
             </div>
           )}

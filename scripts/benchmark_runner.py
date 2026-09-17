@@ -61,22 +61,30 @@ def analyze_code_structure(code_str: str, track_id: str):
     bonus = 0
     names = " ".join(findings["constructs"]) + " " + code_str.lower()
     
-    if track_id == "track-ga":
-        terms = ["fitness", "crossover", "mutation", "population", "selection", "roulette", "elitism"]
+    if track_id in ["p1-hospital-scheduling", "track-ga"]:
+        terms = ["fitness", "crossover", "mutation", "population", "selection", "roulette", "elitism", "fatigue", "schedule", "shift"]
         matches = sum(1 for t in terms if t in names)
-        bonus = min(25, matches * 4)
-    elif track_id == "track-pso":
-        terms = ["particle", "velocity", "pbest", "gbest", "inertia", "cognitive", "social"]
+        bonus = min(25, matches * 3)
+    elif track_id in ["p2-drone-delivery", "track-aco"]:
+        terms = ["pheromone", "ant", "tour", "evaporation", "heuristic", "visibility", "drone", "payload", "battery", "thermal"]
         matches = sum(1 for t in terms if t in names)
-        bonus = min(25, matches * 4)
-    elif track_id == "track-aco":
-        terms = ["pheromone", "ant", "tour", "evaporation", "heuristic", "visibility", "alpha", "beta"]
+        bonus = min(25, matches * 3)
+    elif track_id in ["p3-emergency-hospital", "track-pso"]:
+        terms = ["particle", "velocity", "pbest", "gbest", "inertia", "hospital", "queue", "delay", "icu", "treatment"]
         matches = sum(1 for t in terms if t in names)
-        bonus = min(25, matches * 4)
-    elif track_id == "track-fuzzy":
-        terms = ["membership", "fuzzy", "defuzz", "triangular", "trapezoidal", "centroid", "rule", "mamdani"]
+        bonus = min(25, matches * 3)
+    elif track_id == "p4-blood-inventory":
+        terms = ["blood", "inventory", "compatibility", "shelf", "expiry", "stockout", "allocation", "substitution", "emergency"]
         matches = sum(1 for t in terms if t in names)
-        bonus = min(25, matches * 4)
+        bonus = min(25, matches * 3)
+    elif track_id == "p5-search-and-rescue":
+        terms = ["robot", "swarm", "coverage", "survivor", "grid", "hazard", "battery", "overlap", "search", "trajectory"]
+        matches = sum(1 for t in terms if t in names)
+        bonus = min(25, matches * 3)
+    elif track_id in ["p6-fuzzy-triage", "track-fuzzy"]:
+        terms = ["membership", "fuzzy", "defuzz", "triangular", "trapezoidal", "centroid", "rule", "triage", "vital", "patient"]
+        matches = sum(1 for t in terms if t in names)
+        bonus = min(25, matches * 3)
         
     findings["heuristic_score"] = min(100.0, 70.0 + bonus)
     return findings
@@ -198,6 +206,12 @@ def run_benchmark(track_id: str, code_str: str, prior_scores: list):
 
     # Qualitative explanation
     technique_name = {
+        "p1-hospital-scheduling": "Genetic Algorithm + Fuzzy Fatigue Model",
+        "p2-drone-delivery": "Ant Colony Optimization + GA",
+        "p3-emergency-hospital": "Fuzzy Logic + PSO",
+        "p4-blood-inventory": "Genetic Algorithm / PSO",
+        "p5-search-and-rescue": "Multi-Robot Swarm Robotics (PSO/ACO)",
+        "p6-fuzzy-triage": "Fuzzy Logic + Genetic Algorithm",
         "track-ga": "Genetic Algorithms",
         "track-pso": "Particle Swarm Optimization",
         "track-aco": "Ant Colony Optimization",

@@ -6,8 +6,17 @@ const crypto = require("crypto");
 const DATA_DIR = path.join(__dirname, "..", "data");
 const DB_FILE = path.join(DATA_DIR, "optiforge_db.json");
 
+const EXPECTED_OUTPUT_CHECKLIST = [
+  "Algorithm implementation (submitted notebook/script)",
+  "Parameter configuration used, clearly stated",
+  "Final objective/score for each attempt",
+  "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+  "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+  "A one-line 'what changed and why' note with every attempt after the first",
+];
+
 async function seed() {
-  console.log("Seeding OptiForge database...");
+  console.log("Seeding OptiForge 2026 database with 6 official problem statements...");
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
@@ -16,134 +25,348 @@ async function seed() {
 
   // 1. Settings
   const systemSettings = [
+    { key: "active_stage", value: "STAGE_4_ATTEMPT_1", description: "Current tournament stage", updatedAt: now },
     { key: "leaderboard_frozen", value: "false", description: "Freeze leaderboard updates", updatedAt: now },
     { key: "leaderboard_visible", value: "true", description: "Public visibility of leaderboard", updatedAt: now },
-    { key: "weight_auto", value: "60", description: "Percentage weight of auto-score", updatedAt: now },
-    { key: "weight_judge", value: "40", description: "Percentage weight of manual judge score", updatedAt: now },
+    { key: "live_patch_duration_mins", value: "20", description: "Duration of live patch round in minutes", updatedAt: now },
+    { key: "live_patch_deadline", value: "", description: "Active countdown deadline for Stage 7 live patch", updatedAt: now },
+    { key: "weight_auto", value: "60", description: "Confidential: Percentage weight of auto-score", updatedAt: now },
+    { key: "weight_judge", value: "40", description: "Confidential: Percentage weight of manual judge score", updatedAt: now },
     { key: "registration_open", value: "true", description: "Allow team registrations", updatedAt: now },
     { key: "event_date", value: "25-09-2026", description: "Official event date", updatedAt: now },
     { key: "event_time", value: "9:00 AM - 4:00 PM", description: "Official event timing", updatedAt: now },
     { key: "organizer_entity", value: "IEEE Vardhaman Student Branch", description: "Organizing student branch", updatedAt: now },
   ];
 
-  // 2. Problem Tracks
+  // 2. The Six Confirmed Problem Statements
   const problemTracks = [
     {
-      id: "track-ga",
-      name: "Genetic Algorithms: Multi-Constraint Combinatorial Optimization",
-      shortName: "GA Track",
-      technique: "Genetic Algorithms",
-      difficulty: "Intermediate",
-      description: "Engineer an evolutionary algorithm to solve high-dimensional 0/1 multi-constraint knapsack & scheduling problems under tight convergence constraints.",
-      benchmarkType: "KNAPSACK_TSP",
-      starterNotebookUrl: "/starter/starter_ga.py",
-      statementMarkdown: `### Track 1: Genetic Algorithms (GA) — Combinatorial Optimization
+      id: "p1-hospital-scheduling",
+      name: "Hospital Staff Scheduling with Fatigue-Aware Optimization",
+      shortName: "P1: Hospital Staff Scheduling",
+      society: "IEEE EMBS × IEEE CIS",
+      difficulty: "Intermediate–Advanced",
+      technique: "Genetic Algorithm + Fuzzy Fatigue Model",
+      context: "A hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.",
+      coreChallenge: "Construct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).",
+      hardConstraints: [
+        "Minimum qualified staffing must be met across all shifts",
+        "Employees cannot work overlapping shifts",
+        "Minimum rest duration requirements must be strictly satisfied",
+        "Maximum contractual working hours must not be exceeded",
+        "Critical departments require appropriate certified skill coverage",
+      ],
+      optimizationObjectives: [
+        "Minimize cumulative fatigue risk score modeled via fuzzy inference",
+        "Minimize overtime hours and penalty costs",
+        "Minimize employee shift preference violations",
+        "Minimize skill mismatch while preserving complete departmental coverage",
+      ],
+      hiddenTestNote: "A hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.",
+      expectedOutputChecklist: EXPECTED_OUTPUT_CHECKLIST,
+      description: "Schedule hospital staff across 7 days balancing hard coverage constraints with a continuous fuzzy fatigue risk model.",
+      statementMarkdown: `### Problem 1 — Hospital Staff Scheduling with Fatigue-Aware Optimization
 
-#### 1. Background
-Evolutionary computing mimics natural biological selection to search complex combinatorial landscapes. In this challenge, your task is to maximize total fitness while satisfying strict capacity and multi-knapsack resource constraints.
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Genetic Algorithm + Fuzzy Fatigue Model
 
-#### 2. Objectives
-- Design custom **Chromosome Encoding** (binary or permutation representation).
-- Implement robust **Selection Mechanisms** (Roulette Wheel / Tournament Selection with dynamic pressure).
-- Implement specialized **Crossover Operators** (Single/Two-point or Uniform Crossover) with high building-block retention.
-- Implement **Adaptive Mutation** to avoid premature convergence to local optima.
-- Maintain **Elitism** across generations.
+#### Context
+A hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.
 
-#### 3. Scoring Criteria
-- **Solution Quality (40%)**: Objective function value achieved on the held-out benchmark.
-- **Computational Efficiency (25%)**: Wall-clock runtime and generations required for convergence.
-- **Algorithm Design Quality (20%)**: Adherence to GA architectural paradigms verified by static AST & heuristic analysis.
-- **Consistency Across Attempts (15%)**: Progressive convergence across your 3 submission attempts.`,
+#### Core Challenge
+Construct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).
+
+#### Hard Constraints
+- Minimum qualified staffing must be met.
+- Employees cannot work overlapping shifts.
+- Minimum rest requirements must be satisfied.
+- Maximum working hours must not be exceeded.
+- Critical departments require appropriate skill coverage.
+
+#### Optimization Objectives
+Minimize fatigue risk, overtime, preference violations, and skill mismatch while maintaining complete departmental coverage.
+
+#### Competition & Hidden-Test Design
+A hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.`,
+      starterNotebookUrl: "/starter/starter_p1_scheduling.py",
+      benchmarkType: "HOSPITAL_SCHEDULING_GA_FUZZY",
+      hiddenShiftAttempt2: "Staff reduction: Emergency leave removes ~20% of nursing staff in Intensive Care and Emergency.",
+      hiddenShiftAttempt3: "Demand spike: Pediatric and Critical Care departments declare a 35% increase in minimum shift coverage.",
+      livePatchSurprise: "One additional department declares an emergency minimum-staffing requirement, effective immediately.",
       createdAt: now,
       updatedAt: now,
     },
     {
-      id: "track-pso",
-      name: "Particle Swarm Optimization: Continuous Non-Linear Landscape",
-      shortName: "PSO Track",
-      technique: "Particle Swarm Optimization",
+      id: "p2-drone-delivery",
+      name: "Drone-Based Emergency Medical Supply Delivery",
+      shortName: "P2: Drone Medical Delivery",
+      society: "IEEE EMBS × IEEE CIS",
       difficulty: "Advanced",
-      description: "Navigate a rugged, multi-modal continuous benchmark surface (Rastrigin / Ackley) to discover the global minimum using decentralized swarm intelligence.",
-      benchmarkType: "RASTRIGIN_ACKLEY",
-      starterNotebookUrl: "/starter/starter_pso.py",
-      statementMarkdown: `### Track 2: Particle Swarm Optimization (PSO) — Continuous Landscapes
+      technique: "Ant Colony Optimization + Genetic Algorithm",
+      context: "A fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.",
+      coreChallenge: "Determine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.",
+      hardConstraints: [
+        "Payload and battery capacities cannot be exceeded",
+        "Drone range must permit safe mission completion or approved charging",
+        "High-priority deliveries have non-negotiable arrival deadlines",
+        "Temperature-sensitive supplies have maximum allowable transit duration",
+        "Drone and charging-station resources cannot be used simultaneously by incompatible tasks",
+      ],
+      optimizationObjectives: [
+        "Maximize on-time priority deliveries to remote medical centers",
+        "Minimize total flight energy consumption and mission distance",
+        "Minimize missed deadlines and priority lateness penalties",
+        "Minimize thermal degradation risk for temperature-sensitive supplies",
+      ],
+      hiddenTestNote: "Hidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.",
+      description: "Optimize autonomous medical drone routing, payload dispatch, and charging paths under strict thermal and battery constraints.",
+      statementMarkdown: `### Problem 2 — Drone-Based Emergency Medical Supply Delivery
 
-#### 1. Background
-Swarm intelligence leverages decentralized collective behavior where particles adjust their trajectories through cognitive memory ($p_{\\text{best}}$) and social attraction ($g_{\\text{best}}$).
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Ant Colony Optimization + Genetic Algorithm
 
-#### 2. Objectives
-- Formulate particle velocity and position update equations with dynamic inertia weight damping:
-  $$v_i(t+1) = w(t) v_i(t) + c_1 r_1 (p_{\\text{best}, i} - x_i(t)) + c_2 r_2 (g_{\\text{best}} - x_i(t))$$
-- Implement boundary handling and velocity clamping to prevent particle explosion.
-- Test swarm diversity mechanisms to escape sub-optimal local basins in multi-modal terrain.
+#### Context
+A fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.
 
-#### 3. Scoring Criteria
-- **Solution Quality (40%)**: Proximity of $g_{\\text{best}}$ to the known global minimum ($0.0$).
-- **Efficiency (25%)**: Rapid convergence within the allotted maximum iteration ceiling.
-- **Algorithm Design Quality (20%)**: Proper balancing of cognitive vs. social acceleration coefficients.
-- **Consistency Across Attempts (15%)**: Optimization stability across sequential submissions.`,
+#### Core Challenge
+Determine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.
+
+#### Hard Constraints
+- Payload and battery capacities cannot be exceeded.
+- Drone range must permit safe completion or approved charging.
+- High-priority deliveries have strict deadlines.
+- Temperature-sensitive supplies have maximum allowable transit duration.
+- Drone and charging-station resources cannot be used simultaneously by incompatible tasks.
+
+#### Optimization Objectives
+Maximize on-time priority deliveries while minimizing total flight energy, distance, missed deadlines, and temperature-risk exposure.
+
+#### Competition & Hidden-Test Design
+Hidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.`,
+      starterNotebookUrl: "/starter/starter_p2_drone.py",
+      benchmarkType: "DRONE_ROUTING_ACO_GA",
+      hiddenShiftAttempt2: "Adverse atmospheric conditions: Headwinds increase drone flight energy consumption by 25%.",
+      hiddenShiftAttempt3: "Request surge: Remote clinic orders double with narrowed 30-minute delivery deadlines.",
+      livePatchSurprise: "One drone in the fleet suffers mechanical failure and is grounded — all its assigned deliveries must be re-routed live.",
       createdAt: now,
       updatedAt: now,
     },
     {
-      id: "track-aco",
-      name: "Ant Colony Optimization: Dynamic Combinatorial Graph Routing",
-      shortName: "ACO Track",
-      technique: "Ant Colony Optimization",
+      id: "p3-emergency-hospital",
+      name: "Emergency Hospital Destination Selection Under Dynamic Capacity",
+      shortName: "P3: Hospital Destination Selection",
+      society: "IEEE EMBS × IEEE CIS",
       difficulty: "Advanced",
-      description: "Optimize shortest closed tour routes in a dense weighted graph through artificial pheromone deposition and evaporation dynamics.",
-      benchmarkType: "GRAPH_TSP",
-      starterNotebookUrl: "/starter/starter_aco.py",
-      statementMarkdown: `### Track 3: Ant Colony Optimization (ACO) — Graph Routing
+      technique: "Fuzzy Logic + Particle Swarm Optimization",
+      context: "An emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.",
+      coreChallenge: "Select the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.",
+      hardConstraints: [
+        "A hospital without the required medical capability or equipment cannot be selected",
+        "Predicted treatment delay and specialist availability must be factored into decision",
+        "ICU or specialist capacity shifts during transport must be accounted for",
+        "Critical patient triage levels receive highest decision priority",
+        "Decisions must remain fully interpretable to clinical EMS operators",
+      ],
+      optimizationObjectives: [
+        "Minimize expected total time to definitive medical treatment",
+        "Minimize uncertainty-related risk and diversion probability",
+        "Minimize inappropriate resource utilization and unnecessary transfers",
+      ],
+      hiddenTestNote: "Hidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.",
+      description: "Select optimal emergency hospital destinations balancing dynamic travel time, emergency queue delays, and specialist availability.",
+      statementMarkdown: `### Problem 3 — Emergency Hospital Destination Selection Under Dynamic Capacity
 
-#### 1. Background
-ACO is inspired by the foraging behavior of ant colonies, where individuals deposit pheromone trails that guide subsequent ants toward minimal-cost paths.
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Particle Swarm Optimization
 
-#### 2. Objectives
-- Implement stochastic transition probability using pheromone concentration $(\\tau)$ and heuristic visibility $(\\eta)$:
-  $$P_{ij}^k = \\frac{[\\tau_{ij}]^\\alpha [\\eta_{ij}]^\\beta}{\\sum_{l \\in \\text{allowed}} [\\tau_{il}]^\\alpha [\\eta_{il}]^\\beta}$$
-- Design an efficient pheromone evaporation scheme $(1 - \\rho)$ to prevent early stagnation.
-- Incorporate Elitist or Max-Min Ant System (MMAS) bounded trail mechanisms.
+#### Context
+An emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.
 
-#### 3. Scoring Criteria
-- **Solution Quality (40%)**: Minimal tour length achieved across benchmark graph nodes.
-- **Efficiency (25%)**: Low computational complexity and execution time.
-- **Algorithm Design Quality (20%)**: Heuristic weighting and evaporation parameter calibration.
-- **Consistency Across Attempts (15%)**: Iterative tour improvement across attempts.`,
+#### Core Challenge
+Select the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.
+
+#### Hard Constraints
+- A hospital without the required capability cannot be selected.
+- Predicted treatment delay must be considered.
+- ICU or specialist capacity may change during transport.
+- Critical patients receive higher decision priority.
+- Decisions should remain interpretable to clinical operators.
+
+#### Optimization Objectives
+Minimize expected time to treatment, uncertainty-related risk, and inappropriate resource utilization.
+
+#### Competition & Hidden-Test Design
+Hidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.`,
+      starterNotebookUrl: "/starter/starter_p3_hospital.py",
+      benchmarkType: "HOSPITAL_SELECTION_FUZZY_PSO",
+      hiddenShiftAttempt2: "Sudden regional incident: The nearest Tier-1 trauma center experiences extreme ER queue congestion.",
+      hiddenShiftAttempt3: "Specialist unavailability: On-call neurosurgeon and cardiac catheterization teams become unavailable at two candidate centers.",
+      livePatchSurprise: "The current top-ranked hospital destination just went to 100% full ICU capacity.",
       createdAt: now,
       updatedAt: now,
     },
     {
-      id: "track-fuzzy",
-      name: "Fuzzy Logic: Non-Linear Dynamic Control & Inference",
-      shortName: "Fuzzy Track",
-      technique: "Fuzzy Logic Systems",
-      difficulty: "Intermediate",
-      description: "Design a Mamdani or Sugeno fuzzy inference system with linguistic IF-THEN rules and defuzzification for dynamic plant control.",
-      benchmarkType: "DYNAMIC_CONTROL",
-      starterNotebookUrl: "/starter/starter_fuzzy.py",
-      statementMarkdown: `### Track 4: Fuzzy Logic (FL) — Dynamic Control & Inference
+      id: "p4-blood-inventory",
+      name: "Hospital Blood Inventory and Compatibility-Aware Allocation",
+      shortName: "P4: Blood Inventory Allocation",
+      society: "IEEE EMBS × IEEE CIS",
+      difficulty: "Advanced",
+      technique: "Genetic Algorithm / Particle Swarm Optimization",
+      context: "A hospital maintains inventories of multiple blood groups (A, B, AB, O with Rh factors). Units have limited shelf lives (typically 35–42 days) and daily demand is uncertain. Emergency mass demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit (e.g. universal O-negative) may reduce critical flexibility for a future emergency.",
+      coreChallenge: "Determine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.",
+      hardConstraints: [
+        "Blood-group biological compatibility must be strictly respected",
+        "Expired units cannot be transfused under any circumstance",
+        "Inventory levels cannot become negative",
+        "Emergency demand receives absolute highest fulfillment priority",
+        "Procurement capacity and delivery schedules have minimum lead times",
+      ],
+      optimizationObjectives: [
+        "Minimize blood unit expiry and wastage across all ABO/Rh groups",
+        "Minimize stockout probability and emergency shortage severity",
+        "Minimize emergency procurement rush costs",
+        "Preserve compatibility flexibility for rare blood groups",
+      ],
+      hiddenTestNote: "Hidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.",
+      description: "Manage multi-type blood inventory, procurement schedules, and compatible substitution policies under shelf-life constraints.",
+      statementMarkdown: `### Problem 4 — Hospital Blood Inventory and Compatibility-Aware Allocation
 
-#### 1. Background
-Unlike binary boolean logic, fuzzy logic processes approximate reasoning by modeling degrees of truth through continuous membership functions.
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Genetic Algorithm / Particle Swarm Optimization
 
-#### 2. Objectives
-- Construct input and output fuzzy sets (Triangular, Trapezoidal, or Gaussian).
-- Formulate an expressive, conflict-free rule base modeling system dynamics.
-- Apply Mamdani Min-Max or Sugeno algebraic inference.
-- Implement Centroid (Center of Gravity) defuzzification for crisp actuator signals.
+#### Context
+A hospital maintains inventories of multiple blood groups. Units have limited shelf lives and demand is uncertain. Emergency demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit may reduce flexibility for a future emergency.
 
-#### 3. Scoring Criteria
-- **Solution Quality (40%)**: Minimal steady-state error and overshoot in step-response simulation.
-- **Efficiency (25%)**: Fast defuzzification computation and clean rule evaluation.
-- **Algorithm Design Quality (20%)**: Completeness of fuzzy rule partitions and membership coverage.
-- **Consistency Across Attempts (15%)**: Refinement of control curves across attempts.`,
+#### Core Challenge
+Determine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.
+
+#### Hard Constraints
+- Blood-group compatibility must be respected.
+- Expired units cannot be used.
+- Inventory cannot become negative.
+- Emergency demand receives highest priority.
+- Procurement capacity and delivery timing are limited.
+
+#### Optimization Objectives
+Minimize wastage, stockout probability, emergency shortage severity, and procurement cost while preserving compatibility flexibility.
+
+#### Competition & Hidden-Test Design
+Hidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.`,
+      starterNotebookUrl: "/starter/starter_p4_blood.py",
+      benchmarkType: "BLOOD_INVENTORY_GA_PSO",
+      hiddenShiftAttempt2: "Multiple emergency trauma arrivals trigger sudden surge in O-negative and B-positive demand.",
+      hiddenShiftAttempt3: "Supply chain disruption: Blood bank delivery van delayed by 48 hours.",
+      livePatchSurprise: "A critical blood-group shortage is declared for O-negative with an incoming mass-casualty transport.",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "p5-search-and-rescue",
+      name: "Multi-Robot Search-and-Rescue Area Coverage",
+      shortName: "P5: Multi-Robot Search & Rescue",
+      society: "IEEE EMBS × IEEE CIS",
+      difficulty: "Advanced (Flagship Showcase)",
+      technique: "PSO / ACO / Multi-Agent Genetic Algorithm",
+      context: "A set of autonomous mobile robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or hazardous. Survivor locations are unknown but certain zones have higher prior probability.",
+      coreChallenge: "Divide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.",
+      hardConstraints: [
+        "Robot battery must not fall below a safe return-to-base threshold",
+        "Communication connectivity must be maintained where required",
+        "Dangerous and collapsed regions carry higher movement penalties or are strictly forbidden",
+        "Robots must avoid unnecessary trajectory overlap",
+        "Detected survivor locations trigger dynamic task reassignment and rendezvous",
+      ],
+      optimizationObjectives: [
+        "Maximize expected survivor detection probability across high-priority zones",
+        "Maximize total area coverage within battery budget",
+        "Minimize redundant search overlap between robots",
+        "Minimize response delay after initial survivor contact",
+      ],
+      hiddenTestNote: "Hidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. This is the flagship showcase problem — its visualization (coverage map) is featured prominently in the platform and the judges' round.",
+      description: "Coordinate a multi-robot swarm to search complex disaster zones, avoiding hazards and dynamically replanning upon survivor discovery.",
+      statementMarkdown: `### Problem 5 — Multi-Robot Search-and-Rescue Area Coverage (Flagship Showcase)
+
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** PSO / ACO / Multi-Agent Genetic Algorithm
+
+#### Context
+A set of autonomous robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or dangerous. Survivor locations are unknown but certain zones have higher prior probability.
+
+#### Core Challenge
+Divide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.
+
+#### Hard Constraints
+- Robot battery cannot fall below a safe return threshold.
+- Communication requirements must be maintained where required.
+- Dangerous regions carry higher movement cost or may be forbidden.
+- Robots should avoid unnecessary overlap.
+- Detected survivor locations trigger dynamic task reassignment.
+
+#### Optimization Objectives
+Maximize expected survivor detection and area coverage while minimizing energy, overlap, and response delay after a discovery.
+
+#### Competition & Hidden-Test Design
+Hidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. **This is the flagship showcase problem — its visualization (coverage map) is featured prominently.**`,
+      starterNotebookUrl: "/starter/starter_p5_sar.py",
+      benchmarkType: "SWARM_ROBOTICS_COVERAGE",
+      hiddenShiftAttempt2: "Debris collapse: 3 new obstacle zones spawn dynamically, cutting off direct corridors.",
+      hiddenShiftAttempt3: "Secondary search zone: High survivor probability shifts unexpectedly to previously low-prior sector.",
+      livePatchSurprise: "One robot experiences communication transmitter failure — swarm coordination logic must adapt with remaining mesh nodes.",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: "p6-fuzzy-triage",
+      name: "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
+      shortName: "P6: Fuzzy ER Triage",
+      society: "IEEE EMBS × IEEE CIS",
+      difficulty: "Advanced",
+      technique: "Fuzzy Logic + Genetic Algorithm",
+      context: "An emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.",
+      coreChallenge: "Design an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.",
+      hardConstraints: [
+        "Critical patients must not be assigned low-priority categories under benchmark scenarios",
+        "Fuzzy rules must remain clinically interpretable to medical doctors",
+        "Resource allocation must respect available emergency department capacity",
+        "Uncertain, noisy, or missing physiological measurements should be handled gracefully",
+        "The system must avoid excessive mathematical dependence on any single vital sign",
+      ],
+      optimizationObjectives: [
+        "Minimize critical-patient waiting time to physician assessment",
+        "Minimize inappropriate under-triage and over-triage rates",
+        "Minimize emergency department resource overload and queue bottlenecks",
+        "Maximize stability under noisy or incomplete clinical measurements",
+      ],
+      hiddenTestNote: "Hidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.",
+      description: "Design an interpretable fuzzy triage system mapping multi-vital measurements to urgency priorities and allocating clinical resources.",
+      statementMarkdown: `### Problem 6 — Fuzzy Emergency-Room Triage with Adaptive Rule Optimization
+
+**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Genetic Algorithm
+
+#### Context
+An emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.
+
+#### Core Challenge
+Design an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.
+
+#### Hard Constraints
+- Critical patients must not be assigned low-priority categories under benchmark scenarios.
+- Rules should remain interpretable.
+- Resource allocation must respect available capacity.
+- Uncertain or missing measurements should be handled gracefully.
+- The system must avoid excessive dependence on one feature.
+
+#### Optimization Objectives
+Minimize critical-patient waiting time, inappropriate prioritization, resource overload, and instability under noisy measurements.
+
+#### Competition & Hidden-Test Design
+Hidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.`,
+      starterNotebookUrl: "/starter/starter_p6_triage.py",
+      benchmarkType: "FUZZY_TRIAGE_GA",
+      hiddenShiftAttempt2: "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
+      hiddenShiftAttempt3: "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
+      livePatchSurprise: "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
       createdAt: now,
       updatedAt: now,
     },
   ];
 
-  // 3. Admin & Judge Users
+  // 3. Admin & Judge Accounts for all 6 problems
   const adminPassword = await bcrypt.hash("admin@optiforge2026", 10);
   const judgePassword = await bcrypt.hash("judge@optiforge", 10);
   const teamPassword = await bcrypt.hash("team@optiforge", 10);
@@ -161,47 +384,67 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
     },
     {
       id: crypto.randomUUID(),
-      username: "judge_ga",
+      username: "judge_p1",
       password: judgePassword,
-      name: "Dr. K. Srinivas (GA Expert)",
+      name: "Dr. K. Srinivas (Staff Scheduling & GA Expert)",
       role: "JUDGE",
-      assignedDomainId: "track-ga",
+      assignedDomainId: "p1-hospital-scheduling",
       createdAt: now,
       updatedAt: now,
     },
     {
       id: crypto.randomUUID(),
-      username: "judge_pso",
+      username: "judge_p2",
       password: judgePassword,
-      name: "Prof. M. Anitha (Swarm Expert)",
+      name: "Dr. R. Varma (Autonomous Drone Routing & ACO)",
       role: "JUDGE",
-      assignedDomainId: "track-pso",
+      assignedDomainId: "p2-drone-delivery",
       createdAt: now,
       updatedAt: now,
     },
     {
       id: crypto.randomUUID(),
-      username: "judge_aco",
+      username: "judge_p3",
       password: judgePassword,
-      name: "Dr. R. Varma (Routing Expert)",
+      name: "Prof. M. Anitha (Hospital Capacity & PSO Expert)",
       role: "JUDGE",
-      assignedDomainId: "track-aco",
+      assignedDomainId: "p3-emergency-hospital",
       createdAt: now,
       updatedAt: now,
     },
     {
       id: crypto.randomUUID(),
-      username: "judge_fuzzy",
+      username: "judge_p4",
       password: judgePassword,
-      name: "Prof. S. Reddy (Fuzzy Systems Expert)",
+      name: "Dr. A. Sharma (Blood Supply Chain & GA Expert)",
       role: "JUDGE",
-      assignedDomainId: "track-fuzzy",
+      assignedDomainId: "p4-blood-inventory",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: crypto.randomUUID(),
+      username: "judge_p5",
+      password: judgePassword,
+      name: "Dr. P. Chen (Multi-Robot Swarm Coverage Expert)",
+      role: "JUDGE",
+      assignedDomainId: "p5-search-and-rescue",
+      createdAt: now,
+      updatedAt: now,
+    },
+    {
+      id: crypto.randomUUID(),
+      username: "judge_p6",
+      password: judgePassword,
+      name: "Prof. S. Reddy (Clinical Fuzzy Triage & ML Expert)",
+      role: "JUDGE",
+      assignedDomainId: "p6-fuzzy-triage",
       createdAt: now,
       updatedAt: now,
     },
   ];
 
-  // 4. Sample Teams & Submissions
+  // 4. Sample Teams across problems
   const teamsData = [
     {
       id: "team-id-1021",
@@ -210,7 +453,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       leaderEmail: "neuralforge@vce.ac.in",
       leaderPhone: "9876543210",
       password: teamPassword,
-      domainId: "track-ga",
+      domainId: "p1-hospital-scheduling",
       skillLevel: "Advanced",
       paymentStatus: "CONFIRMED",
       paymentAmount: 150,
@@ -227,7 +470,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       leaderEmail: "swarmdynasty@vce.ac.in",
       leaderPhone: "9845123456",
       password: teamPassword,
-      domainId: "track-pso",
+      domainId: "p5-search-and-rescue",
       skillLevel: "Advanced",
       paymentStatus: "CONFIRMED",
       paymentAmount: 200,
@@ -240,11 +483,11 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
     {
       id: "team-id-3088",
       teamCode: "OPT-26-3088",
-      teamName: "AntPathFinders",
-      leaderEmail: "antpaths@vce.ac.in",
+      teamName: "AeroFleet",
+      leaderEmail: "aerofleet@vce.ac.in",
       leaderPhone: "9701234567",
       password: teamPassword,
-      domainId: "track-aco",
+      domainId: "p2-drone-delivery",
       skillLevel: "Intermediate",
       paymentStatus: "CONFIRMED",
       paymentAmount: 100,
@@ -261,7 +504,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       leaderEmail: "fuzzylogic@vce.ac.in",
       leaderPhone: "9988776655",
       password: teamPassword,
-      domainId: "track-fuzzy",
+      domainId: "p6-fuzzy-triage",
       skillLevel: "Advanced",
       paymentStatus: "CONFIRMED",
       paymentAmount: 150,
@@ -277,7 +520,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
     { id: crypto.randomUUID(), teamId: "team-id-1021", name: "Aditya Kumar", rollNumber: "22011A0501", branch: "CSE", year: "3rd Year", email: "aditya@vce.ac.in", phone: "9876543210", tshirtSize: "L", createdAt: now },
     { id: crypto.randomUUID(), teamId: "team-id-1021", name: "Pooja Sharma", rollNumber: "22011A0502", branch: "CSE", year: "3rd Year", email: "pooja@vce.ac.in", phone: "9876543211", tshirtSize: "M", createdAt: now },
     { id: crypto.randomUUID(), teamId: "team-id-1021", name: "Rahul Varma", rollNumber: "22011A0503", branch: "IT", year: "3rd Year", email: "rahul@vce.ac.in", phone: "9876543212", tshirtSize: "XL", createdAt: now },
-    
+
     { id: crypto.randomUUID(), teamId: "team-id-2044", name: "Kavya Reddy", rollNumber: "21011A1201", branch: "IT", year: "4th Year", email: "kavya@vce.ac.in", phone: "9845123456", tshirtSize: "S", createdAt: now },
     { id: crypto.randomUUID(), teamId: "team-id-2044", name: "Naveen Sai", rollNumber: "21011A1202", branch: "IT", year: "4th Year", email: "naveen@vce.ac.in", phone: "9845123457", tshirtSize: "M", createdAt: now },
     { id: crypto.randomUUID(), teamId: "team-id-2044", name: "Bhavana Rao", rollNumber: "21011A1203", branch: "CSE", year: "4th Year", email: "bhavana@vce.ac.in", phone: "9845123458", tshirtSize: "M", createdAt: now },
@@ -296,9 +539,11 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       id: "sub-1021-1",
       teamId: "team-id-1021",
       attemptNumber: 1,
-      filename: "ga_attempt1.py",
-      codeContent: `# NeuralForge - GA Attempt 1\n# Roulette wheel selection with two-point crossover\nimport random\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n`,
-      approachNotes: "Initial exploration using two-point crossover and roulette wheel selection with population 50.",
+      filename: "hospital_scheduling_base.py",
+      codeContent: `# NeuralForge - Attempt 1\n# Base staff schedule with GA\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n`,
+      approachNotes: "Baseline schedule prioritizing minimum shift coverage and basic rest intervals.",
+      whatChangedNotes: null,
+      isLivePatch: false,
       status: "SCORED",
       runtimeMs: 182.4,
       solutionQuality: 88.5,
@@ -308,7 +553,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       autoScore: 89.2,
       isAiAssisted: true,
       aiExplanation: "Strong genetic diversity preservation. Solid elitism retention across generations.",
-      executionLogs: "Execution time: 182.4 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 88.5",
+      executionLogs: "Execution completed in 182.4 ms\nAST verification: PASSED\nCoverage constraints: SATISFIED",
       similarityScore: 12.0,
       similarityFlag: false,
       submittedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
@@ -317,9 +562,11 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       id: "sub-1021-2",
       teamId: "team-id-1021",
       attemptNumber: 2,
-      filename: "ga_attempt2_optimized.py",
-      codeContent: `# NeuralForge - GA Attempt 2\n# Added tournament selection and adaptive mutation rate\nimport random\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n`,
-      approachNotes: "Improved with tournament selection (k=3) and adaptive 1/L mutation rate.",
+      filename: "hospital_scheduling_fatigue_tuned.py",
+      codeContent: `# NeuralForge - Attempt 2\n# Shifted scenario adaptation\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n`,
+      approachNotes: "Integrated fuzzy fatigue penalty into objective function to penalize back-to-back night shifts.",
+      whatChangedNotes: "Added non-linear penalty for consecutive night shifts after noticing fatigue spike in Attempt 1.",
+      isLivePatch: false,
       status: "SCORED",
       runtimeMs: 165.2,
       solutionQuality: 93.5,
@@ -328,32 +575,11 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
       consistencyScore: 95.0,
       autoScore: 92.4,
       isAiAssisted: true,
-      aiExplanation: "Adaptive mutation effectively prevented stagnation. Fast convergence to global basin.",
-      executionLogs: "Execution time: 165.2 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 94.0",
+      aiExplanation: "Fuzzy fatigue model effectively adapted to shifted departmental constraints.",
+      executionLogs: "Execution completed in 165.2 ms\nAST verification: PASSED\nFatigue index: 0.12",
       similarityScore: 15.0,
       similarityFlag: false,
       submittedAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
-    },
-    {
-      id: "sub-2044-3",
-      teamId: "team-id-2044",
-      attemptNumber: 3,
-      filename: "pso_dynamic_damping.py",
-      codeContent: `# SwarmDynasty - PSO Final Attempt\n# Inertia damping w=0.729, c1=1.49, c2=1.49\nimport random\nimport math\ndef optimize():\n    return [0.001, -0.002]\nbest_solution = [0.001, -0.002]\nbest_fitness = 0.0003\n`,
-      approachNotes: "Tuned cognitive vs social factors with velocity clamping to prevent swarm explosion.",
-      status: "SCORED",
-      runtimeMs: 125.0,
-      solutionQuality: 97.5,
-      efficiencyScore: 98.0,
-      designQuality: 95.0,
-      consistencyScore: 96.0,
-      autoScore: 96.8,
-      isAiAssisted: true,
-      aiExplanation: "Exceptional continuous landscape convergence. Excellent velocity clamping.",
-      executionLogs: "Execution time: 125.0 ms\nAST verification: PASSED\nRastrigin test: CONVERGED to 0.0003",
-      similarityScore: 8.5,
-      similarityFlag: false,
-      submittedAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
     },
   ];
 
@@ -361,7 +587,7 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
     {
       id: "ann-1",
       title: "OptiForge 2026 is Officially Live!",
-      message: "Welcome participants! You can now view your assigned problem track and download starter templates. Each team has 3 live-scored submission attempts.",
+      message: "Welcome teams! The 6 problem statements and starter templates are accessible. Notice the 3-attempt live progression and upcoming live patch round.",
       type: "INFO",
       isActive: true,
       createdAt: now,
@@ -382,15 +608,15 @@ Unlike binary boolean logic, fuzzy logic processes approximate reasoning by mode
         id: crypto.randomUUID(),
         action: "DATABASE_INITIALIZED",
         performedBy: "system",
-        details: "OptiForge 2026 seeded with 4 problem tracks and test teams",
-        reason: "Initial deployment setup",
+        details: "OptiForge 2026 initialized with 6 official problem statements and 6 expert judges",
+        reason: "Official tournament release",
         createdAt: now,
       },
     ],
   };
 
   fs.writeFileSync(DB_FILE, JSON.stringify(dbData, null, 2), "utf8");
-  console.log("Database seeded successfully to:", DB_FILE);
+  console.log("Database seeded successfully with 6 problems to:", DB_FILE);
 }
 
 seed().catch((err) => {

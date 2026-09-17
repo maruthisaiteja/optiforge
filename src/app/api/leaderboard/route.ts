@@ -48,6 +48,7 @@ export async function GET() {
       isVisible: true,
       isFrozen,
       entries,
+      teams: entries,
     });
   } catch (err) {
     return NextResponse.json({ error: "Error retrieving leaderboard." }, { status: 500 });

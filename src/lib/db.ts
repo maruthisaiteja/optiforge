@@ -62,12 +62,23 @@ export interface ProblemTrackRecord {
   id: string;
   name: string;
   shortName: string;
+  society: string; // IEEE EMBS × IEEE CIS
+  difficulty: string; // Intermediate–Advanced or Advanced
   technique: string;
-  difficulty: string;
+  context: string;
+  coreChallenge: string;
+  hardConstraints: string[];
+  optimizationObjectives: string[];
+  hiddenTestNote: string;
+  expectedOutputChecklist: string[];
   description: string;
   statementMarkdown: string;
   starterNotebookUrl?: string | null;
   benchmarkType: string;
+  // Confidential backend fields (Part E)
+  hiddenShiftAttempt2?: string | null;
+  hiddenShiftAttempt3?: string | null;
+  livePatchSurprise?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -79,6 +90,8 @@ export interface SubmissionRecord {
   filename: string;
   codeContent: string;
   approachNotes?: string | null;
+  whatChangedNotes?: string | null; // For Attempt 2 and 3
+  isLivePatch?: boolean; // For Stage 7
   status: "QUEUED" | "RUNNING" | "SCORED" | "FAILED";
   runtimeMs: number;
   solutionQuality: number;
@@ -459,7 +472,7 @@ export const db = {
       return data.submissions.find((s) => s.id === where.id) || null;
     },
     findMany: async (filter?: {
-      where?: { teamId?: string; status?: string; similarityFlag?: boolean };
+      where?: { teamId?: string; status?: string; similarityFlag?: boolean; isLivePatch?: boolean; attemptNumber?: number };
       orderBy?: { submittedAt?: "asc" | "desc" };
     }) => {
       const data = ensureDbFile();
@@ -469,6 +482,8 @@ export const db = {
           if (filter.where!.teamId && s.teamId !== filter.where!.teamId) return false;
           if (filter.where!.status && s.status !== filter.where!.status) return false;
           if (filter.where!.similarityFlag !== undefined && s.similarityFlag !== filter.where!.similarityFlag) return false;
+          if (filter.where!.isLivePatch !== undefined && s.isLivePatch !== filter.where!.isLivePatch) return false;
+          if (filter.where!.attemptNumber !== undefined && s.attemptNumber !== filter.where!.attemptNumber) return false;
           return true;
         });
       }
@@ -494,6 +509,8 @@ export const db = {
         filename: subData.filename,
         codeContent: subData.codeContent,
         approachNotes: subData.approachNotes || null,
+        whatChangedNotes: subData.whatChangedNotes || null,
+        isLivePatch: subData.isLivePatch || false,
         status: subData.status || "SCORED",
         runtimeMs: subData.runtimeMs || 0,
         solutionQuality: subData.solutionQuality || 0,

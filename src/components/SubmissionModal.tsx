@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import { AlertTriangle, Upload, X, ShieldAlert, Sparkles, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, Upload, X, ShieldAlert, Sparkles, AlertCircle } from "lucide-react";
 
 interface SubmissionModalProps {
   isOpen: boolean;
   attemptNumber: number;
   filename: string;
+  isLivePatch?: boolean;
   onClose: () => void;
-  onConfirm: (notes: string) => void;
+  onConfirm: (approachNotes: string, whatChangedNotes: string) => void;
   isSubmitting: boolean;
 }
 
@@ -16,17 +17,35 @@ export default function SubmissionModal({
   isOpen,
   attemptNumber,
   filename,
+  isLivePatch = false,
   onClose,
   onConfirm,
   isSubmitting,
 }: SubmissionModalProps) {
-  const [notes, setNotes] = useState("");
+  const [approachNotes, setApproachNotes] = useState("");
+  const [whatChangedNotes, setWhatChangedNotes] = useState("");
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
+  const requiresWhatChanged = attemptNumber > 1 && !isLivePatch;
+
+  const handleFormSubmit = () => {
+    if (requiresWhatChanged && (!whatChangedNotes || !whatChangedNotes.trim())) {
+      setValidationError("A mandatory 'What changed and why' reflection note is required for Attempt " + attemptNumber + ".");
+      return;
+    }
+    setValidationError(null);
+    onConfirm(approachNotes, whatChangedNotes);
+  };
+
+  const bannerClass = isLivePatch
+    ? "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border bg-orange-accent/15 border-orange-accent/30 text-orange-accent"
+    : "w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border bg-teal-accent/15 border-teal-accent/30 text-teal-accent";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-lg rounded-2xl bg-bg-card border border-navy-border/80 shadow-2xl p-6 sm:p-8 space-y-6 relative">
+      <div className="w-full max-w-lg rounded-2xl bg-bg-card border border-navy-border/80 shadow-2xl p-6 sm:p-8 space-y-6 relative max-h-[90vh] overflow-y-auto">
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -38,17 +57,27 @@ export default function SubmissionModal({
 
         {/* Warning Banner */}
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-orange-accent/15 border border-orange-accent/30 flex items-center justify-center text-orange-accent shrink-0">
-            <AlertTriangle className="w-6 h-6" />
+          <div className={bannerClass}>
+            {isLivePatch ? <ShieldAlert className="w-6 h-6" /> : <AlertTriangle className="w-6 h-6" />}
           </div>
           <div>
             <h3 className="font-display font-bold text-lg text-brand-white">
-              Confirm Submission: Attempt {attemptNumber} of 3
+              {isLivePatch
+                ? "Stage 7: Live Patch Submission"
+                : `Confirm Submission: Attempt ${attemptNumber} of 3`}
             </h3>
             <p className="text-xs text-brand-muted mt-1 leading-relaxed">
-              Each team has strictly <span className="text-brand-white font-semibold">3 attempts</span> in
-              total. Submitting will consume attempt{" "}
-              <span className="text-orange-accent font-mono font-bold">#{attemptNumber}</span>.
+              {isLivePatch ? (
+                <span className="text-orange-accent font-semibold">
+                  ⚠️ ZERO AI ALLOWED. Your code will be benchmarked on the live surprise constraint suite.
+                </span>
+              ) : (
+                <>
+                  Each team has strictly <span className="text-brand-white font-semibold">3 attempts</span> in total.
+                  Submitting will consume attempt{" "}
+                  <span className="text-teal-accent font-mono font-bold">#{attemptNumber}</span>.
+                </>
+              )}
             </p>
           </div>
         </div>
@@ -59,30 +88,59 @@ export default function SubmissionModal({
           <span className="text-teal-accent font-semibold">{filename}</span>
         </div>
 
+        {/* Mandatory 'What Changed and Why' Note for Attempt 2 and 3 */}
+        {requiresWhatChanged && (
+          <div className="space-y-2 p-3.5 rounded-xl bg-electric-violet/10 border border-electric-violet/30">
+            <label className="block text-xs font-semibold text-brand-white flex items-center justify-between">
+              <span>What Changed & Why? (Mandatory Reflection)</span>
+              <span className="text-[10px] text-orange-accent font-mono">* Required for Attempt {attemptNumber}</span>
+            </label>
+            <textarea
+              value={whatChangedNotes}
+              onChange={(e) => {
+                setWhatChangedNotes(e.target.value);
+                if (validationError) setValidationError(null);
+              }}
+              disabled={isSubmitting}
+              rows={3}
+              placeholder="e.g., In response to the 20% nursing staff reduction, increased penalty weight on consecutive shifts from 1.5 to 3.2 and adjusted population mutation rate..."
+              className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-electric-violet resize-none transition-colors"
+            />
+            <p className="text-[11px] text-brand-muted leading-relaxed">
+              Domain judges review this reflection during the viva to verify your algorithmic reasoning and adaptation strategy.
+            </p>
+          </div>
+        )}
+
         {/* Written Approach Notes */}
         <div className="space-y-2">
           <label className="block text-xs font-medium text-brand-white">
-            Brief Approach Notes & Parameter Tuning (Optional for Judges):
+            Approach Notes & Parameter Configuration (Optional):
           </label>
           <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            value={approachNotes}
+            onChange={(e) => setApproachNotes(e.target.value)}
             disabled={isSubmitting}
-            rows={3}
-            placeholder="e.g., Implemented adaptive crossover with roulette selection, tuned inertia w=0.72..."
+            rows={2}
+            placeholder="e.g., GA parameters: pop=80, crossover=0.85 (2-point), mutation=0.04 (adaptive)..."
             className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent resize-none transition-colors"
           />
-          <p className="text-[11px] text-brand-muted">
-            Judges will reference these notes alongside your code during final expert evaluation.
-          </p>
         </div>
+
+        {/* Validation Error Message */}
+        {validationError && (
+          <div className="p-3 rounded-lg bg-red-500/15 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{validationError}</span>
+          </div>
+        )}
 
         {/* Safeguard Notice */}
         <div className="p-3 rounded-lg bg-navy-deep/40 border border-teal-accent/20 text-[11px] text-brand-muted flex items-start gap-2">
           <Sparkles className="w-4 h-4 text-teal-accent shrink-0 mt-0.5" />
           <span>
-            Your code will be immediately benchmarked against our sandbox environment. Your best score
-            will be updated on the live leaderboard automatically.
+            Code is analyzed via AST for algorithmic integrity and executed against benchmark test cases.
+            Leaderboard will reflect your latest best score.
           </span>
         </div>
 
@@ -98,7 +156,7 @@ export default function SubmissionModal({
           </button>
           <button
             type="button"
-            onClick={() => onConfirm(notes)}
+            onClick={handleFormSubmit}
             disabled={isSubmitting}
             className="px-5 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-semibold text-xs shadow-glow hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
           >
@@ -110,7 +168,7 @@ export default function SubmissionModal({
             ) : (
               <>
                 <Upload className="w-4 h-4" />
-                <span>Confirm & Submit Attempt {attemptNumber}</span>
+                <span>{isLivePatch ? "Submit Live Patch" : `Confirm & Submit Attempt ${attemptNumber}`}</span>
               </>
             )}
           </button>

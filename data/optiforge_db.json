@@ -1,54 +1,74 @@
 {
   "users": [
     {
-      "id": "3c647a84-54ad-4c68-8928-ea2465cb0428",
+      "id": "cf4ef390-e06d-4739-a601-78ebce42be3d",
       "username": "admin",
-      "password": "$2b$10$wXB3/VxFN1.21NqGc.xj7.dchg3BdIrvF4.Ono6rUdJmQjPknnuaC",
+      "password": "$2b$10$dtN3L7bCcFpXuKonhHws8Of735SmoCQLLE0YpfjTI9XyBg4FByXPW",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "9668133e-b7f4-4bfa-a196-a2847d803697",
-      "username": "judge_ga",
-      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
-      "name": "Dr. K. Srinivas (GA Expert)",
+      "id": "aa57b5f8-1a41-4633-8bfa-838bd2d47318",
+      "username": "judge_p1",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Dr. K. Srinivas (Staff Scheduling & GA Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "track-ga",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "assignedDomainId": "p1-hospital-scheduling",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "2c83e1bd-5ade-4478-b51d-05f0bc7cf7ac",
-      "username": "judge_pso",
-      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
-      "name": "Prof. M. Anitha (Swarm Expert)",
+      "id": "a91d14b5-7536-4282-9227-f952e7702ce7",
+      "username": "judge_p2",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Dr. R. Varma (Autonomous Drone Routing & ACO)",
       "role": "JUDGE",
-      "assignedDomainId": "track-pso",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "assignedDomainId": "p2-drone-delivery",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "f06f4f34-13a4-4964-a489-44554048ee7e",
-      "username": "judge_aco",
-      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
-      "name": "Dr. R. Varma (Routing Expert)",
+      "id": "8f5ee3b5-75c5-4ae1-b867-e3c60315b74a",
+      "username": "judge_p3",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Prof. M. Anitha (Hospital Capacity & PSO Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "track-aco",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "assignedDomainId": "p3-emergency-hospital",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "d3bf4bef-b820-47ca-9747-4c93579cbdbc",
-      "username": "judge_fuzzy",
-      "password": "$2b$10$GnYmj9.LbNW7irXrZtjRxOt0bG2n6J9mUxoItoWH/.MELee4XjqtS",
-      "name": "Prof. S. Reddy (Fuzzy Systems Expert)",
+      "id": "945dde43-7951-428a-b9f0-9e28af88bd39",
+      "username": "judge_p4",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Dr. A. Sharma (Blood Supply Chain & GA Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "track-fuzzy",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "assignedDomainId": "p4-blood-inventory",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "id": "593b7b7e-eeb6-4574-860f-b3e7dd321448",
+      "username": "judge_p5",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Dr. P. Chen (Multi-Robot Swarm Coverage Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "p5-search-and-rescue",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "id": "10f0a98d-4d5a-4a15-b39a-494784689b27",
+      "username": "judge_p6",
+      "password": "$2b$10$UDBEC2oqc8z4VihkfKGTzOwK6BkDZIn/X14fwFffUEl827JrxlFxG",
+      "name": "Prof. S. Reddy (Clinical Fuzzy Triage & ML Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "p6-fuzzy-triage",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "teams": [
@@ -58,16 +78,16 @@
       "teamName": "NeuralForge",
       "leaderEmail": "neuralforge@vce.ac.in",
       "leaderPhone": "9876543210",
-      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
-      "domainId": "track-ga",
+      "password": "$2b$10$/wX5zkv/Psnd0XouxMEmXeqtiHorhAZBDxNYjUvzoj8/di/9yp8zm",
+      "domainId": "p1-hospital-scheduling",
       "skillLevel": "Advanced",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 150,
       "attemptsUsed": 2,
       "bestScore": 92.4,
       "isDisqualified": false,
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "id": "team-id-2044",
@@ -75,33 +95,33 @@
       "teamName": "SwarmDynasty",
       "leaderEmail": "swarmdynasty@vce.ac.in",
       "leaderPhone": "9845123456",
-      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
-      "domainId": "track-pso",
+      "password": "$2b$10$/wX5zkv/Psnd0XouxMEmXeqtiHorhAZBDxNYjUvzoj8/di/9yp8zm",
+      "domainId": "p5-search-and-rescue",
       "skillLevel": "Advanced",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 200,
       "attemptsUsed": 3,
       "bestScore": 96.8,
       "isDisqualified": false,
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "id": "team-id-3088",
       "teamCode": "OPT-26-3088",
-      "teamName": "AntPathFinders",
-      "leaderEmail": "antpaths@vce.ac.in",
+      "teamName": "AeroFleet",
+      "leaderEmail": "aerofleet@vce.ac.in",
       "leaderPhone": "9701234567",
-      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
-      "domainId": "track-aco",
+      "password": "$2b$10$/wX5zkv/Psnd0XouxMEmXeqtiHorhAZBDxNYjUvzoj8/di/9yp8zm",
+      "domainId": "p2-drone-delivery",
       "skillLevel": "Intermediate",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 100,
       "attemptsUsed": 1,
       "bestScore": 88.5,
       "isDisqualified": false,
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "id": "team-id-4109",
@@ -109,47 +129,21 @@
       "teamName": "FuzzyLogicMasters",
       "leaderEmail": "fuzzylogic@vce.ac.in",
       "leaderPhone": "9988776655",
-      "password": "$2b$10$WdzbpEl0gDtZD/xUa5x56.BV0LTFQBbNJ7leq5JX5FLLD.onVi74u",
-      "domainId": "track-fuzzy",
+      "password": "$2b$10$/wX5zkv/Psnd0XouxMEmXeqtiHorhAZBDxNYjUvzoj8/di/9yp8zm",
+      "domainId": "p6-fuzzy-triage",
       "skillLevel": "Advanced",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 150,
       "attemptsUsed": 2,
       "bestScore": 94.2,
       "isDisqualified": false,
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
-    },
-    {
-      "id": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "teamCode": "OPT-26-1586",
-      "teamName": "TestSwarm_4267",
-      "leaderEmail": "leader_1789588364267@vce.ac.in",
-      "leaderPhone": "9876543210",
-      "password": "$2b$10$M7/syDK.Ib1f5CSJMtu4KOIi0yIbNVWn8oUAnUu3qd002UqP5FhbK",
-      "domainId": "track-ga",
-      "prefTrack1": "track-ga",
-      "prefTrack2": "track-pso",
-      "prefTrack3": "track-aco",
-      "prefTrack4": "track-fuzzy",
-      "skillLevel": "Advanced",
-      "paymentStatus": "CONFIRMED",
-      "paymentAmount": 150,
-      "razorpayOrderId": "order_sim_1789588364467",
-      "razorpayPaymentId": "pay_test_1789588364456",
-      "razorpaySignature": "simulated_valid_signature",
-      "attemptsUsed": 1,
-      "bestScore": 90.27,
-      "finalJudgeScore": 91,
-      "finalCombinedScore": 90.6,
-      "isDisqualified": false,
-      "createdAt": "2026-09-16T19:52:44.444Z",
-      "updatedAt": "2026-09-16T19:52:44.772Z"
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "teamMembers": [
     {
-      "id": "f792417e-7c22-4cfa-a027-c4e28360e160",
+      "id": "0168a928-44b9-4410-9c53-dce6bc6ead37",
       "teamId": "team-id-1021",
       "name": "Aditya Kumar",
       "rollNumber": "22011A0501",
@@ -158,10 +152,10 @@
       "email": "aditya@vce.ac.in",
       "phone": "9876543210",
       "tshirtSize": "L",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "8acedd04-b1e1-49e0-8c0c-c325f0013612",
+      "id": "99128c1d-c56b-455d-8292-98e79d478f16",
       "teamId": "team-id-1021",
       "name": "Pooja Sharma",
       "rollNumber": "22011A0502",
@@ -170,10 +164,10 @@
       "email": "pooja@vce.ac.in",
       "phone": "9876543211",
       "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "2f8475f3-b214-4abd-9889-cf07c859fc14",
+      "id": "c2f85d99-90b5-4934-a096-267bafd9d44c",
       "teamId": "team-id-1021",
       "name": "Rahul Varma",
       "rollNumber": "22011A0503",
@@ -182,10 +176,10 @@
       "email": "rahul@vce.ac.in",
       "phone": "9876543212",
       "tshirtSize": "XL",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "3d3fb242-24f9-4dea-905b-2ae69871ed84",
+      "id": "21d288a7-2eff-4af5-8bd9-ee2a327d68a8",
       "teamId": "team-id-2044",
       "name": "Kavya Reddy",
       "rollNumber": "21011A1201",
@@ -194,10 +188,10 @@
       "email": "kavya@vce.ac.in",
       "phone": "9845123456",
       "tshirtSize": "S",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "aa23e259-c705-4cd0-b8c5-9ee3f82b2c70",
+      "id": "799a5a76-329c-46fb-ae3e-486255693fa9",
       "teamId": "team-id-2044",
       "name": "Naveen Sai",
       "rollNumber": "21011A1202",
@@ -206,10 +200,10 @@
       "email": "naveen@vce.ac.in",
       "phone": "9845123457",
       "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "e9820098-8096-4907-84af-9f86b18043eb",
+      "id": "17389e8b-492d-48a1-983d-82cbde94af21",
       "teamId": "team-id-2044",
       "name": "Bhavana Rao",
       "rollNumber": "21011A1203",
@@ -218,10 +212,10 @@
       "email": "bhavana@vce.ac.in",
       "phone": "9845123458",
       "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "73a9094c-3cc3-4dfb-b1e4-8e274e010912",
+      "id": "5021ec96-472f-4ad1-8e51-264395bdd6f6",
       "teamId": "team-id-2044",
       "name": "Siddharth J.",
       "rollNumber": "21011A1204",
@@ -230,10 +224,10 @@
       "email": "sid@vce.ac.in",
       "phone": "9845123459",
       "tshirtSize": "L",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "94024fef-deac-4c62-aa98-e17af3c601bc",
+      "id": "6a482b67-8d93-4cee-8395-c5610d8eecca",
       "teamId": "team-id-3088",
       "name": "Rohit Nair",
       "rollNumber": "23011A0510",
@@ -242,10 +236,10 @@
       "email": "rohit@vce.ac.in",
       "phone": "9701234567",
       "tshirtSize": "L",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "336deaaa-d769-4e77-a4cd-d8f47d783d54",
+      "id": "18101478-6e32-49fb-9a59-8ef0aa538ab1",
       "teamId": "team-id-3088",
       "name": "Sanya Gupta",
       "rollNumber": "23011A0511",
@@ -254,10 +248,10 @@
       "email": "sanya@vce.ac.in",
       "phone": "9701234568",
       "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "c041233c-60a8-4503-b6d1-37222e4e9b62",
+      "id": "3da47942-2c9b-4453-9593-a4f4e45e4e1e",
       "teamId": "team-id-4109",
       "name": "Manish Joshi",
       "rollNumber": "22011A0415",
@@ -266,10 +260,10 @@
       "email": "manish@vce.ac.in",
       "phone": "9988776655",
       "tshirtSize": "XL",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "5be478d8-77c1-4b68-bdef-b7cbb1c33947",
+      "id": "96176743-9d44-4218-a30e-04054e48de30",
       "teamId": "team-id-4109",
       "name": "Sneha Patel",
       "rollNumber": "22011A0416",
@@ -278,10 +272,10 @@
       "email": "sneha@vce.ac.in",
       "phone": "9988776656",
       "tshirtSize": "S",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "6f8f8002-c021-4ca8-82b9-9c351e9f231f",
+      "id": "1ba77075-0fdf-40bf-a71d-73e8fc63f929",
       "teamId": "team-id-4109",
       "name": "Tejaswini K.",
       "rollNumber": "22011A0417",
@@ -290,97 +284,214 @@
       "email": "teja@vce.ac.in",
       "phone": "9988776657",
       "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:35:20.337Z"
-    },
-    {
-      "id": "c28a7d26-1cbf-4c2c-bd2d-5ee856b0c8ae",
-      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "name": "Test Leader",
-      "rollNumber": "22011A0591",
-      "branch": "CSE",
-      "year": "3rd Year",
-      "email": "leader_1789588364267@vce.ac.in",
-      "phone": "9876543210",
-      "tshirtSize": "L",
-      "createdAt": "2026-09-16T19:52:44.444Z"
-    },
-    {
-      "id": "ed7297f6-3a95-478a-a07b-3d69ac0c6a61",
-      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "name": "Test Member 2",
-      "rollNumber": "22011A0592",
-      "branch": "IT",
-      "year": "3rd Year",
-      "email": "member2_1789588364267@vce.ac.in",
-      "phone": "9876543211",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-16T19:52:44.444Z"
-    },
-    {
-      "id": "415e739b-e7fa-421f-9ffb-059fad7708dc",
-      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "name": "Test Member 3",
-      "rollNumber": "22011A0593",
-      "branch": "ECE",
-      "year": "3rd Year",
-      "email": "member3_1789588364267@vce.ac.in",
-      "phone": "9876543212",
-      "tshirtSize": "XL",
-      "createdAt": "2026-09-16T19:52:44.444Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "problemTracks": [
     {
-      "id": "track-ga",
-      "name": "Genetic Algorithms: Multi-Constraint Combinatorial Optimization",
-      "shortName": "GA Track",
-      "technique": "Genetic Algorithms",
-      "difficulty": "Intermediate",
-      "description": "Engineer an evolutionary algorithm to solve high-dimensional 0/1 multi-constraint knapsack & scheduling problems under tight convergence constraints.",
-      "benchmarkType": "KNAPSACK_TSP",
-      "starterNotebookUrl": "/starter/starter_ga.py",
-      "statementMarkdown": "### Track 1: Genetic Algorithms (GA) — Combinatorial Optimization\n\n#### 1. Background\nEvolutionary computing mimics natural biological selection to search complex combinatorial landscapes. In this challenge, your task is to maximize total fitness while satisfying strict capacity and multi-knapsack resource constraints.\n\n#### 2. Objectives\n- Design custom **Chromosome Encoding** (binary or permutation representation).\n- Implement robust **Selection Mechanisms** (Roulette Wheel / Tournament Selection with dynamic pressure).\n- Implement specialized **Crossover Operators** (Single/Two-point or Uniform Crossover) with high building-block retention.\n- Implement **Adaptive Mutation** to avoid premature convergence to local optima.\n- Maintain **Elitism** across generations.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Objective function value achieved on the held-out benchmark.\n- **Computational Efficiency (25%)**: Wall-clock runtime and generations required for convergence.\n- **Algorithm Design Quality (20%)**: Adherence to GA architectural paradigms verified by static AST & heuristic analysis.\n- **Consistency Across Attempts (15%)**: Progressive convergence across your 3 submission attempts.",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "id": "p1-hospital-scheduling",
+      "name": "Hospital Staff Scheduling with Fatigue-Aware Optimization",
+      "shortName": "P1: Hospital Staff Scheduling",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Intermediate–Advanced",
+      "technique": "Genetic Algorithm + Fuzzy Fatigue Model",
+      "context": "A hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.",
+      "coreChallenge": "Construct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).",
+      "hardConstraints": [
+        "Minimum qualified staffing must be met across all shifts",
+        "Employees cannot work overlapping shifts",
+        "Minimum rest duration requirements must be strictly satisfied",
+        "Maximum contractual working hours must not be exceeded",
+        "Critical departments require appropriate certified skill coverage"
+      ],
+      "optimizationObjectives": [
+        "Minimize cumulative fatigue risk score modeled via fuzzy inference",
+        "Minimize overtime hours and penalty costs",
+        "Minimize employee shift preference violations",
+        "Minimize skill mismatch while preserving complete departmental coverage"
+      ],
+      "hiddenTestNote": "A hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Schedule hospital staff across 7 days balancing hard coverage constraints with a continuous fuzzy fatigue risk model.",
+      "statementMarkdown": "### Problem 1 — Hospital Staff Scheduling with Fatigue-Aware Optimization\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Genetic Algorithm + Fuzzy Fatigue Model\n\n#### Context\nA hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.\n\n#### Core Challenge\nConstruct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).\n\n#### Hard Constraints\n- Minimum qualified staffing must be met.\n- Employees cannot work overlapping shifts.\n- Minimum rest requirements must be satisfied.\n- Maximum working hours must not be exceeded.\n- Critical departments require appropriate skill coverage.\n\n#### Optimization Objectives\nMinimize fatigue risk, overtime, preference violations, and skill mismatch while maintaining complete departmental coverage.\n\n#### Competition & Hidden-Test Design\nA hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.",
+      "starterNotebookUrl": "/starter/starter_p1_scheduling.py",
+      "benchmarkType": "HOSPITAL_SCHEDULING_GA_FUZZY",
+      "hiddenShiftAttempt2": "Staff reduction: Emergency leave removes ~20% of nursing staff in Intensive Care and Emergency.",
+      "hiddenShiftAttempt3": "Demand spike: Pediatric and Critical Care departments declare a 35% increase in minimum shift coverage.",
+      "livePatchSurprise": "One additional department declares an emergency minimum-staffing requirement, effective immediately.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "track-pso",
-      "name": "Particle Swarm Optimization: Continuous Non-Linear Landscape",
-      "shortName": "PSO Track",
-      "technique": "Particle Swarm Optimization",
+      "id": "p2-drone-delivery",
+      "name": "Drone-Based Emergency Medical Supply Delivery",
+      "shortName": "P2: Drone Medical Delivery",
+      "society": "IEEE EMBS × IEEE CIS",
       "difficulty": "Advanced",
-      "description": "Navigate a rugged, multi-modal continuous benchmark surface (Rastrigin / Ackley) to discover the global minimum using decentralized swarm intelligence.",
-      "benchmarkType": "RASTRIGIN_ACKLEY",
-      "starterNotebookUrl": "/starter/starter_pso.py",
-      "statementMarkdown": "### Track 2: Particle Swarm Optimization (PSO) — Continuous Landscapes\n\n#### 1. Background\nSwarm intelligence leverages decentralized collective behavior where particles adjust their trajectories through cognitive memory ($p_{\\text{best}}$) and social attraction ($g_{\\text{best}}$).\n\n#### 2. Objectives\n- Formulate particle velocity and position update equations with dynamic inertia weight damping:\n  $$v_i(t+1) = w(t) v_i(t) + c_1 r_1 (p_{\\text{best}, i} - x_i(t)) + c_2 r_2 (g_{\\text{best}} - x_i(t))$$\n- Implement boundary handling and velocity clamping to prevent particle explosion.\n- Test swarm diversity mechanisms to escape sub-optimal local basins in multi-modal terrain.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Proximity of $g_{\\text{best}}$ to the known global minimum ($0.0$).\n- **Efficiency (25%)**: Rapid convergence within the allotted maximum iteration ceiling.\n- **Algorithm Design Quality (20%)**: Proper balancing of cognitive vs. social acceleration coefficients.\n- **Consistency Across Attempts (15%)**: Optimization stability across sequential submissions.",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "technique": "Ant Colony Optimization + Genetic Algorithm",
+      "context": "A fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.",
+      "coreChallenge": "Determine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.",
+      "hardConstraints": [
+        "Payload and battery capacities cannot be exceeded",
+        "Drone range must permit safe mission completion or approved charging",
+        "High-priority deliveries have non-negotiable arrival deadlines",
+        "Temperature-sensitive supplies have maximum allowable transit duration",
+        "Drone and charging-station resources cannot be used simultaneously by incompatible tasks"
+      ],
+      "optimizationObjectives": [
+        "Maximize on-time priority deliveries to remote medical centers",
+        "Minimize total flight energy consumption and mission distance",
+        "Minimize missed deadlines and priority lateness penalties",
+        "Minimize thermal degradation risk for temperature-sensitive supplies"
+      ],
+      "hiddenTestNote": "Hidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.",
+      "description": "Optimize autonomous medical drone routing, payload dispatch, and charging paths under strict thermal and battery constraints.",
+      "statementMarkdown": "### Problem 2 — Drone-Based Emergency Medical Supply Delivery\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Ant Colony Optimization + Genetic Algorithm\n\n#### Context\nA fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.\n\n#### Core Challenge\nDetermine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.\n\n#### Hard Constraints\n- Payload and battery capacities cannot be exceeded.\n- Drone range must permit safe completion or approved charging.\n- High-priority deliveries have strict deadlines.\n- Temperature-sensitive supplies have maximum allowable transit duration.\n- Drone and charging-station resources cannot be used simultaneously by incompatible tasks.\n\n#### Optimization Objectives\nMaximize on-time priority deliveries while minimizing total flight energy, distance, missed deadlines, and temperature-risk exposure.\n\n#### Competition & Hidden-Test Design\nHidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.",
+      "starterNotebookUrl": "/starter/starter_p2_drone.py",
+      "benchmarkType": "DRONE_ROUTING_ACO_GA",
+      "hiddenShiftAttempt2": "Adverse atmospheric conditions: Headwinds increase drone flight energy consumption by 25%.",
+      "hiddenShiftAttempt3": "Request surge: Remote clinic orders double with narrowed 30-minute delivery deadlines.",
+      "livePatchSurprise": "One drone in the fleet suffers mechanical failure and is grounded — all its assigned deliveries must be re-routed live.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "track-aco",
-      "name": "Ant Colony Optimization: Dynamic Combinatorial Graph Routing",
-      "shortName": "ACO Track",
-      "technique": "Ant Colony Optimization",
+      "id": "p3-emergency-hospital",
+      "name": "Emergency Hospital Destination Selection Under Dynamic Capacity",
+      "shortName": "P3: Hospital Destination Selection",
+      "society": "IEEE EMBS × IEEE CIS",
       "difficulty": "Advanced",
-      "description": "Optimize shortest closed tour routes in a dense weighted graph through artificial pheromone deposition and evaporation dynamics.",
-      "benchmarkType": "GRAPH_TSP",
-      "starterNotebookUrl": "/starter/starter_aco.py",
-      "statementMarkdown": "### Track 3: Ant Colony Optimization (ACO) — Graph Routing\n\n#### 1. Background\nACO is inspired by the foraging behavior of ant colonies, where individuals deposit pheromone trails that guide subsequent ants toward minimal-cost paths.\n\n#### 2. Objectives\n- Implement stochastic transition probability using pheromone concentration $(\\tau)$ and heuristic visibility $(\\eta)$:\n  $$P_{ij}^k = \\frac{[\\tau_{ij}]^\\alpha [\\eta_{ij}]^\\beta}{\\sum_{l \\in \\text{allowed}} [\\tau_{il}]^\\alpha [\\eta_{il}]^\\beta}$$\n- Design an efficient pheromone evaporation scheme $(1 - \\rho)$ to prevent early stagnation.\n- Incorporate Elitist or Max-Min Ant System (MMAS) bounded trail mechanisms.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Minimal tour length achieved across benchmark graph nodes.\n- **Efficiency (25%)**: Low computational complexity and execution time.\n- **Algorithm Design Quality (20%)**: Heuristic weighting and evaporation parameter calibration.\n- **Consistency Across Attempts (15%)**: Iterative tour improvement across attempts.",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "technique": "Fuzzy Logic + Particle Swarm Optimization",
+      "context": "An emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.",
+      "coreChallenge": "Select the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.",
+      "hardConstraints": [
+        "A hospital without the required medical capability or equipment cannot be selected",
+        "Predicted treatment delay and specialist availability must be factored into decision",
+        "ICU or specialist capacity shifts during transport must be accounted for",
+        "Critical patient triage levels receive highest decision priority",
+        "Decisions must remain fully interpretable to clinical EMS operators"
+      ],
+      "optimizationObjectives": [
+        "Minimize expected total time to definitive medical treatment",
+        "Minimize uncertainty-related risk and diversion probability",
+        "Minimize inappropriate resource utilization and unnecessary transfers"
+      ],
+      "hiddenTestNote": "Hidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.",
+      "description": "Select optimal emergency hospital destinations balancing dynamic travel time, emergency queue delays, and specialist availability.",
+      "statementMarkdown": "### Problem 3 — Emergency Hospital Destination Selection Under Dynamic Capacity\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Particle Swarm Optimization\n\n#### Context\nAn emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.\n\n#### Core Challenge\nSelect the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.\n\n#### Hard Constraints\n- A hospital without the required capability cannot be selected.\n- Predicted treatment delay must be considered.\n- ICU or specialist capacity may change during transport.\n- Critical patients receive higher decision priority.\n- Decisions should remain interpretable to clinical operators.\n\n#### Optimization Objectives\nMinimize expected time to treatment, uncertainty-related risk, and inappropriate resource utilization.\n\n#### Competition & Hidden-Test Design\nHidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.",
+      "starterNotebookUrl": "/starter/starter_p3_hospital.py",
+      "benchmarkType": "HOSPITAL_SELECTION_FUZZY_PSO",
+      "hiddenShiftAttempt2": "Sudden regional incident: The nearest Tier-1 trauma center experiences extreme ER queue congestion.",
+      "hiddenShiftAttempt3": "Specialist unavailability: On-call neurosurgeon and cardiac catheterization teams become unavailable at two candidate centers.",
+      "livePatchSurprise": "The current top-ranked hospital destination just went to 100% full ICU capacity.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
-      "id": "track-fuzzy",
-      "name": "Fuzzy Logic: Non-Linear Dynamic Control & Inference",
-      "shortName": "Fuzzy Track",
-      "technique": "Fuzzy Logic Systems",
-      "difficulty": "Intermediate",
-      "description": "Design a Mamdani or Sugeno fuzzy inference system with linguistic IF-THEN rules and defuzzification for dynamic plant control.",
-      "benchmarkType": "DYNAMIC_CONTROL",
-      "starterNotebookUrl": "/starter/starter_fuzzy.py",
-      "statementMarkdown": "### Track 4: Fuzzy Logic (FL) — Dynamic Control & Inference\n\n#### 1. Background\nUnlike binary boolean logic, fuzzy logic processes approximate reasoning by modeling degrees of truth through continuous membership functions.\n\n#### 2. Objectives\n- Construct input and output fuzzy sets (Triangular, Trapezoidal, or Gaussian).\n- Formulate an expressive, conflict-free rule base modeling system dynamics.\n- Apply Mamdani Min-Max or Sugeno algebraic inference.\n- Implement Centroid (Center of Gravity) defuzzification for crisp actuator signals.\n\n#### 3. Scoring Criteria\n- **Solution Quality (40%)**: Minimal steady-state error and overshoot in step-response simulation.\n- **Efficiency (25%)**: Fast defuzzification computation and clean rule evaluation.\n- **Algorithm Design Quality (20%)**: Completeness of fuzzy rule partitions and membership coverage.\n- **Consistency Across Attempts (15%)**: Refinement of control curves across attempts.",
-      "createdAt": "2026-09-16T19:35:20.337Z",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "id": "p4-blood-inventory",
+      "name": "Hospital Blood Inventory and Compatibility-Aware Allocation",
+      "shortName": "P4: Blood Inventory Allocation",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Advanced",
+      "technique": "Genetic Algorithm / Particle Swarm Optimization",
+      "context": "A hospital maintains inventories of multiple blood groups (A, B, AB, O with Rh factors). Units have limited shelf lives (typically 35–42 days) and daily demand is uncertain. Emergency mass demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit (e.g. universal O-negative) may reduce critical flexibility for a future emergency.",
+      "coreChallenge": "Determine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.",
+      "hardConstraints": [
+        "Blood-group biological compatibility must be strictly respected",
+        "Expired units cannot be transfused under any circumstance",
+        "Inventory levels cannot become negative",
+        "Emergency demand receives absolute highest fulfillment priority",
+        "Procurement capacity and delivery schedules have minimum lead times"
+      ],
+      "optimizationObjectives": [
+        "Minimize blood unit expiry and wastage across all ABO/Rh groups",
+        "Minimize stockout probability and emergency shortage severity",
+        "Minimize emergency procurement rush costs",
+        "Preserve compatibility flexibility for rare blood groups"
+      ],
+      "hiddenTestNote": "Hidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.",
+      "description": "Manage multi-type blood inventory, procurement schedules, and compatible substitution policies under shelf-life constraints.",
+      "statementMarkdown": "### Problem 4 — Hospital Blood Inventory and Compatibility-Aware Allocation\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Genetic Algorithm / Particle Swarm Optimization\n\n#### Context\nA hospital maintains inventories of multiple blood groups. Units have limited shelf lives and demand is uncertain. Emergency demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit may reduce flexibility for a future emergency.\n\n#### Core Challenge\nDetermine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.\n\n#### Hard Constraints\n- Blood-group compatibility must be respected.\n- Expired units cannot be used.\n- Inventory cannot become negative.\n- Emergency demand receives highest priority.\n- Procurement capacity and delivery timing are limited.\n\n#### Optimization Objectives\nMinimize wastage, stockout probability, emergency shortage severity, and procurement cost while preserving compatibility flexibility.\n\n#### Competition & Hidden-Test Design\nHidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.",
+      "starterNotebookUrl": "/starter/starter_p4_blood.py",
+      "benchmarkType": "BLOOD_INVENTORY_GA_PSO",
+      "hiddenShiftAttempt2": "Multiple emergency trauma arrivals trigger sudden surge in O-negative and B-positive demand.",
+      "hiddenShiftAttempt3": "Supply chain disruption: Blood bank delivery van delayed by 48 hours.",
+      "livePatchSurprise": "A critical blood-group shortage is declared for O-negative with an incoming mass-casualty transport.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "id": "p5-search-and-rescue",
+      "name": "Multi-Robot Search-and-Rescue Area Coverage",
+      "shortName": "P5: Multi-Robot Search & Rescue",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Advanced (Flagship Showcase)",
+      "technique": "PSO / ACO / Multi-Agent Genetic Algorithm",
+      "context": "A set of autonomous mobile robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or hazardous. Survivor locations are unknown but certain zones have higher prior probability.",
+      "coreChallenge": "Divide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.",
+      "hardConstraints": [
+        "Robot battery must not fall below a safe return-to-base threshold",
+        "Communication connectivity must be maintained where required",
+        "Dangerous and collapsed regions carry higher movement penalties or are strictly forbidden",
+        "Robots must avoid unnecessary trajectory overlap",
+        "Detected survivor locations trigger dynamic task reassignment and rendezvous"
+      ],
+      "optimizationObjectives": [
+        "Maximize expected survivor detection probability across high-priority zones",
+        "Maximize total area coverage within battery budget",
+        "Minimize redundant search overlap between robots",
+        "Minimize response delay after initial survivor contact"
+      ],
+      "hiddenTestNote": "Hidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. This is the flagship showcase problem — its visualization (coverage map) is featured prominently in the platform and the judges' round.",
+      "description": "Coordinate a multi-robot swarm to search complex disaster zones, avoiding hazards and dynamically replanning upon survivor discovery.",
+      "statementMarkdown": "### Problem 5 — Multi-Robot Search-and-Rescue Area Coverage (Flagship Showcase)\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** PSO / ACO / Multi-Agent Genetic Algorithm\n\n#### Context\nA set of autonomous robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or dangerous. Survivor locations are unknown but certain zones have higher prior probability.\n\n#### Core Challenge\nDivide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.\n\n#### Hard Constraints\n- Robot battery cannot fall below a safe return threshold.\n- Communication requirements must be maintained where required.\n- Dangerous regions carry higher movement cost or may be forbidden.\n- Robots should avoid unnecessary overlap.\n- Detected survivor locations trigger dynamic task reassignment.\n\n#### Optimization Objectives\nMaximize expected survivor detection and area coverage while minimizing energy, overlap, and response delay after a discovery.\n\n#### Competition & Hidden-Test Design\nHidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. **This is the flagship showcase problem — its visualization (coverage map) is featured prominently.**",
+      "starterNotebookUrl": "/starter/starter_p5_sar.py",
+      "benchmarkType": "SWARM_ROBOTICS_COVERAGE",
+      "hiddenShiftAttempt2": "Debris collapse: 3 new obstacle zones spawn dynamically, cutting off direct corridors.",
+      "hiddenShiftAttempt3": "Secondary search zone: High survivor probability shifts unexpectedly to previously low-prior sector.",
+      "livePatchSurprise": "One robot experiences communication transmitter failure — swarm coordination logic must adapt with remaining mesh nodes.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "id": "p6-fuzzy-triage",
+      "name": "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
+      "shortName": "P6: Fuzzy ER Triage",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Advanced",
+      "technique": "Fuzzy Logic + Genetic Algorithm",
+      "context": "An emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.",
+      "coreChallenge": "Design an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.",
+      "hardConstraints": [
+        "Critical patients must not be assigned low-priority categories under benchmark scenarios",
+        "Fuzzy rules must remain clinically interpretable to medical doctors",
+        "Resource allocation must respect available emergency department capacity",
+        "Uncertain, noisy, or missing physiological measurements should be handled gracefully",
+        "The system must avoid excessive mathematical dependence on any single vital sign"
+      ],
+      "optimizationObjectives": [
+        "Minimize critical-patient waiting time to physician assessment",
+        "Minimize inappropriate under-triage and over-triage rates",
+        "Minimize emergency department resource overload and queue bottlenecks",
+        "Maximize stability under noisy or incomplete clinical measurements"
+      ],
+      "hiddenTestNote": "Hidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.",
+      "description": "Design an interpretable fuzzy triage system mapping multi-vital measurements to urgency priorities and allocating clinical resources.",
+      "statementMarkdown": "### Problem 6 — Fuzzy Emergency-Room Triage with Adaptive Rule Optimization\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Genetic Algorithm\n\n#### Context\nAn emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.\n\n#### Core Challenge\nDesign an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.\n\n#### Hard Constraints\n- Critical patients must not be assigned low-priority categories under benchmark scenarios.\n- Rules should remain interpretable.\n- Resource allocation must respect available capacity.\n- Uncertain or missing measurements should be handled gracefully.\n- The system must avoid excessive dependence on one feature.\n\n#### Optimization Objectives\nMinimize critical-patient waiting time, inappropriate prioritization, resource overload, and instability under noisy measurements.\n\n#### Competition & Hidden-Test Design\nHidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.",
+      "starterNotebookUrl": "/starter/starter_p6_triage.py",
+      "benchmarkType": "FUZZY_TRIAGE_GA",
+      "hiddenShiftAttempt2": "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
+      "hiddenShiftAttempt3": "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
+      "livePatchSurprise": "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
+      "createdAt": "2026-09-17T06:42:25.206Z",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "submissions": [
@@ -388,9 +499,11 @@
       "id": "sub-1021-1",
       "teamId": "team-id-1021",
       "attemptNumber": 1,
-      "filename": "ga_attempt1.py",
-      "codeContent": "# NeuralForge - GA Attempt 1\n# Roulette wheel selection with two-point crossover\nimport random\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n",
-      "approachNotes": "Initial exploration using two-point crossover and roulette wheel selection with population 50.",
+      "filename": "hospital_scheduling_base.py",
+      "codeContent": "# NeuralForge - Attempt 1\n# Base staff schedule with GA\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n",
+      "approachNotes": "Baseline schedule prioritizing minimum shift coverage and basic rest intervals.",
+      "whatChangedNotes": null,
+      "isLivePatch": false,
       "status": "SCORED",
       "runtimeMs": 182.4,
       "solutionQuality": 88.5,
@@ -400,18 +513,20 @@
       "autoScore": 89.2,
       "isAiAssisted": true,
       "aiExplanation": "Strong genetic diversity preservation. Solid elitism retention across generations.",
-      "executionLogs": "Execution time: 182.4 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 88.5",
+      "executionLogs": "Execution completed in 182.4 ms\nAST verification: PASSED\nCoverage constraints: SATISFIED",
       "similarityScore": 12,
       "similarityFlag": false,
-      "submittedAt": "2026-09-16T17:35:20.678Z"
+      "submittedAt": "2026-09-17T04:42:25.590Z"
     },
     {
       "id": "sub-1021-2",
       "teamId": "team-id-1021",
       "attemptNumber": 2,
-      "filename": "ga_attempt2_optimized.py",
-      "codeContent": "# NeuralForge - GA Attempt 2\n# Added tournament selection and adaptive mutation rate\nimport random\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n",
-      "approachNotes": "Improved with tournament selection (k=3) and adaptive 1/L mutation rate.",
+      "filename": "hospital_scheduling_fatigue_tuned.py",
+      "codeContent": "# NeuralForge - Attempt 2\n# Shifted scenario adaptation\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n",
+      "approachNotes": "Integrated fuzzy fatigue penalty into objective function to penalize back-to-back night shifts.",
+      "whatChangedNotes": "Added non-linear penalty for consecutive night shifts after noticing fatigue spike in Attempt 1.",
+      "isLivePatch": false,
       "status": "SCORED",
       "runtimeMs": 165.2,
       "solutionQuality": 93.5,
@@ -420,180 +535,100 @@
       "consistencyScore": 95,
       "autoScore": 92.4,
       "isAiAssisted": true,
-      "aiExplanation": "Adaptive mutation effectively prevented stagnation. Fast convergence to global basin.",
-      "executionLogs": "Execution time: 165.2 ms\nAST verification: PASSED\nKnapsack constraint checks: SATISFIED\nFitness optimum convergence: 94.0",
+      "aiExplanation": "Fuzzy fatigue model effectively adapted to shifted departmental constraints.",
+      "executionLogs": "Execution completed in 165.2 ms\nAST verification: PASSED\nFatigue index: 0.12",
       "similarityScore": 15,
       "similarityFlag": false,
-      "submittedAt": "2026-09-16T18:50:20.678Z"
-    },
-    {
-      "id": "sub-2044-3",
-      "teamId": "team-id-2044",
-      "attemptNumber": 3,
-      "filename": "pso_dynamic_damping.py",
-      "codeContent": "# SwarmDynasty - PSO Final Attempt\n# Inertia damping w=0.729, c1=1.49, c2=1.49\nimport random\nimport math\ndef optimize():\n    return [0.001, -0.002]\nbest_solution = [0.001, -0.002]\nbest_fitness = 0.0003\n",
-      "approachNotes": "Tuned cognitive vs social factors with velocity clamping to prevent swarm explosion.",
-      "status": "SCORED",
-      "runtimeMs": 125,
-      "solutionQuality": 97.5,
-      "efficiencyScore": 98,
-      "designQuality": 95,
-      "consistencyScore": 96,
-      "autoScore": 96.8,
-      "isAiAssisted": true,
-      "aiExplanation": "Exceptional continuous landscape convergence. Excellent velocity clamping.",
-      "executionLogs": "Execution time: 125.0 ms\nAST verification: PASSED\nRastrigin test: CONVERGED to 0.0003",
-      "similarityScore": 8.5,
-      "similarityFlag": false,
-      "submittedAt": "2026-09-16T19:05:20.678Z"
-    },
-    {
-      "id": "af0c3b13-68c1-4214-814a-33bb11ff3912",
-      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "attemptNumber": 1,
-      "filename": "genetic_solution.py",
-      "codeContent": "\n# Student Genetic Algorithm Submission\nimport random\nimport math\n\nclass Solution:\n    def __init__(self):\n        self.best_fitness = 91.5\n        self.best_solution = [1, 1, 0, 1]\n\ns = Solution()\nbest_solution = s.best_solution\nbest_fitness = s.best_fitness\n",
-      "approachNotes": "Implemented tournament selection and elitist reproduction with population 60.",
-      "status": "SCORED",
-      "runtimeMs": 0.42,
-      "solutionQuality": 96.8,
-      "efficiencyScore": 96,
-      "designQuality": 74,
-      "consistencyScore": 85,
-      "autoScore": 90.27,
-      "isAiAssisted": true,
-      "aiExplanation": "Automated evaluation for Genetic Algorithms. Solution shows successful execution with valid convergence. AST static analysis verified appropriate optimization operators (solution, __init__). Execution time: 0.4ms. Solution quality rated at 96.8/100.",
-      "executionLogs": "Execution completed in 0.42 ms.\nAST Validation: PASSED\nBenchmark Test Suite: PASSED with status OK\nConvergence Score: 96.80%\n",
-      "similarityScore": 0,
-      "similarityFlag": false,
-      "ipAddress": null,
-      "submittedAt": "2026-09-16T19:52:44.624Z"
+      "submittedAt": "2026-09-17T05:57:25.590Z"
     }
   ],
-  "judgeEvaluations": [
-    {
-      "id": "0ec8577e-f885-43ef-8800-44c3140ed683",
-      "judgeId": "9668133e-b7f4-4bfa-a196-a2847d803697",
-      "submissionId": "af0c3b13-68c1-4214-814a-33bb11ff3912",
-      "teamId": "b726e43c-885b-4883-95a4-2e07fe669e97",
-      "codeQuality": 23,
-      "algorithmicReasoning": 32,
-      "resultInterpretation": 18,
-      "innovation": 18,
-      "totalJudgeScore": 91,
-      "notes": "Exceptional mathematical justification and clean modular encapsulation.",
-      "createdAt": "2026-09-16T19:52:44.767Z",
-      "updatedAt": "2026-09-16T19:52:44.767Z"
-    }
-  ],
+  "judgeEvaluations": [],
   "announcements": [
-    {
-      "id": "f244b634-c092-4e03-b860-b1c46bf7bb8f",
-      "title": "Test System Broadcast",
-      "message": "Automated verification broadcast banner test.",
-      "type": "INFO",
-      "isActive": true,
-      "createdAt": "2026-09-16T19:52:44.900Z"
-    },
     {
       "id": "ann-1",
       "title": "OptiForge 2026 is Officially Live!",
-      "message": "Welcome participants! You can now view your assigned problem track and download starter templates. Each team has 3 live-scored submission attempts.",
+      "message": "Welcome teams! The 6 problem statements and starter templates are accessible. Notice the 3-attempt live progression and upcoming live patch round.",
       "type": "INFO",
       "isActive": true,
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "createdAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "systemSettings": [
     {
+      "key": "active_stage",
+      "value": "STAGE_4_ATTEMPT_1",
+      "description": "Current tournament stage",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
       "key": "leaderboard_frozen",
       "value": "false",
       "description": "Freeze leaderboard updates",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "leaderboard_visible",
       "value": "true",
       "description": "Public visibility of leaderboard",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "key": "live_patch_duration_mins",
+      "value": "20",
+      "description": "Duration of live patch round in minutes",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
+    },
+    {
+      "key": "live_patch_deadline",
+      "value": "",
+      "description": "Active countdown deadline for Stage 7 live patch",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "weight_auto",
       "value": "60",
-      "description": "Percentage weight of auto-score",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "description": "Confidential: Percentage weight of auto-score",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "weight_judge",
       "value": "40",
-      "description": "Percentage weight of manual judge score",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "description": "Confidential: Percentage weight of manual judge score",
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "registration_open",
       "value": "true",
       "description": "Allow team registrations",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "event_date",
       "value": "25-09-2026",
       "description": "Official event date",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "event_time",
       "value": "9:00 AM - 4:00 PM",
       "description": "Official event timing",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     },
     {
       "key": "organizer_entity",
       "value": "IEEE Vardhaman Student Branch",
       "description": "Organizing student branch",
-      "updatedAt": "2026-09-16T19:35:20.337Z"
+      "updatedAt": "2026-09-17T06:42:25.206Z"
     }
   ],
   "auditLogs": [
     {
-      "id": "dfb9cbd8-ac2b-4b91-adf2-43a9f23a7fec",
-      "action": "ANNOUNCEMENT_BROADCAST",
-      "performedBy": "Lead Organizer (IEEE EMBS × CIS)",
-      "details": "Pushed announcement: \"Test System Broadcast\".",
-      "reason": null,
-      "createdAt": "2026-09-16T19:52:44.902Z"
-    },
-    {
-      "id": "80aa6611-8809-4ff5-96c0-95725fe773cd",
-      "action": "JUDGE_EVALUATION_RECORDED",
-      "performedBy": "Dr. K. Srinivas (GA Expert)",
-      "details": "Judge scored team TestSwarm_4267 with 91/100.",
-      "reason": null,
-      "createdAt": "2026-09-16T19:52:44.773Z"
-    },
-    {
-      "id": "b962cb1e-09db-4323-b2d2-500fa1d5fd8b",
-      "action": "SUBMISSION_EVALUATED",
-      "performedBy": "OPT-26-1586",
-      "details": "Team TestSwarm_4267 completed Attempt 1/3. Auto-Score: 90.27. Similarity: 0%.",
-      "reason": null,
-      "createdAt": "2026-09-16T19:52:44.630Z"
-    },
-    {
-      "id": "c5ea29fa-f160-4d5d-aa68-99efec1b8c02",
-      "action": "PAYMENT_CONFIRMED",
-      "performedBy": "leader_1789588364267@vce.ac.in",
-      "details": "Payment of ₹150 verified for team TestSwarm_4267 (OPT-26-1586). Payment ID: pay_test_1789588364456",
-      "reason": "Simulated Sandbox Checkout",
-      "createdAt": "2026-09-16T19:52:44.471Z"
-    },
-    {
-      "id": "a45223e9-9435-4490-8645-d457ef1034d6",
+      "id": "35342849-f238-47b7-b2db-d6ae341f3b68",
       "action": "DATABASE_INITIALIZED",
       "performedBy": "system",
-      "details": "OptiForge 2026 seeded with 4 problem tracks and test teams",
-      "reason": "Initial deployment setup",
-      "createdAt": "2026-09-16T19:35:20.337Z"
+      "details": "OptiForge 2026 initialized with 6 official problem statements and 6 expert judges",
+      "reason": "Official tournament release",
+      "createdAt": "2026-09-17T06:42:25.206Z"
     }
   ]
 }

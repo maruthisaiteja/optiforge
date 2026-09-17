@@ -130,6 +130,32 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, key, value });
       }
 
+      case "ADVANCE_STAGE": {
+        const { stage, livePatchMins } = payload;
+        await db.systemSetting.set("active_stage", stage);
+
+        if (stage === "STAGE_7_LIVE_PATCH") {
+          const mins = Number(livePatchMins) || 20;
+          const deadline = new Date(Date.now() + mins * 60 * 1000).toISOString();
+          await db.systemSetting.set("live_patch_deadline", deadline);
+          await db.systemSetting.set("live_patch_duration_mins", String(mins));
+        }
+
+        if (stage === "STAGE_6_FREEZE") {
+          await db.systemSetting.set("leaderboard_frozen", "true");
+        }
+
+        await db.auditLog.create({
+          data: {
+            action: "STAGE_ADVANCED",
+            performedBy: session.name,
+            details: `Tournament stage advanced to ${stage}.`,
+          },
+        });
+
+        return NextResponse.json({ success: true, stage });
+      }
+
       case "BROADCAST_ANNOUNCEMENT": {
         const { title, message, type } = payload;
         if (!title || !message) {

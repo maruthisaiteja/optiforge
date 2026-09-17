@@ -35,18 +35,22 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Preference ranking (1st to 4th)
+  // Preference ranking across all 6 official problem statements
   const tracksList = [
-    { id: "track-ga", name: "Genetic Algorithms (GA) — Combinatorial Optimization" },
-    { id: "track-pso", name: "Particle Swarm Optimization (PSO) — Continuous Landscapes" },
-    { id: "track-aco", name: "Ant Colony Optimization (ACO) — Graph Routing" },
-    { id: "track-fuzzy", name: "Fuzzy Logic (FL) — Dynamic Control & Inference" },
+    { id: "p1-hospital-scheduling", name: "P1: Hospital Staff Scheduling (GA + Fuzzy)" },
+    { id: "p2-drone-delivery", name: "P2: Drone-Based Emergency Medical Supply Delivery (ACO + GA)" },
+    { id: "p3-emergency-hospital", name: "P3: Emergency Hospital Destination Selection (Fuzzy + PSO)" },
+    { id: "p4-blood-inventory", name: "P4: Hospital Blood Inventory & Allocation (GA / PSO)" },
+    { id: "p5-search-and-rescue", name: "P5: Multi-Robot Search & Rescue (Flagship Showcase)" },
+    { id: "p6-fuzzy-triage", name: "P6: Fuzzy ER Triage with Adaptive Rule Optimization (Fuzzy + GA)" },
   ];
   const [prefTracks, setPrefTracks] = useState<string[]>([
-    "track-ga",
-    "track-pso",
-    "track-aco",
-    "track-fuzzy",
+    "p1-hospital-scheduling",
+    "p2-drone-delivery",
+    "p3-emergency-hospital",
+    "p4-blood-inventory",
+    "p5-search-and-rescue",
+    "p6-fuzzy-triage",
   ]);
 
   // Dynamic members (2 to 4)
@@ -389,13 +393,13 @@ export default function RegisterPage() {
                 Domain Preference Ranking
               </h3>
               <p className="text-xs text-brand-muted">
-                Rank your choices from 1st to 4th. Used for domain allocation and track balancing.
+                Rank your choices from 1st to 6th. Used for domain allocation and track balancing.
               </p>
             </div>
           </div>
 
           <div className="space-y-3">
-            {[0, 1, 2, 3].map((pos) => (
+            {[0, 1, 2, 3, 4, 5].map((pos) => (
               <div
                 key={pos}
                 className="flex items-center gap-3 p-3.5 rounded-xl bg-bg-secondary/60 border border-navy-border/60 text-xs"
