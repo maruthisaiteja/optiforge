@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { Redis } from "@upstash/redis";
+import { neon } from "@neondatabase/serverless";
 
 const IS_VERCEL = process.env.VERCEL === "1" || (process.env.NODE_ENV === "production" && process.platform === "linux");
 const SEED_FILE = path.join(process.cwd(), "data", "optiforge_db.json");
@@ -162,30 +162,39 @@ export interface DatabaseSchema {
   auditLogs: AuditLogRecord[];
 }
 
-let _redis: Redis | null = null;
-function getRedis(): Redis | null {
-  if (_redis) return _redis;
-  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (url && token) {
-    try {
-      _redis = new Redis({ url, token });
-      return _redis;
-    } catch (e) {
-      console.warn("[OptiForge DB] Failed to initialize Redis client:", e);
-    }
+let _hasTableChecked = false;
+function getPostgresClient() {
+  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!databaseUrl || (!databaseUrl.startsWith("postgresql://") && !databaseUrl.startsWith("postgres://"))) {
+    return null;
   }
-  return null;
+  try {
+    return neon(databaseUrl);
+  } catch (err) {
+    console.warn("[OptiForge DB] Failed to initialize Postgres client:", err);
+    return null;
+  }
 }
 
 async function ensureDb(): Promise<DatabaseSchema> {
-  const redis = getRedis();
-  if (redis) {
+  const sql = getPostgresClient();
+  if (sql) {
     try {
-      const remote = await redis.get<DatabaseSchema | string>("optiforge_db");
-      if (remote) {
-        const parsed = typeof remote === "string" ? JSON.parse(remote) : remote;
-        if (parsed && Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
+      if (!_hasTableChecked) {
+        await sql`
+          CREATE TABLE IF NOT EXISTS optiforge_store (
+            id TEXT PRIMARY KEY,
+            data JSONB NOT NULL,
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+          );
+        `;
+        _hasTableChecked = true;
+      }
+
+      const rows = await sql`SELECT data FROM optiforge_store WHERE id = 'main'`;
+      if (rows && rows.length > 0 && rows[0].data) {
+        const parsed = rows[0].data as DatabaseSchema;
+        if (Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
           try {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
             fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
@@ -194,7 +203,7 @@ async function ensureDb(): Promise<DatabaseSchema> {
         }
       }
     } catch (err) {
-      console.warn("[OptiForge DB] Redis read fallback to local/seed:", err);
+      console.warn("[OptiForge DB] Postgres read fallback to local/seed:", err);
     }
   }
 
@@ -208,8 +217,14 @@ async function ensureDb(): Promise<DatabaseSchema> {
         const seedRaw = fs.readFileSync(SEED_FILE, "utf8");
         fs.writeFileSync(DB_FILE, seedRaw, "utf8");
         const parsed = JSON.parse(seedRaw) as DatabaseSchema;
-        if (redis) {
-          redis.set("optiforge_db", JSON.stringify(parsed)).catch(() => {});
+        if (sql) {
+          try {
+            await sql`
+              INSERT INTO optiforge_store (id, data, updated_at)
+              VALUES ('main', ${JSON.stringify(parsed)}, NOW())
+              ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW();
+            `;
+          } catch {}
         }
         return parsed;
       } catch {}
@@ -232,8 +247,12 @@ async function ensureDb(): Promise<DatabaseSchema> {
   try {
     const raw = fs.readFileSync(DB_FILE, "utf8");
     const parsed = JSON.parse(raw) as DatabaseSchema;
-    if (redis) {
-      redis.set("optiforge_db", JSON.stringify(parsed)).catch(() => {});
+    if (sql) {
+      sql`
+        INSERT INTO optiforge_store (id, data, updated_at)
+        VALUES ('main', ${JSON.stringify(parsed)}, NOW())
+        ON CONFLICT (id) DO NOTHING;
+      `.catch(() => {});
     }
     return parsed;
   } catch {
@@ -270,12 +289,29 @@ async function saveDb(data: DatabaseSchema): Promise<void> {
     console.warn("[OptiForge DB] Local disk write error:", err);
   }
 
-  const redis = getRedis();
-  if (redis) {
+  const sql = getPostgresClient();
+  if (sql) {
     try {
-      await redis.set("optiforge_db", JSON.stringify(data));
+      if (!_hasTableChecked) {
+        await sql`
+          CREATE TABLE IF NOT EXISTS optiforge_store (
+            id TEXT PRIMARY KEY,
+            data JSONB NOT NULL,
+            updated_at TIMESTAMPTZ DEFAULT NOW()
+          );
+        `;
+        _hasTableChecked = true;
+      }
+
+      await sql`
+        INSERT INTO optiforge_store (id, data, updated_at)
+        VALUES ('main', ${JSON.stringify(data)}, NOW())
+        ON CONFLICT (id) DO UPDATE SET
+          data = EXCLUDED.data,
+          updated_at = NOW();
+      `;
     } catch (err) {
-      console.error("[OptiForge DB] Redis persistence write error:", err);
+      console.error("[OptiForge DB] Postgres persistence write error:", err);
     }
   }
 }
