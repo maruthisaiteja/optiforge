@@ -114,20 +114,32 @@ async function runVerification() {
   const registeredTeamCode = regData.teamCode;
   const registeredPassword = regData.temporaryPassword;
 
-  // 4. Test Payment Verification Flow
-  console.log("\n--- 4. Testing Payment Verification Flow ---");
+  // 4. Test Payment Verification Flow (12-Digit UTR)
+  console.log("\n--- 4. Testing Payment Verification Flow (12-Digit UTR) ---");
+  const testUtr = `426189${Date.now().toString().slice(-6)}`;
   const payRes = await fetch(`${BASE_URL}/api/payment/verify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       teamCode: registeredTeamCode,
-      isSimulated: true,
-      razorpayPaymentId: `pay_sim_${Date.now()}`,
+      utrNumber: testUtr,
     }),
   });
   const payData = await payRes.json();
   assert(payRes.status === 200, "Payment verification returned HTTP 200");
   assert(payData.success === true, "Payment status flipped to CONFIRMED");
+  assert(payData.paymentId === testUtr, `12-digit UTR persisted: ${payData.paymentId}`);
+
+  // Test duplicate UTR rejection
+  const dupRes = await fetch(`${BASE_URL}/api/payment/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      teamCode: "OPT-26-1021",
+      utrNumber: testUtr,
+    }),
+  });
+  assert(dupRes.status === 400, "Duplicate UTR submission correctly rejected with HTTP 400");
 
   // 5. Test Team Login & Profile Session
   console.log("\n--- 5. Testing Team Authentication & /api/team/profile ---");

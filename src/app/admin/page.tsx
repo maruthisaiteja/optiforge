@@ -163,7 +163,8 @@ export default function AdminPortal() {
     const matchesSearch =
       team.teamName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       team.teamCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      team.leaderEmail.toLowerCase().includes(searchQuery.toLowerCase());
+      team.leaderEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (team.razorpayPaymentId && team.razorpayPaymentId.toLowerCase().includes(searchQuery.toLowerCase()));
 
     if (statusFilter === "ALL") return matchesSearch;
     return matchesSearch && team.paymentStatus === statusFilter;
@@ -418,9 +419,16 @@ export default function AdminPortal() {
                       </td>
                       <td className="py-3.5 px-4">
                         {t.paymentStatus === "CONFIRMED" ? (
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-status-green/15 text-status-green border border-status-green/30">
-                            CONFIRMED (₹{t.paymentAmount})
-                          </span>
+                          <div className="space-y-1">
+                            <span className="px-2 py-0.5 rounded text-[10px] bg-status-green/15 text-status-green border border-status-green/30 inline-block font-semibold">
+                              CONFIRMED (₹{t.paymentAmount})
+                            </span>
+                            {t.razorpayPaymentId && (
+                              <div className="text-[10px] text-teal-accent font-mono" title="12-Digit UPI Transaction UTR">
+                                UTR: <span className="font-bold">{t.razorpayPaymentId}</span>
+                              </div>
+                            )}
+                          </div>
                         ) : (
                           <button
                             onClick={() => setPaymentModal(t)}
