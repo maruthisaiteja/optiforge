@@ -25,6 +25,18 @@ export function verifyToken(token: string): SessionUser | null {
   }
 }
 
+export function signRegistrationToken(payload: any): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "2d" });
+}
+
+export function verifyRegistrationToken(token: string): any | null {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch {
+    return null;
+  }
+}
+
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }

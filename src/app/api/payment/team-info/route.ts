@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { verifyRegistrationToken } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -13,13 +15,46 @@ export async function GET(req: Request) {
     }
 
     const cleanCode = teamCode.trim().toUpperCase();
-    const team = await db.team.findUnique({
+    let team = await db.team.findUnique({
       where: { teamCode: cleanCode },
     });
 
+    // Cross-Container Resilience: If team is not in this lambda instance yet, self-heal via signed token
+    if (!team) {
+      const token = searchParams.get("token") || cookies().get("optiforge_pending_reg")?.value;
+      if (token) {
+        const payload = verifyRegistrationToken(token);
+        if (payload && payload.teamCode === cleanCode) {
+          try {
+            team = await db.team.create({
+              data: {
+                teamCode: payload.teamCode,
+                teamName: payload.teamName,
+                leaderEmail: payload.leaderEmail,
+                leaderPhone: payload.leaderPhone,
+                password: payload.password,
+                domainId: payload.domainId,
+                skillLevel: "Standard",
+                paymentStatus: "PENDING_PAYMENT",
+                paymentAmount: payload.paymentAmount,
+                attemptsUsed: 0,
+                bestScore: 0,
+                isDisqualified: false,
+                members: {
+                  create: payload.members || [],
+                },
+              },
+            });
+          } catch {
+            team = await db.team.findUnique({ where: { teamCode: cleanCode } });
+          }
+        }
+      }
+    }
+
     if (!team) {
       return NextResponse.json(
-        { error: "Team not found. Please verify your team code or complete registration first." },
+        { error: `Team ${cleanCode} not found. Please verify your team code or complete registration first.` },
         { status: 404 }
       );
     }

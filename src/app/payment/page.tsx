@@ -58,8 +58,16 @@ function PaymentContent() {
       return;
     }
 
+    let cachedToken = searchParams.get("token") || "";
+    if (!cachedToken && typeof window !== "undefined") {
+      try {
+        cachedToken = sessionStorage.getItem(`optiforge_reg_${teamCode}`) || "";
+      } catch {}
+    }
+    const tokenQuery = cachedToken ? `&token=${encodeURIComponent(cachedToken)}` : "";
+
     // Fetch team info from public endpoint
-    fetch(`/api/payment/team-info?teamCode=${encodeURIComponent(teamCode)}`)
+    fetch(`/api/payment/team-info?teamCode=${encodeURIComponent(teamCode)}${tokenQuery}`)
       .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
@@ -86,7 +94,7 @@ function PaymentContent() {
         setFetchError("Unable to load team details. Please check your internet connection.");
         setLoading(false);
       });
-  }, [teamCode]);
+  }, [teamCode, searchParams]);
 
   // Generate QR Code when UPI URI is ready
   useEffect(() => {
@@ -136,12 +144,20 @@ function PaymentContent() {
     setSubmittingUtr(true);
 
     try {
+      let cachedToken = searchParams.get("token") || "";
+      if (!cachedToken && typeof window !== "undefined") {
+        try {
+          cachedToken = sessionStorage.getItem(`optiforge_reg_${teamCode}`) || "";
+        } catch {}
+      }
+
       const res = await fetch("/api/payment/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teamCode,
           utrNumber: cleanUtr,
+          token: cachedToken || undefined,
         }),
       });
 

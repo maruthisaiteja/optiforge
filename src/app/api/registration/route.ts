@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { hashPassword } from "@/lib/auth";
+import { hashPassword, signRegistrationToken } from "@/lib/auth";
 import { generateTeamCode } from "@/lib/utils";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -132,6 +133,36 @@ export async function POST(req: Request) {
       },
     });
 
+    const registrationPayload = {
+      teamCode: newTeam.teamCode,
+      teamName: newTeam.teamName,
+      leaderEmail,
+      leaderPhone,
+      password: hashedPassword,
+      domainId: assignedDomain,
+      paymentAmount: newTeam.paymentAmount,
+      members: members.map((m: any) => ({
+        name: m.name.trim(),
+        collegeName: m.collegeName ? m.collegeName.trim() : null,
+        rollNumber: m.rollNumber.trim().toUpperCase(),
+        branch: m.branch?.trim() || "CSE",
+        year: m.year?.trim() || "3rd Year",
+        email: m.email.trim().toLowerCase(),
+        phone: m.phone.trim(),
+        tshirtSize: null,
+      })),
+    };
+
+    const registrationToken = signRegistrationToken(registrationPayload);
+
+    cookies().set("optiforge_pending_reg", registrationToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 2, // 48 hours
+    });
+
     return NextResponse.json({
       success: true,
       teamId: newTeam.id,
@@ -141,6 +172,7 @@ export async function POST(req: Request) {
       memberCount: members.length,
       assignedDomain,
       temporaryPassword: rawPassword,
+      registrationToken,
     });
   } catch (err) {
     return NextResponse.json(

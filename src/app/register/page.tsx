@@ -206,8 +206,15 @@ export default function RegisterPage() {
         return;
       }
 
-      // Redirect to payment
-      router.push(`/payment?teamCode=${data.teamCode}`);
+      if (data.registrationToken) {
+        try {
+          sessionStorage.setItem(`optiforge_reg_${data.teamCode}`, data.registrationToken);
+        } catch {}
+      }
+
+      // Redirect to payment with token for instant cross-container resilience
+      const tokenParam = data.registrationToken ? `&token=${encodeURIComponent(data.registrationToken)}` : "";
+      router.push(`/payment?teamCode=${data.teamCode}${tokenParam}`);
     } catch {
       setErrorMsg("Network error during registration. Please try again.");
       setLoading(false);

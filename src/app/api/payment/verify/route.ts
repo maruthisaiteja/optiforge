@@ -1,21 +1,54 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { signToken } from "@/lib/auth";
+import { signToken, verifyRegistrationToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { teamCode, utrNumber, razorpayPaymentId, razorpayOrderId } = body;
+    const { teamCode, utrNumber, razorpayPaymentId, razorpayOrderId, token } = body;
 
     if (!teamCode) {
       return NextResponse.json({ error: "Missing team code." }, { status: 400 });
     }
 
     const cleanCode = teamCode.trim().toUpperCase();
-    const team = await db.team.findUnique({
+    let team = await db.team.findUnique({
       where: { teamCode: cleanCode },
     });
+
+    // Cross-Container Resilience: Reconstruct team if not present in this container
+    if (!team) {
+      const regToken = token || cookies().get("optiforge_pending_reg")?.value;
+      if (regToken) {
+        const payload = verifyRegistrationToken(regToken);
+        if (payload && payload.teamCode === cleanCode) {
+          try {
+            team = await db.team.create({
+              data: {
+                teamCode: payload.teamCode,
+                teamName: payload.teamName,
+                leaderEmail: payload.leaderEmail,
+                leaderPhone: payload.leaderPhone,
+                password: payload.password,
+                domainId: payload.domainId,
+                skillLevel: "Standard",
+                paymentStatus: "PENDING_PAYMENT",
+                paymentAmount: payload.paymentAmount,
+                attemptsUsed: 0,
+                bestScore: 0,
+                isDisqualified: false,
+                members: {
+                  create: payload.members || [],
+                },
+              },
+            });
+          } catch {
+            team = await db.team.findUnique({ where: { teamCode: cleanCode } });
+          }
+        }
+      }
+    }
 
     if (!team) {
       return NextResponse.json(
@@ -83,7 +116,7 @@ export async function POST(req: Request) {
     });
 
     // Automatically issue team session token so they can immediately access the portal
-    const token = signToken({
+    const sessionToken = signToken({
       id: updatedTeam.id,
       role: "TEAM",
       name: updatedTeam.teamName,
@@ -91,7 +124,7 @@ export async function POST(req: Request) {
       domainId: updatedTeam.domainId,
     });
 
-    cookies().set("optiforge_session", token, {
+    cookies().set("optiforge_session", sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

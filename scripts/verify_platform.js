@@ -39,6 +39,16 @@ async function verify() {
   }
   console.log("✔ Password Forge#1904 bcrypt validation: PASSED");
 
+  // 2b. Verify OPT-26-7151 (Pending registration team)
+  const team7151 = db.teams.find((t) => t.teamCode === "OPT-26-7151");
+  if (!team7151) throw new Error("FAIL: OPT-26-7151 not found in database!");
+  if (team7151.paymentStatus !== "PENDING_PAYMENT") {
+    throw new Error("FAIL: OPT-26-7151 should be in PENDING_PAYMENT status!");
+  }
+  const passMatch7151 = await bcrypt.compare("Forge#7151", team7151.password);
+  if (!passMatch7151) throw new Error("FAIL: Password Forge#7151 failed bcrypt match!");
+  console.log("✔ OPT-26-7151 verified in PENDING_PAYMENT mode with bcrypt validation: PASSED");
+
   // 3. Verify ALL dummy teams are removed
   const dummyNames = ["NeuralForge", "SwarmDynasty", "PathFinders", "BioLogic", "FuzzyLogicMasters", "AeroFleet"];
   for (const t of db.teams) {
