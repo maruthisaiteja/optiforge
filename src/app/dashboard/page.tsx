@@ -505,7 +505,7 @@ export default function TeamDashboard() {
               </div>
               <div>
                 <span className="text-brand-dim text-[10px] uppercase block">Payee Recipient</span>
-                <span className="text-sm font-bold text-brand-white truncate block">Maruthi Sai Teja (9490298994@axl)</span>
+                <span className="text-sm font-bold text-brand-white truncate block">Pilli Maruthi Sai Teja (9490298994@axl)</span>
               </div>
             </div>
           </div>

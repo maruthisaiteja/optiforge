@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -14,6 +14,11 @@ import {
   Layers,
   GraduationCap,
   Check,
+  CheckCircle2,
+  RotateCcw,
+  Clock,
+  Sparkles,
+  Save,
 } from "lucide-react";
 
 interface MemberForm {
@@ -26,6 +31,9 @@ interface MemberForm {
   phone: string;
 }
 
+const DRAFT_KEY = "optiforge_registration_draft_v2";
+const PENDING_TEAM_KEY = "optiforge_pending_team_v1";
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -34,6 +42,12 @@ export default function RegisterPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  // Persistence States
+  const [draftRestored, setDraftRestored] = useState(false);
+  const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
+  const [pendingTeam, setPendingTeam] = useState<any>(null);
+  const [isClientLoaded, setIsClientLoaded] = useState(false);
 
   // 6 Official Problem Statements
   const problemStatements = [
@@ -110,6 +124,115 @@ export default function RegisterPage() {
     },
   ]);
 
+  // Initialize and restore saved draft or pending team on client mount
+  useEffect(() => {
+    setIsClientLoaded(true);
+
+    // 1. Check for active pending team
+    try {
+      const savedPending = localStorage.getItem(PENDING_TEAM_KEY);
+      if (savedPending) {
+        const parsed = JSON.parse(savedPending);
+        if (parsed?.teamCode) {
+          setPendingTeam(parsed);
+        }
+      }
+    } catch {}
+
+    // 2. Check for saved registration draft
+    try {
+      const savedDraft = localStorage.getItem(DRAFT_KEY);
+      if (savedDraft) {
+        const parsed = JSON.parse(savedDraft);
+        const hasContent =
+          (parsed.teamName && parsed.teamName.trim().length > 0) ||
+          (Array.isArray(parsed.members) &&
+            parsed.members.some((m: any) => m?.name?.trim() || m?.rollNumber?.trim() || m?.email?.trim()));
+
+        if (hasContent) {
+          if (parsed.teamName) setTeamName(parsed.teamName);
+          if (parsed.selectedProblem) setSelectedProblem(parsed.selectedProblem);
+          if (Array.isArray(parsed.members) && parsed.members.length >= 2) {
+            setMembers(parsed.members);
+          }
+          if (typeof parsed.agreedToTerms === "boolean") {
+            setAgreedToTerms(parsed.agreedToTerms);
+          }
+          setDraftRestored(true);
+          if (parsed.updatedAt) {
+            setLastSavedTime(
+              new Date(parsed.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+            );
+          }
+        }
+      }
+    } catch {}
+  }, []);
+
+  // Real-time debounced auto-save to localStorage
+  useEffect(() => {
+    if (!isClientLoaded) return;
+
+    const hasData =
+      teamName.trim() !== "" ||
+      members.some((m) => m.name.trim() !== "" || m.rollNumber.trim() !== "" || m.email.trim() !== "");
+
+    if (!hasData) return;
+
+    const timer = setTimeout(() => {
+      try {
+        const payload = {
+          teamName,
+          selectedProblem,
+          members,
+          agreedToTerms,
+          updatedAt: Date.now(),
+        };
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+        setLastSavedTime(
+          new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        );
+      } catch (err) {
+        console.error("Failed to auto-save draft:", err);
+      }
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [teamName, selectedProblem, members, agreedToTerms, isClientLoaded]);
+
+  const handleClearDraft = () => {
+    if (window.confirm("Are you sure you want to discard your draft and start fresh? All entered team details will be cleared.")) {
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {}
+      setTeamName("");
+      setSelectedProblem("p1-hospital-scheduling");
+      setAgreedToTerms(false);
+      setMembers([
+        {
+          name: "",
+          collegeName: "",
+          rollNumber: "",
+          branch: "CSE",
+          year: "3rd Year",
+          email: "",
+          phone: "",
+        },
+        {
+          name: "",
+          collegeName: "",
+          rollNumber: "",
+          branch: "CSE",
+          year: "3rd Year",
+          email: "",
+          phone: "",
+        },
+      ]);
+      setDraftRestored(false);
+      setLastSavedTime(null);
+    }
+  };
+
   const addMember = () => {
     if (members.length < 4) {
       setMembers([
@@ -136,6 +259,16 @@ export default function RegisterPage() {
   const updateMember = (index: number, field: keyof MemberForm, value: string) => {
     const updated = [...members];
     updated[index] = { ...updated[index], [field]: value };
+
+    // Auto-propagate college name from Leader to other members if blank or unchanged
+    if (index === 0 && field === "collegeName" && value.trim()) {
+      for (let i = 1; i < updated.length; i++) {
+        if (!updated[i].collegeName || updated[i].collegeName === members[0].collegeName) {
+          updated[i].collegeName = value;
+        }
+      }
+    }
+
     setMembers(updated);
   };
 
@@ -173,7 +306,7 @@ export default function RegisterPage() {
         setErrorMsg(`Please enter Email Address for Member ${i + 1}.`);
         return;
       }
-      if (!m.phone.trim() || m.phone.trim().replace(/\\D/g, "").length !== 10) {
+      if (!m.phone.trim() || m.phone.trim().replace(/\D/g, "").length !== 10) {
         setErrorMsg(`Please enter a valid 10-digit Phone Number for Member ${i + 1}.`);
         return;
       }
@@ -212,6 +345,22 @@ export default function RegisterPage() {
         } catch {}
       }
 
+      // Save as active pending team & clear form draft
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+        localStorage.setItem(
+          PENDING_TEAM_KEY,
+          JSON.stringify({
+            teamCode: data.teamCode,
+            teamName: teamName.trim(),
+            paymentAmount: data.paymentAmount || totalFee,
+            token: data.registrationToken,
+            assignedDomain: data.assignedDomain,
+            savedAt: Date.now(),
+          })
+        );
+      } catch {}
+
       // Redirect to payment with token for instant cross-container resilience
       const tokenParam = data.registrationToken ? `&token=${encodeURIComponent(data.registrationToken)}` : "";
       router.push(`/payment?teamCode=${data.teamCode}${tokenParam}`);
@@ -236,6 +385,81 @@ export default function RegisterPage() {
           Assemble your squad (2 to 4 members). Fee is ₹50 per participant.
         </p>
       </div>
+
+      {/* Persistence Banner 1: Active Pending Registration */}
+      {pendingTeam && (
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-200 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <div className="text-xs">
+              <div className="font-semibold text-amber-300">Active Registration Pending Payment</div>
+              <div>
+                Team <strong className="font-mono text-brand-white">{pendingTeam.teamCode}</strong> ({pendingTeam.teamName}) is awaiting UPI payment of ₹{pendingTeam.paymentAmount || 150}.
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
+            <Link
+              href={`/payment?teamCode=${pendingTeam.teamCode}${pendingTeam.token ? `&token=${encodeURIComponent(pendingTeam.token)}` : ""}`}
+              className="px-4 py-2 rounded-xl bg-amber-500 text-bg-primary font-mono text-xs font-bold hover:bg-amber-400 transition-all flex items-center gap-1.5 shadow-glow"
+            >
+              <span>Pay ₹{pendingTeam.paymentAmount || 150}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                try {
+                  localStorage.removeItem(PENDING_TEAM_KEY);
+                } catch {}
+                setPendingTeam(null);
+              }}
+              className="text-[11px] text-brand-dim hover:text-brand-white px-2 py-1"
+              title="Dismiss banner"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Persistence Banner 2: Draft Restored Notice with Clear Draft Option */}
+      {draftRestored && (
+        <div className="p-3.5 rounded-xl bg-teal-accent/10 border border-teal-accent/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-teal-accent font-mono">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-status-green shrink-0" />
+            <span>
+              Restored your in-progress registration draft. All fields are automatically preserved as you type.
+            </span>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            {lastSavedTime && (
+              <span className="text-[10px] text-brand-dim flex items-center gap-1">
+                <Clock className="w-3 h-3" />
+                <span>Saved at {lastSavedTime}</span>
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={handleClearDraft}
+              className="text-[11px] text-status-red hover:underline flex items-center gap-1 font-semibold"
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>Clear & Start Fresh</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Auto-Save Indicator when actively editing without restored notice */}
+      {!draftRestored && lastSavedTime && (
+        <div className="flex items-center justify-end gap-1.5 text-[11px] font-mono text-brand-dim">
+          <Save className="w-3 h-3 text-teal-accent" />
+          <span>Draft auto-saved at {lastSavedTime}</span>
+        </div>
+      )}
 
       {errorMsg && (
         <div className="p-4 rounded-xl bg-status-red/15 border border-status-red/40 text-status-red text-xs flex items-center gap-3">

@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       data: {
         action: "PAYMENT_CONFIRMED",
         performedBy: team.leaderEmail,
-        details: `UPI Payment of ₹${team.paymentAmount} verified for team ${team.teamName} (${team.teamCode}). 12-digit UTR: ${cleanUtr}. Payee: Maruthi Sai Teja (9490298994@axl)`,
+        details: `UPI Payment of ₹${team.paymentAmount} verified for team ${team.teamName} (${team.teamCode}). 12-digit UTR: ${cleanUtr}. Payee: Pilli Maruthi Sai Teja (9490298994@axl)`,
         reason: "Direct UPI Transfer verified with 12-digit UTR",
       },
     });
@@ -140,7 +140,7 @@ export async function POST(req: Request) {
       paymentId: cleanUtr,
       receiptNumber: `RCP-VCE-${updatedTeam.teamCode}`,
       organizer: "IEEE Vardhaman Student Branch",
-      payee: "Maruthi Sai Teja (9490298994@axl)",
+      payee: "Pilli Maruthi Sai Teja (9490298994@axl)",
     });
   } catch (err) {
     console.error("Error in /api/payment/verify:", err);
