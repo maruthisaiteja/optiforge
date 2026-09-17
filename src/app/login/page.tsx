@@ -62,13 +62,7 @@ export default function LoginPage() {
     }
   };
 
-  // Demo credential autofill helpers
-  const fillDemoCredentials = (role: "TEAM" | "JUDGE" | "ADMIN", id: string, pass: string) => {
-    setActiveTab(role);
-    setIdentifier(id);
-    setPassword(pass);
-    setErrorMsg(null);
-  };
+
 
   return (
     <div className="max-w-md mx-auto px-4 sm:px-6 py-16 space-y-8">
@@ -210,47 +204,7 @@ export default function LoginPage() {
         )}
       </form>
 
-      {/* Quick Demo Credentials Autofill */}
-      <div className="p-4 rounded-xl bg-bg-secondary/60 border border-navy-border/60 space-y-2.5">
-        <span className="text-[10px] font-mono uppercase tracking-widest text-teal-accent font-semibold block flex items-center gap-1.5">
-          <Sparkles className="w-3 h-3" />
-          One-Click Demo Credentials (Instant Testing)
-        </span>
-        <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("TEAM", "OPT-26-1021", "team@optiforge")}
-            className="p-2 rounded bg-navy-deep/60 hover:bg-teal-accent/10 border border-navy-border text-left hover:border-teal-accent text-brand-muted hover:text-brand-white transition-colors"
-          >
-            <span className="text-teal-accent font-bold block">Team NeuralForge</span>
-            <span>OPT-26-1021</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("JUDGE", "judge_ga", "judge@optiforge")}
-            className="p-2 rounded bg-navy-deep/60 hover:bg-electric-violet/20 border border-navy-border text-left hover:border-electric-violet text-brand-muted hover:text-brand-white transition-colors"
-          >
-            <span className="text-electric-violet font-bold block">GA Expert Judge</span>
-            <span>judge_ga</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("JUDGE", "judge_pso", "judge@optiforge")}
-            className="p-2 rounded bg-navy-deep/60 hover:bg-electric-violet/20 border border-navy-border text-left hover:border-electric-violet text-brand-muted hover:text-brand-white transition-colors"
-          >
-            <span className="text-electric-violet font-bold block">PSO Expert Judge</span>
-            <span>judge_pso</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => fillDemoCredentials("ADMIN", "admin", "admin@optiforge2026")}
-            className="p-2 rounded bg-navy-deep/60 hover:bg-orange-accent/20 border border-navy-border text-left hover:border-orange-accent text-brand-muted hover:text-brand-white transition-colors"
-          >
-            <span className="text-orange-accent font-bold block">Lead Organizer</span>
-            <span>admin</span>
-          </button>
-        </div>
-      </div>
+
     </div>
   );
 }

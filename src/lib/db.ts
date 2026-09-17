@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import { Redis } from "@upstash/redis";
 
 const IS_VERCEL = process.env.VERCEL === "1" || (process.env.NODE_ENV === "production" && process.platform === "linux");
 const SEED_FILE = path.join(process.cwd(), "data", "optiforge_db.json");
@@ -161,7 +162,42 @@ export interface DatabaseSchema {
   auditLogs: AuditLogRecord[];
 }
 
-function ensureDbFile(): DatabaseSchema {
+let _redis: Redis | null = null;
+function getRedis(): Redis | null {
+  if (_redis) return _redis;
+  const url = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (url && token) {
+    try {
+      _redis = new Redis({ url, token });
+      return _redis;
+    } catch (e) {
+      console.warn("[OptiForge DB] Failed to initialize Redis client:", e);
+    }
+  }
+  return null;
+}
+
+async function ensureDb(): Promise<DatabaseSchema> {
+  const redis = getRedis();
+  if (redis) {
+    try {
+      const remote = await redis.get<DatabaseSchema | string>("optiforge_db");
+      if (remote) {
+        const parsed = typeof remote === "string" ? JSON.parse(remote) : remote;
+        if (parsed && Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
+          try {
+            if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+            fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
+          } catch {}
+          return parsed;
+        }
+      }
+    } catch (err) {
+      console.warn("[OptiForge DB] Redis read fallback to local/seed:", err);
+    }
+  }
+
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
@@ -171,7 +207,11 @@ function ensureDbFile(): DatabaseSchema {
       try {
         const seedRaw = fs.readFileSync(SEED_FILE, "utf8");
         fs.writeFileSync(DB_FILE, seedRaw, "utf8");
-        return JSON.parse(seedRaw) as DatabaseSchema;
+        const parsed = JSON.parse(seedRaw) as DatabaseSchema;
+        if (redis) {
+          redis.set("optiforge_db", JSON.stringify(parsed)).catch(() => {});
+        }
+        return parsed;
       } catch {}
     }
     const initial: DatabaseSchema = {
@@ -191,9 +231,20 @@ function ensureDbFile(): DatabaseSchema {
 
   try {
     const raw = fs.readFileSync(DB_FILE, "utf8");
-    return JSON.parse(raw) as DatabaseSchema;
+    const parsed = JSON.parse(raw) as DatabaseSchema;
+    if (redis) {
+      redis.set("optiforge_db", JSON.stringify(parsed)).catch(() => {});
+    }
+    return parsed;
   } catch {
-    const fallback: DatabaseSchema = {
+    if (fs.existsSync(SEED_FILE)) {
+      try {
+        const seedRaw = fs.readFileSync(SEED_FILE, "utf8");
+        fs.writeFileSync(DB_FILE, seedRaw, "utf8");
+        return JSON.parse(seedRaw) as DatabaseSchema;
+      } catch {}
+    }
+    return {
       users: [],
       teams: [],
       teamMembers: [],
@@ -204,29 +255,40 @@ function ensureDbFile(): DatabaseSchema {
       systemSettings: [],
       auditLogs: [],
     };
-    fs.writeFileSync(DB_FILE, JSON.stringify(fallback, null, 2), "utf8");
-    return fallback;
   }
 }
 
-function saveDb(data: DatabaseSchema) {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+async function saveDb(data: DatabaseSchema): Promise<void> {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    const tempFile = `${DB_FILE}.${Date.now()}.tmp`;
+    fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), "utf8");
+    fs.renameSync(tempFile, DB_FILE);
+  } catch (err) {
+    console.warn("[OptiForge DB] Local disk write error:", err);
   }
-  const tempFile = `${DB_FILE}.${Date.now()}.tmp`;
-  fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), "utf8");
-  fs.renameSync(tempFile, DB_FILE);
+
+  const redis = getRedis();
+  if (redis) {
+    try {
+      await redis.set("optiforge_db", JSON.stringify(data));
+    } catch (err) {
+      console.error("[OptiForge DB] Redis persistence write error:", err);
+    }
+  }
 }
 
 export const db = {
   // Users
   user: {
     findUnique: async ({ where }: { where: { username?: string; id?: string } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.users.find((u) => (where.username && u.username === where.username) || (where.id && u.id === where.id)) || null;
     },
     findMany: async (filter?: { where?: Partial<UserRecord> }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       if (!filter?.where) return data.users;
       return data.users.filter((u) => {
         return Object.entries(filter.where!).every(([k, v]) => (u as any)[k] === v);
@@ -241,7 +303,7 @@ export const db = {
       update: Partial<UserRecord>;
       create: Omit<UserRecord, "id" | "createdAt" | "updatedAt">;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const existingIdx = data.users.findIndex((u) => u.username === where.username);
       const now = new Date().toISOString();
 
@@ -251,7 +313,7 @@ export const db = {
           ...update,
           updatedAt: now,
         };
-        saveDb(data);
+        await saveDb(data);
         return data.users[existingIdx];
       } else {
         const newUser: UserRecord = {
@@ -261,7 +323,7 @@ export const db = {
           updatedAt: now,
         };
         data.users.push(newUser);
-        saveDb(data);
+        await saveDb(data);
         return newUser;
       }
     },
@@ -270,7 +332,7 @@ export const db = {
   // Teams
   team: {
     findUnique: async ({ where }: { where: { id?: string; teamCode?: string; leaderEmail?: string } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const team = data.teams.find(
         (t) =>
           (where.id && t.id === where.id) ||
@@ -286,7 +348,7 @@ export const db = {
       where?: Partial<TeamRecord>;
       orderBy?: { bestScore?: "asc" | "desc"; createdAt?: "asc" | "desc" };
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       let res = data.teams;
       if (filter?.where) {
         res = res.filter((t) => {
@@ -318,7 +380,7 @@ export const db = {
         members?: { create: Omit<TeamMemberRecord, "id" | "teamId" | "createdAt">[] };
       };
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const now = new Date().toISOString();
       const teamId = crypto.randomUUID();
 
@@ -372,12 +434,12 @@ export const db = {
         }
       }
 
-      saveDb(data);
+      await saveDb(data);
       const track = data.problemTracks.find((tr) => tr.id === newTeam.domainId) || null;
       return { ...newTeam, members: createdMembers, track };
     },
     update: async ({ where, data: updates }: { where: { id?: string; teamCode?: string }; data: Partial<TeamRecord> }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.teams.findIndex(
         (t) => (where.id && t.id === where.id) || (where.teamCode && t.teamCode === where.teamCode)
       );
@@ -388,7 +450,7 @@ export const db = {
         ...updates,
         updatedAt: new Date().toISOString(),
       };
-      saveDb(data);
+      await saveDb(data);
 
       const team = data.teams[idx];
       const members = data.teamMembers.filter((m) => m.teamId === team.id);
@@ -404,11 +466,11 @@ export const db = {
       update: Partial<TeamRecord>;
       create: any;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.teams.findIndex((t) => t.teamCode === where.teamCode);
       if (idx >= 0) {
         data.teams[idx] = { ...data.teams[idx], ...update, updatedAt: new Date().toISOString() };
-        saveDb(data);
+        await saveDb(data);
         return data.teams[idx];
       } else {
         return db.team.create({ data: create });
@@ -419,11 +481,11 @@ export const db = {
   // Problem Tracks
   problemTrack: {
     findUnique: async ({ where }: { where: { id: string } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.problemTracks.find((t) => t.id === where.id) || null;
     },
     findMany: async () => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.problemTracks;
     },
     upsert: async ({
@@ -435,7 +497,7 @@ export const db = {
       update: Partial<ProblemTrackRecord>;
       create: ProblemTrackRecord;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.problemTracks.findIndex((t) => t.id === where.id);
       const now = new Date().toISOString();
 
@@ -445,16 +507,16 @@ export const db = {
           ...update,
           updatedAt: now,
         };
-        saveDb(data);
+        await saveDb(data);
         return data.problemTracks[idx];
       } else {
         data.problemTracks.push({ ...create, createdAt: now, updatedAt: now });
-        saveDb(data);
+        await saveDb(data);
         return create;
       }
     },
     update: async ({ where, data: updates }: { where: { id: string }; data: Partial<ProblemTrackRecord> }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.problemTracks.findIndex((t) => t.id === where.id);
       if (idx === -1) throw new Error("Track not found");
       data.problemTracks[idx] = {
@@ -462,7 +524,7 @@ export const db = {
         ...updates,
         updatedAt: new Date().toISOString(),
       };
-      saveDb(data);
+      await saveDb(data);
       return data.problemTracks[idx];
     },
   },
@@ -470,14 +532,14 @@ export const db = {
   // Submissions
   submission: {
     findUnique: async ({ where }: { where: { id: string } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.submissions.find((s) => s.id === where.id) || null;
     },
     findMany: async (filter?: {
       where?: { teamId?: string; status?: string; similarityFlag?: boolean; isLivePatch?: boolean; attemptNumber?: number };
       orderBy?: { submittedAt?: "asc" | "desc" };
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       let res = data.submissions;
       if (filter?.where) {
         res = res.filter((s) => {
@@ -503,7 +565,7 @@ export const db = {
     }: {
       data: Omit<SubmissionRecord, "id" | "submittedAt"> & { id?: string };
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const sub: SubmissionRecord = {
         id: subData.id || crypto.randomUUID(),
         teamId: subData.teamId,
@@ -529,18 +591,18 @@ export const db = {
         submittedAt: new Date().toISOString(),
       };
       data.submissions.push(sub);
-      saveDb(data);
+      await saveDb(data);
       return sub;
     },
     update: async ({ where, data: updates }: { where: { id: string }; data: Partial<SubmissionRecord> }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.submissions.findIndex((s) => s.id === where.id);
       if (idx === -1) throw new Error("Submission not found");
       data.submissions[idx] = {
         ...data.submissions[idx],
         ...updates,
       };
-      saveDb(data);
+      await saveDb(data);
       return data.submissions[idx];
     },
     upsert: async ({
@@ -552,11 +614,11 @@ export const db = {
       update: Partial<SubmissionRecord>;
       create: any;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.submissions.findIndex((s) => s.id === where.id);
       if (idx >= 0) {
         data.submissions[idx] = { ...data.submissions[idx], ...update };
-        saveDb(data);
+        await saveDb(data);
         return data.submissions[idx];
       } else {
         return db.submission.create({ data: create });
@@ -567,7 +629,7 @@ export const db = {
   // Judge Evaluations
   judgeEvaluation: {
     findMany: async (filter?: { where?: { judgeId?: string; teamId?: string; submissionId?: string } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       let res = data.judgeEvaluations;
       if (filter?.where) {
         res = res.filter((e) => {
@@ -588,7 +650,7 @@ export const db = {
       update: Partial<JudgeEvaluationRecord>;
       create: Omit<JudgeEvaluationRecord, "id" | "createdAt" | "updatedAt">;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const judgeId = where.judgeId_submissionId?.judgeId || create.judgeId;
       const submissionId = where.judgeId_submissionId?.submissionId || create.submissionId;
 
@@ -601,7 +663,7 @@ export const db = {
           ...update,
           updatedAt: now,
         };
-        saveDb(data);
+        await saveDb(data);
         return data.judgeEvaluations[idx];
       } else {
         const evalRecord: JudgeEvaluationRecord = {
@@ -619,7 +681,7 @@ export const db = {
           updatedAt: now,
         };
         data.judgeEvaluations.push(evalRecord);
-        saveDb(data);
+        await saveDb(data);
         return evalRecord;
       }
     },
@@ -628,7 +690,7 @@ export const db = {
   // Announcements
   announcement: {
     findMany: async (filter?: { where?: { isActive?: boolean } }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       let res = data.announcements;
       if (filter?.where?.isActive !== undefined) {
         res = res.filter((a) => a.isActive === filter.where!.isActive);
@@ -636,14 +698,14 @@ export const db = {
       return res.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     },
     create: async ({ data: annData }: { data: Omit<AnnouncementRecord, "id" | "createdAt"> }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const ann: AnnouncementRecord = {
         id: crypto.randomUUID(),
         ...annData,
         createdAt: new Date().toISOString(),
       };
       data.announcements.unshift(ann);
-      saveDb(data);
+      await saveDb(data);
       return ann;
     },
     upsert: async ({
@@ -655,15 +717,15 @@ export const db = {
       update: Partial<AnnouncementRecord>;
       create: any;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.announcements.findIndex((a) => a.id === where.id);
       if (idx >= 0) {
         data.announcements[idx] = { ...data.announcements[idx], ...update };
-        saveDb(data);
+        await saveDb(data);
         return data.announcements[idx];
       } else {
         data.announcements.push({ id: create.id, ...create, createdAt: new Date().toISOString() });
-        saveDb(data);
+        await saveDb(data);
         return create;
       }
     },
@@ -672,12 +734,12 @@ export const db = {
   // System Settings
   systemSetting: {
     get: async (key: string, defaultValue = ""): Promise<string> => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const s = data.systemSettings.find((item) => item.key === key);
       return s ? s.value : defaultValue;
     },
     set: async (key: string, value: string, description?: string) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.systemSettings.findIndex((item) => item.key === key);
       const now = new Date().toISOString();
       if (idx >= 0) {
@@ -687,10 +749,10 @@ export const db = {
       } else {
         data.systemSettings.push({ key, value, description: description || null, updatedAt: now });
       }
-      saveDb(data);
+      await saveDb(data);
     },
     findMany: async () => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.systemSettings;
     },
     upsert: async ({
@@ -702,7 +764,7 @@ export const db = {
       update: Partial<SystemSettingRecord>;
       create: SystemSettingRecord;
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const idx = data.systemSettings.findIndex((item) => item.key === where.key);
       const now = new Date().toISOString();
       if (idx >= 0) {
@@ -710,7 +772,7 @@ export const db = {
       } else {
         data.systemSettings.push({ ...create, updatedAt: now });
       }
-      saveDb(data);
+      await saveDb(data);
     },
   },
 
@@ -721,7 +783,7 @@ export const db = {
     }: {
       data: { action: string; performedBy: string; details: string; reason?: string };
     }) => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       const log: AuditLogRecord = {
         id: crypto.randomUUID(),
         action: logData.action,
@@ -731,11 +793,11 @@ export const db = {
         createdAt: new Date().toISOString(),
       };
       data.auditLogs.unshift(log);
-      saveDb(data);
+      await saveDb(data);
       return log;
     },
     findMany: async () => {
-      const data = ensureDbFile();
+      const data = await ensureDb();
       return data.auditLogs;
     },
   },

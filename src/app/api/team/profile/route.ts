@@ -85,6 +85,9 @@ export async function GET() {
         bestScore: team.bestScore,
         isDisqualified: team.isDisqualified,
         members: team.members || [],
+        defaultPassword: `Forge#${team.teamCode.split("-")[2] || "2026"}`,
+        razorpayPaymentId: team.razorpayPaymentId || null,
+        organizer: "IEEE Vardhaman Student Branch",
       },
       track: sanitizedTrack,
       tournament: {

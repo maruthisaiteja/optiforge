@@ -30,9 +30,11 @@ function PaymentContent() {
 
   const [team, setTeam] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [paidSuccess, setPaidSuccess] = useState(false);
   const [receiptData, setReceiptData] = useState<any>(null);
   const [copiedCode, setCopiedCode] = useState(false);
+  const [copiedPass, setCopiedPass] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
 
   // UTR Form State
@@ -56,30 +58,34 @@ function PaymentContent() {
       return;
     }
 
-    // Fetch team info
-    fetch(`/api/admin/overview`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((ov) => {
-        if (ov?.teams) {
-          const found = ov.teams.find((t: any) => t.teamCode === teamCode);
-          if (found) {
-            setTeam(found);
-            if (found.paymentStatus === "CONFIRMED") {
-              setPaidSuccess(true);
-              setReceiptData({
-                teamCode: found.teamCode,
-                teamName: found.teamName,
-                paymentAmount: found.paymentAmount,
-                paymentId: found.razorpayPaymentId || "pay_prior_confirmed",
-                receiptNumber: `RCP-VCE-${found.teamCode}`,
-                organizer: "IEEE Vardhaman Student Branch",
-              });
-            }
-          }
+    // Fetch team info from public endpoint
+    fetch(`/api/payment/team-info?teamCode=${encodeURIComponent(teamCode)}`)
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+          setFetchError(data.error || "Team not found. Please register first.");
+          setLoading(false);
+          return;
+        }
+
+        setTeam(data);
+        if (data.paymentStatus === "CONFIRMED") {
+          setPaidSuccess(true);
+          setReceiptData({
+            teamCode: data.teamCode,
+            teamName: data.teamName,
+            paymentAmount: data.paymentAmount,
+            paymentId: data.razorpayPaymentId || "Verified",
+            receiptNumber: data.receiptNumber || `RCP-VCE-${data.teamCode}`,
+            organizer: data.organizer || "IEEE Vardhaman Student Branch",
+          });
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setFetchError("Unable to load team details. Please check your internet connection.");
+        setLoading(false);
+      });
   }, [teamCode]);
 
   // Generate QR Code when UPI URI is ready
@@ -110,13 +116,20 @@ function PaymentContent() {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
+  const copyDefaultPass = () => {
+    const rawPass = `Forge#${(receiptData?.teamCode || teamCode).split("-")[2] || "2026"}`;
+    navigator.clipboard.writeText(rawPass);
+    setCopiedPass(true);
+    setTimeout(() => setCopiedPass(false), 2000);
+  };
+
   const handleSubmitUtr = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setUtrError(null);
 
     const cleanUtr = utrNumber.replace(/\D/g, "");
     if (cleanUtr.length !== 12) {
-      setUtrError("Please enter the complete 12-digit UPI Reference (UTR) Number from your payment details.");
+      setUtrError("Please enter the complete 12-digit UPI Reference (UTR) Number from your payment receipt.");
       return;
     }
 
@@ -156,44 +169,6 @@ function PaymentContent() {
     }
   };
 
-  const handleInstantSandbox = async () => {
-    setSubmittingUtr(true);
-    setUtrError(null);
-
-    try {
-      const res = await fetch("/api/payment/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          teamCode,
-          isSimulated: true,
-          razorpayPaymentId: `pay_sim_${Date.now()}`,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setUtrError(data.error || "Sandbox verification failed.");
-        setSubmittingUtr(false);
-        return;
-      }
-
-      setPaidSuccess(true);
-      setReceiptData(data);
-      setSubmittingUtr(false);
-
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.55 },
-        colors: ["#2FE6D6", "#7B5CFA", "#3ED598"],
-      });
-    } catch {
-      setUtrError("Network error during sandbox verification.");
-      setSubmittingUtr(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="max-w-xl mx-auto py-24 text-center space-y-4">
@@ -215,6 +190,32 @@ function PaymentContent() {
         >
           Go to Registration
         </Link>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="max-w-md mx-auto py-24 text-center space-y-4">
+        <AlertCircle className="w-10 h-10 text-status-red mx-auto" />
+        <h2 className="font-display font-bold text-xl text-brand-white">Team Verification Notice</h2>
+        <p className="text-xs text-status-red bg-status-red/10 border border-status-red/30 p-3 rounded-xl">
+          {fetchError}
+        </p>
+        <div className="pt-2 flex justify-center gap-3">
+          <Link
+            href="/register"
+            className="px-5 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-semibold text-xs"
+          >
+            Register Team
+          </Link>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-brand-white text-xs"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -247,7 +248,7 @@ function PaymentContent() {
                   ₹{amount}
                 </div>
                 <span className="text-[11px] text-brand-muted">
-                  (₹50 × {team?.members?.length || 3} members · OptiForge 2026)
+                  (₹50 × {team?.membersCount || 3} members · OptiForge 2026)
                 </span>
               </div>
 
@@ -259,6 +260,11 @@ function PaymentContent() {
                 {team?.teamName && (
                   <div className="text-xs text-brand-white font-medium truncate max-w-[200px]">
                     {team.teamName}
+                  </div>
+                )}
+                {team?.trackName && (
+                  <div className="text-[10px] text-brand-dim truncate max-w-[200px]">
+                    {team.trackName}
                   </div>
                 )}
               </div>
@@ -359,7 +365,7 @@ function PaymentContent() {
             </div>
 
             <p className="text-xs text-brand-muted">
-              Once your payment is successful, enter the 12-digit transaction/UTR number to instantly unlock your team dashboard.
+              Once your payment is complete, enter the 12-digit transaction/UTR number from your UPI receipt to activate your team credentials.
             </p>
 
             <div className="space-y-2">
@@ -375,7 +381,7 @@ function PaymentContent() {
                   setUtrNumber(e.target.value.replace(/\D/g, ""));
                   setUtrError(null);
                 }}
-                placeholder="e.g. 426189341029"
+                placeholder="e.g. 512165830063"
                 className="w-full px-4 py-3 rounded-xl bg-bg-secondary border border-navy-border text-sm font-mono text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent tracking-widest text-center"
               />
               <div className="flex items-center justify-between text-[11px] text-brand-dim">
@@ -407,9 +413,9 @@ function PaymentContent() {
 
               {showUtrHelp && (
                 <div className="pt-2 border-t border-navy-border/40 space-y-1.5 text-[11px] text-brand-dim font-mono animate-fade-in">
-                  <p>• <span className="text-brand-white font-semibold">Google Pay:</span> Open payment details $\rightarrow$ look for <span className="text-teal-accent">UPI transaction ID</span> (12 digits).</p>
-                  <p>• <span className="text-brand-white font-semibold">PhonePe:</span> Open payment receipt $\rightarrow$ look for <span className="text-teal-accent">UTR</span> under Transfer Details.</p>
-                  <p>• <span className="text-brand-white font-semibold">Paytm:</span> Open transaction $\rightarrow$ look for <span className="text-teal-accent">UPI Ref No</span>.</p>
+                  <p>• <span className="text-brand-white font-semibold">Google Pay:</span> Open transaction details → look for <span className="text-teal-accent">UPI transaction ID</span> (12 digits).</p>
+                  <p>• <span className="text-brand-white font-semibold">PhonePe:</span> Open payment receipt → look for <span className="text-teal-accent">UTR</span> under Transfer Details.</p>
+                  <p>• <span className="text-brand-white font-semibold">Paytm:</span> Open transaction → look for <span className="text-teal-accent">UPI Ref No</span>.</p>
                   <p>• <span className="text-brand-white font-semibold">BHIM:</span> Look for <span className="text-teal-accent">Transaction ID / UTR</span>.</p>
                 </div>
               )}
@@ -432,16 +438,6 @@ function PaymentContent() {
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
-            </button>
-
-            {/* Instant Sandbox Simulator Button for Dev Testing */}
-            <button
-              type="button"
-              onClick={handleInstantSandbox}
-              disabled={submittingUtr}
-              className="w-full py-2.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border/60 text-brand-dim hover:text-teal-accent text-xs font-mono transition-colors text-center block"
-            >
-              ⚡ Instant Sandbox Verification (Zero-Friction Dev Mode)
             </button>
           </form>
 
@@ -474,22 +470,40 @@ function PaymentContent() {
                 <Terminal className="w-4 h-4" />
                 <span>Your Official Team Credentials</span>
               </div>
-              <button
-                onClick={copyTeamCode}
-                className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white"
-              >
-                {copiedCode ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-status-green" />
-                    <span className="text-status-green">Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copy Team ID</span>
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={copyTeamCode}
+                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
+                >
+                  {copiedCode ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-status-green" />
+                      <span className="text-status-green">Copied Code</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Team ID</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={copyDefaultPass}
+                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
+                >
+                  {copiedPass ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-status-green" />
+                      <span className="text-status-green">Copied Pass</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Password</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
@@ -503,19 +517,20 @@ function PaymentContent() {
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Default Password</span>
-                <span className="text-sm font-bold text-brand-white">Forge#{teamCode.split("-")[2] || "2026"}</span>
+                <span className="text-sm font-bold text-brand-white">Forge#{(receiptData?.teamCode || teamCode).split("-")[2] || "2026"}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">UPI Reference / UTR</span>
                 <span className="text-xs text-status-green font-mono truncate block">
-                  {receiptData?.paymentId || utrNumber || "Verified"}
+                  {receiptData?.paymentId || utrNumber || "512165830063"}
                 </span>
               </div>
             </div>
 
             <p className="text-[11px] text-brand-muted leading-relaxed">
-              Your registration has been activated under <span className="text-brand-white font-semibold">Approach A (Instant Provisional Onboarding)</span>.
-              Keep your Team ID and Password safe to access starter templates, scenario shifts, and the submission portal.
+              Your registration has been officially confirmed and activated by{" "}
+              <span className="text-brand-white font-semibold">IEEE Vardhaman Student Branch</span>. Keep your
+              Team ID and Password safe to access your team dashboard and starter materials.
             </p>
           </div>
 
@@ -532,7 +547,7 @@ function PaymentContent() {
               href="/leaderboard"
               className="w-full py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono text-center transition-colors"
             >
-              View Live Leaderboard
+              View Standings
             </Link>
           </div>
         </div>

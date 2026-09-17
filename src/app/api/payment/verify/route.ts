@@ -6,54 +6,50 @@ import { cookies } from "next/headers";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { teamCode, utrNumber, razorpayPaymentId, razorpayOrderId, razorpaySignature, isSimulated } = body;
+    const { teamCode, utrNumber, razorpayPaymentId, razorpayOrderId } = body;
 
     if (!teamCode) {
       return NextResponse.json({ error: "Missing team code." }, { status: 400 });
     }
 
+    const cleanCode = teamCode.trim().toUpperCase();
     const team = await db.team.findUnique({
-      where: { teamCode },
+      where: { teamCode: cleanCode },
     });
 
     if (!team) {
-      return NextResponse.json({ error: "Team not found." }, { status: 404 });
+      return NextResponse.json(
+        { error: `Team ${cleanCode} not found. Please verify your team code or complete registration first.` },
+        { status: 404 }
+      );
     }
 
-    // Determine reference ID: prioritize utrNumber, then fallback to razorpayPaymentId or simulated ID
-    let finalPaymentId = (utrNumber || razorpayPaymentId || "").trim();
+    // Extract and validate the 12-digit numeric UTR
+    const rawUtr = (utrNumber || razorpayPaymentId || "").toString().trim();
+    const cleanUtr = rawUtr.replace(/\D/g, "");
 
-    if (!finalPaymentId && isSimulated) {
-      finalPaymentId = `pay_sim_${Date.now()}`;
-    }
-
-    if (!finalPaymentId) {
+    if (!cleanUtr) {
       return NextResponse.json(
         { error: "Please enter your 12-digit UPI Reference / UTR Number." },
         { status: 400 }
       );
     }
 
-    // Validate 12-digit UTR for real UPI submissions
-    if (!isSimulated && !finalPaymentId.startsWith("pay_sim_")) {
-      const cleanUtr = finalPaymentId.replace(/\D/g, "");
-      if (cleanUtr.length !== 12) {
-        return NextResponse.json(
-          { error: "Invalid UTR format. Please enter the exact 12-digit UPI Reference / UTR Number from your payment details." },
-          { status: 400 }
-        );
-      }
-      finalPaymentId = cleanUtr;
+    if (cleanUtr.length !== 12) {
+      return NextResponse.json(
+        { error: "Invalid UTR format. Please enter the exact 12-digit UPI Reference / UTR Number from your payment details." },
+        { status: 400 }
+      );
     }
 
     // Anti-Fraud Safeguard: Check if this UTR has already been submitted by another team
     const allTeams = await db.team.findMany();
     const isDuplicate = allTeams.some(
       (t) =>
-        t.teamCode !== teamCode &&
+        t.teamCode !== cleanCode &&
         t.paymentStatus === "CONFIRMED" &&
         t.razorpayPaymentId &&
-        t.razorpayPaymentId.toLowerCase() === finalPaymentId.toLowerCase()
+        t.razorpayPaymentId.toLowerCase() === cleanUtr.toLowerCase()
     );
 
     if (isDuplicate) {
@@ -63,16 +59,16 @@ export async function POST(req: Request) {
       );
     }
 
-    const orderId = razorpayOrderId || `order_upi_${Date.now()}`;
+    const orderId = razorpayOrderId || `order_upi_${cleanUtr}`;
 
     // Update team payment status to CONFIRMED
     const updatedTeam = await db.team.update({
-      where: { teamCode },
+      where: { teamCode: cleanCode },
       data: {
         paymentStatus: "CONFIRMED",
-        razorpayPaymentId: finalPaymentId,
+        razorpayPaymentId: cleanUtr,
         razorpayOrderId: orderId,
-        razorpaySignature: razorpaySignature || "UPI_UTR_DIRECT",
+        razorpaySignature: "UPI_DIRECT_SETTLEMENT",
       },
     });
 
@@ -81,8 +77,8 @@ export async function POST(req: Request) {
       data: {
         action: "PAYMENT_CONFIRMED",
         performedBy: team.leaderEmail,
-        details: `UPI Payment of ₹${team.paymentAmount} verified for team ${team.teamName} (${team.teamCode}). 12-digit UTR: ${finalPaymentId}. Payee: Maruthi Sai Teja (9490298994@axl)`,
-        reason: isSimulated ? "Simulated Sandbox Checkout" : "Direct UPI UTR Submission (Approach A)",
+        details: `UPI Payment of ₹${team.paymentAmount} verified for team ${team.teamName} (${team.teamCode}). 12-digit UTR: ${cleanUtr}. Payee: Maruthi Sai Teja (9490298994@axl)`,
+        reason: "Direct UPI Transfer verified with 12-digit UTR",
       },
     });
 
@@ -108,12 +104,13 @@ export async function POST(req: Request) {
       teamCode: updatedTeam.teamCode,
       teamName: updatedTeam.teamName,
       paymentAmount: updatedTeam.paymentAmount,
-      paymentId: finalPaymentId,
+      paymentId: cleanUtr,
       receiptNumber: `RCP-VCE-${updatedTeam.teamCode}`,
       organizer: "IEEE Vardhaman Student Branch",
       payee: "Maruthi Sai Teja (9490298994@axl)",
     });
   } catch (err) {
+    console.error("Error in /api/payment/verify:", err);
     return NextResponse.json({ error: "Internal error processing payment verification." }, { status: 500 });
   }
 }

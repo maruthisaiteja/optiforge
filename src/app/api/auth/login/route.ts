@@ -39,7 +39,7 @@ export async function POST(req: Request) {
       }
 
       const isValid = await comparePassword(password, team.password);
-      if (!isValid && password !== "team@optiforge") {
+      if (!isValid) {
         return NextResponse.json({ error: "Invalid password for team." }, { status: 401 });
       }
 
@@ -81,7 +81,7 @@ export async function POST(req: Request) {
     }
 
     const isValid = await comparePassword(password, user.password);
-    if (!isValid && password !== "admin@optiforge2026" && password !== "judge@optiforge") {
+    if (!isValid) {
       return NextResponse.json({ error: "Invalid password." }, { status: 401 });
     }
 

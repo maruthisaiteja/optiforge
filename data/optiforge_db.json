@@ -1,290 +1,137 @@
 {
   "users": [
     {
-      "id": "3905545c-ba31-4697-9cde-90d00602f8f1",
+      "id": "97dcb81f-5519-480a-b1cc-526c3f82081a",
       "username": "admin",
-      "password": "$2b$10$HGLjSWcK9/OJ1GvB09WIt.oVX777ybU5YYzsaZ1Yav42jDHrM8ibq",
+      "password": "$2b$10$NFbrHwj7LsijjcWlyiRJdeu3Q1dlCZpFUrkXOEoxPqdulC/2REaui",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "ff5e20fa-9f01-43c5-adec-414ae8b8c54f",
+      "id": "17dddeab-97fc-49d0-87d2-1f7465b49250",
       "username": "judge_p1",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Dr. K. Srinivas (Staff Scheduling & GA Expert)",
       "role": "JUDGE",
       "assignedDomainId": "p1-hospital-scheduling",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "6cadecf4-d2c3-429b-9f67-44c8bba29689",
+      "id": "08d64075-0323-4667-9627-da6815a027c4",
       "username": "judge_p2",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Dr. R. Varma (Autonomous Drone Routing & ACO)",
       "role": "JUDGE",
       "assignedDomainId": "p2-drone-delivery",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "9a931633-00b1-4cc3-aa3f-9a1b56347480",
+      "id": "6afa57d3-c98b-49cc-897d-b58ebf6a4d18",
       "username": "judge_p3",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Prof. M. Anitha (Hospital Capacity & PSO Expert)",
       "role": "JUDGE",
       "assignedDomainId": "p3-emergency-hospital",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "1deb9cd2-3bf5-41ef-a121-fca4670686a5",
+      "id": "835f2bd8-92be-40d9-961e-a160e147c6b8",
       "username": "judge_p4",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Dr. A. Sharma (Blood Supply Chain & GA Expert)",
       "role": "JUDGE",
       "assignedDomainId": "p4-blood-inventory",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "f7a54075-2469-42c2-8a6d-04a9c60b4d30",
+      "id": "72c19708-91ad-430b-881b-c5d20f67531f",
       "username": "judge_p5",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Dr. P. Chen (Multi-Robot Swarm Coverage Expert)",
       "role": "JUDGE",
       "assignedDomainId": "p5-search-and-rescue",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "8cc9e0fd-4103-44da-af52-f7c638cd2d4d",
+      "id": "e90098c2-17a3-4acb-ab0b-7ec2ac59c481",
       "username": "judge_p6",
-      "password": "$2b$10$dCTgyaI.VsILK8EEa7.VXuYH5iPrAi3JoKPXzt12urOG2xa6SNXeK",
+      "password": "$2b$10$XrSSYlnwlkE5LHxhMspJ7O6EgkMoMvxUwEnMcmf/cbUy0D82AAlWS",
       "name": "Prof. S. Reddy (Clinical Fuzzy Triage & ML Expert)",
       "role": "JUDGE",
       "assignedDomainId": "p6-fuzzy-triage",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     }
   ],
   "teams": [
     {
-      "id": "team-id-1021",
-      "teamCode": "OPT-26-1021",
-      "teamName": "NeuralForge",
-      "leaderEmail": "neuralforge@vce.ac.in",
-      "leaderPhone": "9876543210",
-      "password": "$2b$10$2VQNPE1YgWOzYH8J3CB5T.2O.vZ6SYNLyroxQky77I0A3jdlSowsK",
+      "id": "team-id-1904",
+      "teamCode": "OPT-26-1904",
+      "teamName": "Team 1904",
+      "leaderEmail": "chair.embs@vce.ac.in",
+      "leaderPhone": "9490298994",
+      "password": "$2b$10$MWZejK9ObIVI4ZNYoxx35uh72AtZbV9cj1Bbv4egHFKbGZTd85Ofy",
       "domainId": "p1-hospital-scheduling",
-      "skillLevel": "Advanced",
+      "skillLevel": "Standard",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 150,
-      "attemptsUsed": 2,
-      "bestScore": 92.4,
+      "razorpayPaymentId": "512165830063",
+      "razorpayOrderId": "order_upi_512165830063",
+      "razorpaySignature": "UPI_DIRECT_SETTLEMENT",
+      "attemptsUsed": 0,
+      "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "team-id-2044",
-      "teamCode": "OPT-26-2044",
-      "teamName": "SwarmDynasty",
-      "leaderEmail": "swarmdynasty@vce.ac.in",
-      "leaderPhone": "9845123456",
-      "password": "$2b$10$2VQNPE1YgWOzYH8J3CB5T.2O.vZ6SYNLyroxQky77I0A3jdlSowsK",
-      "domainId": "p5-search-and-rescue",
-      "skillLevel": "Advanced",
-      "paymentStatus": "CONFIRMED",
-      "paymentAmount": 200,
-      "attemptsUsed": 3,
-      "bestScore": 96.8,
-      "isDisqualified": false,
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "team-id-3088",
-      "teamCode": "OPT-26-3088",
-      "teamName": "AeroFleet",
-      "leaderEmail": "aerofleet@vce.ac.in",
-      "leaderPhone": "9701234567",
-      "password": "$2b$10$2VQNPE1YgWOzYH8J3CB5T.2O.vZ6SYNLyroxQky77I0A3jdlSowsK",
-      "domainId": "p2-drone-delivery",
-      "skillLevel": "Intermediate",
-      "paymentStatus": "CONFIRMED",
-      "paymentAmount": 100,
-      "attemptsUsed": 1,
-      "bestScore": 88.5,
-      "isDisqualified": false,
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "team-id-4109",
-      "teamCode": "OPT-26-4109",
-      "teamName": "FuzzyLogicMasters",
-      "leaderEmail": "fuzzylogic@vce.ac.in",
-      "leaderPhone": "9988776655",
-      "password": "$2b$10$2VQNPE1YgWOzYH8J3CB5T.2O.vZ6SYNLyroxQky77I0A3jdlSowsK",
-      "domainId": "p6-fuzzy-triage",
-      "skillLevel": "Advanced",
-      "paymentStatus": "CONFIRMED",
-      "paymentAmount": 150,
-      "attemptsUsed": 2,
-      "bestScore": 94.2,
-      "isDisqualified": false,
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     }
   ],
   "teamMembers": [
     {
-      "id": "dd0c49ca-9b5a-4286-b377-7a26486d7bba",
-      "teamId": "team-id-1021",
-      "name": "Aditya Kumar",
-      "rollNumber": "22011A0501",
+      "id": "b81f3beb-40d7-490a-a363-e7e466f679c7",
+      "teamId": "team-id-1904",
+      "name": "Maruthi Sai Teja",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0501",
       "branch": "CSE",
       "year": "3rd Year",
-      "email": "aditya@vce.ac.in",
-      "phone": "9876543210",
-      "tshirtSize": "L",
-      "createdAt": "2026-09-17T15:46:00.068Z"
+      "email": "chair.embs@vce.ac.in",
+      "phone": "9490298994",
+      "tshirtSize": null,
+      "createdAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "f2214702-b9b1-4d97-aa96-7e903fbebb4b",
-      "teamId": "team-id-1021",
-      "name": "Pooja Sharma",
-      "rollNumber": "22011A0502",
+      "id": "101778cf-ada2-4f87-9b0e-62ef4cb92b54",
+      "teamId": "team-id-1904",
+      "name": "Sai Teja",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0502",
       "branch": "CSE",
       "year": "3rd Year",
-      "email": "pooja@vce.ac.in",
-      "phone": "9876543211",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-17T15:46:00.068Z"
+      "email": "saiteja.dev@vce.ac.in",
+      "phone": "9490298995",
+      "tshirtSize": null,
+      "createdAt": "2026-09-17T16:11:37.213Z"
     },
     {
-      "id": "38be7573-50ce-4ff1-91b7-737a6a8688b9",
-      "teamId": "team-id-1021",
-      "name": "Rahul Varma",
-      "rollNumber": "22011A0503",
+      "id": "c4aea0ec-d712-4121-9fde-9c3e1155e951",
+      "teamId": "team-id-1904",
+      "name": "K. Rithvik",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0503",
       "branch": "IT",
       "year": "3rd Year",
-      "email": "rahul@vce.ac.in",
-      "phone": "9876543212",
-      "tshirtSize": "XL",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "99d78c18-3d74-4498-8f35-4d24f25eaa2d",
-      "teamId": "team-id-2044",
-      "name": "Kavya Reddy",
-      "rollNumber": "21011A1201",
-      "branch": "IT",
-      "year": "4th Year",
-      "email": "kavya@vce.ac.in",
-      "phone": "9845123456",
-      "tshirtSize": "S",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "84c85669-cb44-43d2-9b18-4327ff6acd1c",
-      "teamId": "team-id-2044",
-      "name": "Naveen Sai",
-      "rollNumber": "21011A1202",
-      "branch": "IT",
-      "year": "4th Year",
-      "email": "naveen@vce.ac.in",
-      "phone": "9845123457",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "52f91b1a-892e-4290-8af8-234dcacbf54e",
-      "teamId": "team-id-2044",
-      "name": "Bhavana Rao",
-      "rollNumber": "21011A1203",
-      "branch": "CSE",
-      "year": "4th Year",
-      "email": "bhavana@vce.ac.in",
-      "phone": "9845123458",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "1f4d0640-e204-4be5-b428-4deda1b47274",
-      "teamId": "team-id-2044",
-      "name": "Siddharth J.",
-      "rollNumber": "21011A1204",
-      "branch": "ECE",
-      "year": "4th Year",
-      "email": "sid@vce.ac.in",
-      "phone": "9845123459",
-      "tshirtSize": "L",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "ee538364-ab86-4aaf-a94f-db4e33777770",
-      "teamId": "team-id-3088",
-      "name": "Rohit Nair",
-      "rollNumber": "23011A0510",
-      "branch": "CSE",
-      "year": "2nd Year",
-      "email": "rohit@vce.ac.in",
-      "phone": "9701234567",
-      "tshirtSize": "L",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "735f699b-c422-4c23-8bf3-0b0bcadcf60f",
-      "teamId": "team-id-3088",
-      "name": "Sanya Gupta",
-      "rollNumber": "23011A0511",
-      "branch": "AI&ML",
-      "year": "2nd Year",
-      "email": "sanya@vce.ac.in",
-      "phone": "9701234568",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "f5c853d1-3a67-4c84-834b-7d87a2bb1ed4",
-      "teamId": "team-id-4109",
-      "name": "Manish Joshi",
-      "rollNumber": "22011A0415",
-      "branch": "ECE",
-      "year": "3rd Year",
-      "email": "manish@vce.ac.in",
-      "phone": "9988776655",
-      "tshirtSize": "XL",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "62727305-7068-42f2-aefc-38bcf0b351e7",
-      "teamId": "team-id-4109",
-      "name": "Sneha Patel",
-      "rollNumber": "22011A0416",
-      "branch": "ECE",
-      "year": "3rd Year",
-      "email": "sneha@vce.ac.in",
-      "phone": "9988776656",
-      "tshirtSize": "S",
-      "createdAt": "2026-09-17T15:46:00.068Z"
-    },
-    {
-      "id": "bd47d502-5189-4a69-9684-df58c12bda2f",
-      "teamId": "team-id-4109",
-      "name": "Tejaswini K.",
-      "rollNumber": "22011A0417",
-      "branch": "EEE",
-      "year": "3rd Year",
-      "email": "teja@vce.ac.in",
-      "phone": "9988776657",
-      "tshirtSize": "M",
-      "createdAt": "2026-09-17T15:46:00.068Z"
+      "email": "rithvik.k@vce.ac.in",
+      "phone": "9490298996",
+      "tshirtSize": null,
+      "createdAt": "2026-09-17T16:11:37.213Z"
     }
   ],
   "problemTracks": [
@@ -326,8 +173,8 @@
       "hiddenShiftAttempt2": "Staff reduction: Emergency leave removes ~20% of nursing staff in Intensive Care and Emergency.",
       "hiddenShiftAttempt3": "Demand spike: Pediatric and Critical Care departments declare a 35% increase in minimum shift coverage.",
       "livePatchSurprise": "One additional department declares an emergency minimum-staffing requirement, effective immediately.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "id": "p2-drone-delivery",
@@ -359,8 +206,8 @@
       "hiddenShiftAttempt2": "Adverse atmospheric conditions: Headwinds increase drone flight energy consumption by 25%.",
       "hiddenShiftAttempt3": "Request surge: Remote clinic orders double with narrowed 30-minute delivery deadlines.",
       "livePatchSurprise": "One drone in the fleet suffers mechanical failure and is grounded — all its assigned deliveries must be re-routed live.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "id": "p3-emergency-hospital",
@@ -391,8 +238,8 @@
       "hiddenShiftAttempt2": "Sudden regional incident: The nearest Tier-1 trauma center experiences extreme ER queue congestion.",
       "hiddenShiftAttempt3": "Specialist unavailability: On-call neurosurgeon and cardiac catheterization teams become unavailable at two candidate centers.",
       "livePatchSurprise": "The current top-ranked hospital destination just went to 100% full ICU capacity.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "id": "p4-blood-inventory",
@@ -424,8 +271,8 @@
       "hiddenShiftAttempt2": "Multiple emergency trauma arrivals trigger sudden surge in O-negative and B-positive demand.",
       "hiddenShiftAttempt3": "Supply chain disruption: Blood bank delivery van delayed by 48 hours.",
       "livePatchSurprise": "A critical blood-group shortage is declared for O-negative with an incoming mass-casualty transport.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "id": "p5-search-and-rescue",
@@ -457,8 +304,8 @@
       "hiddenShiftAttempt2": "Debris collapse: 3 new obstacle zones spawn dynamically, cutting off direct corridors.",
       "hiddenShiftAttempt3": "Secondary search zone: High survivor probability shifts unexpectedly to previously low-prior sector.",
       "livePatchSurprise": "One robot experiences communication transmitter failure — swarm coordination logic must adapt with remaining mesh nodes.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "id": "p6-fuzzy-triage",
@@ -490,145 +337,106 @@
       "hiddenShiftAttempt2": "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
       "hiddenShiftAttempt3": "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
       "livePatchSurprise": "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
-      "createdAt": "2026-09-17T15:46:00.068Z",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z",
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     }
   ],
-  "submissions": [
-    {
-      "id": "sub-1021-1",
-      "teamId": "team-id-1021",
-      "attemptNumber": 1,
-      "filename": "hospital_scheduling_base.py",
-      "codeContent": "# NeuralForge - Attempt 1\n# Base staff schedule with GA\ndef solve():\n    return 88.5\nbest_solution = [1, 0, 1, 1, 0]\nbest_fitness = 88.5\n",
-      "approachNotes": "Baseline schedule prioritizing minimum shift coverage and basic rest intervals.",
-      "whatChangedNotes": null,
-      "isLivePatch": false,
-      "status": "SCORED",
-      "runtimeMs": 182.4,
-      "solutionQuality": 88.5,
-      "efficiencyScore": 94,
-      "designQuality": 88,
-      "consistencyScore": 85,
-      "autoScore": 89.2,
-      "isAiAssisted": true,
-      "aiExplanation": "Strong genetic diversity preservation. Solid elitism retention across generations.",
-      "executionLogs": "Execution completed in 182.4 ms\nAST verification: PASSED\nCoverage constraints: SATISFIED",
-      "similarityScore": 12,
-      "similarityFlag": false,
-      "submittedAt": "2026-09-17T13:46:00.404Z"
-    },
-    {
-      "id": "sub-1021-2",
-      "teamId": "team-id-1021",
-      "attemptNumber": 2,
-      "filename": "hospital_scheduling_fatigue_tuned.py",
-      "codeContent": "# NeuralForge - Attempt 2\n# Shifted scenario adaptation\ndef solve():\n    return 94.0\nbest_solution = [1, 1, 1, 1, 0]\nbest_fitness = 94.0\n",
-      "approachNotes": "Integrated fuzzy fatigue penalty into objective function to penalize back-to-back night shifts.",
-      "whatChangedNotes": "Added non-linear penalty for consecutive night shifts after noticing fatigue spike in Attempt 1.",
-      "isLivePatch": false,
-      "status": "SCORED",
-      "runtimeMs": 165.2,
-      "solutionQuality": 93.5,
-      "efficiencyScore": 96,
-      "designQuality": 92,
-      "consistencyScore": 95,
-      "autoScore": 92.4,
-      "isAiAssisted": true,
-      "aiExplanation": "Fuzzy fatigue model effectively adapted to shifted departmental constraints.",
-      "executionLogs": "Execution completed in 165.2 ms\nAST verification: PASSED\nFatigue index: 0.12",
-      "similarityScore": 15,
-      "similarityFlag": false,
-      "submittedAt": "2026-09-17T15:01:00.404Z"
-    }
-  ],
+  "submissions": [],
   "judgeEvaluations": [],
   "announcements": [
     {
       "id": "ann-1",
-      "title": "OptiForge 2026 is Officially Live!",
-      "message": "Welcome teams! The 6 problem statements and starter templates are accessible. Notice the 3-attempt live progression and upcoming live patch round.",
+      "title": "Welcome to OptiForge 2026 — Registration Now Open",
+      "message": "Registrations are actively underway across Telangana and Andhra Pradesh. Prepare your teams for the live challenge on 25-09-2026 (9:00 AM - 4:00 PM IST).",
       "type": "INFO",
       "isActive": true,
-      "createdAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z"
     }
   ],
   "systemSettings": [
     {
       "key": "active_stage",
-      "value": "STAGE_4_ATTEMPT_1",
+      "value": "PRE_EVENT",
       "description": "Current tournament stage",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "leaderboard_frozen",
       "value": "false",
       "description": "Freeze leaderboard updates",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "leaderboard_visible",
       "value": "true",
       "description": "Public visibility of leaderboard",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "live_patch_duration_mins",
       "value": "20",
       "description": "Duration of live patch round in minutes",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "live_patch_deadline",
       "value": "",
       "description": "Active countdown deadline for Stage 7 live patch",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "weight_auto",
       "value": "60",
       "description": "Confidential: Percentage weight of auto-score",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "weight_judge",
       "value": "40",
       "description": "Confidential: Percentage weight of manual judge score",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "registration_open",
       "value": "true",
       "description": "Allow team registrations",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "event_date",
       "value": "25-09-2026",
       "description": "Official event date",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "event_time",
       "value": "9:00 AM - 4:00 PM",
       "description": "Official event timing",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     },
     {
       "key": "organizer_entity",
       "value": "IEEE Vardhaman Student Branch",
       "description": "Organizing student branch",
-      "updatedAt": "2026-09-17T15:46:00.068Z"
+      "updatedAt": "2026-09-17T16:11:37.213Z"
     }
   ],
   "auditLogs": [
     {
-      "id": "1347ab1a-ff82-4a8f-8fca-b99935ecc2be",
+      "id": "fc00abdf-f2bf-4023-8f9e-219339257d9b",
+      "action": "PAYMENT_CONFIRMED",
+      "performedBy": "chair.embs@vce.ac.in",
+      "details": "Direct UPI Payment of ₹150 verified for Team 1904 (OPT-26-1904). 12-digit UTR: 512165830063. Payee: Maruthi Sai Teja (9490298994@axl)",
+      "reason": "Direct UPI Transfer (Verified)",
+      "createdAt": "2026-09-17T16:11:37.213Z"
+    },
+    {
+      "id": "8e0d566b-55dc-478b-b592-cf54ce260dad",
       "action": "DATABASE_INITIALIZED",
       "performedBy": "system",
       "details": "OptiForge 2026 initialized with 6 official problem statements and 6 expert judges",
       "reason": "Official tournament release",
-      "createdAt": "2026-09-17T15:46:00.068Z"
+      "createdAt": "2026-09-17T16:11:37.213Z"
     }
   ]
 }
