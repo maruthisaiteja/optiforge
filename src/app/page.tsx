@@ -26,42 +26,83 @@ import {
   CheckSquare,
   HelpCircle,
   Radio,
-  Activity,
-  Bot,
   Flame,
+  Activity,
+  HeartPulse,
+  Brain,
+  Scan,
+  ActivitySquare,
+  Wifi,
+  Bot,
+  ExternalLink,
 } from "lucide-react";
 import CoverageMapVisualization from "@/components/CoverageMapVisualization";
 
+// Exact color tokens from https://ieee-embs-vce.vercel.app/optiforge
+const $ = {
+  bg: "#F8FAFC",
+  white: "#FFFFFF",
+  softBlue: "#F0F7FB",
+  softPurple: "#F6F1F8",
+  ieeeBlue: "#00629B",
+  embsPurple: "#772583",
+  cyan: "#12A8C4",
+  navy: "#102A43",
+  slate: "#52606D",
+  border: "#D9E6EE",
+  success: "#238B68",
+  warning: "#D58A19",
+  medRed: "#D84A5A",
+  aiPurple: "#7657D9",
+};
+
 export default function LandingPage() {
-  // Countdown Timer to 30-09-2026 10:00 AM IST
-  const targetDate = new Date("2026-09-30T10:00:00+05:30").getTime();
+  // Countdown to 30th September 2026 10:00 AM IST
+  const targetTime = new Date("2026-09-30T10:00:00+05:30").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
-    minutes: 0,
-    seconds: 0,
+    mins: 0,
+    secs: 0,
   });
+
+  // Mouse parallax state from live website
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0, nX: 0, nY: 0, hasMouse: false });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({
+        x: e.clientX,
+        y: e.clientY,
+        nX: (e.clientX / window.innerWidth - 0.5) * 2,
+        nY: (e.clientY / window.innerHeight - 0.5) * 2,
+        hasMouse: true,
+      });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date().getTime();
-      const diff = targetDate - now;
+      const diff = targetTime - now;
 
       if (diff > 0) {
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        setTimeLeft({ days, hours, minutes, seconds });
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+        setTimeLeft({ days, hours, mins, secs });
       } else {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        setTimeLeft({ days: 0, hours: 0, mins: 0, secs: 0 });
       }
     };
 
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
-  }, [targetDate]);
+  }, [targetTime]);
 
   // Selected Problem Modal state
   const [selectedProblem, setSelectedProblem] = useState<any | null>(null);
@@ -69,16 +110,56 @@ export default function LandingPage() {
   // Accordion FAQ state
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // 9 Official Innovation Themes
+  // Official 4-Phase Schedule (J7 from live site)
+  const officialSchedule = [
+    {
+      num: "01",
+      time: "10:00–12:30",
+      title: "1st Round (1st Development)",
+      desc: "Problem briefing, track selection, core algorithm design, and automated AI benchmark evaluation.",
+      tag: "Round 1",
+      highlight: true,
+    },
+    {
+      num: "02",
+      time: "12:30–13:15",
+      title: "Lunch Break & Networking",
+      desc: "Networking and lunch break. Teams regroup, analyze leaderboard metrics, and adjust strategy for afternoon rounds.",
+      tag: "Break",
+      highlight: false,
+    },
+    {
+      num: "03",
+      time: "13:15–15:00",
+      title: "2nd Round (2nd Development)",
+      desc: "Dynamic scenario shift injection, real-time code adaptation, and the 20-minute Live Patch Round (Strictly Zero AI).",
+      tag: "Round 2",
+      highlight: true,
+    },
+    {
+      num: "04",
+      time: "15:00–16:00",
+      title: "Final Panel Evaluation & Results",
+      desc: "Live defense and presentation before the domain expert faculty jury, followed by felicitation and awards ceremony.",
+      tag: "Panel Jury",
+      highlight: false,
+    },
+  ];
+
+  // 9 Official Innovation Themes (Z7 from live site & official spec)
   const innovationThemes = [
     {
       id: "theme-1-biomedical-ai",
+      num: "01",
       code: "T1",
       title: "Biomedical Artificial Intelligence",
-      category: "EMBS Domain",
-      domainColor: "#772583",
+      tag: "EMBS Domain",
+      desc: "Develop AI and machine-learning solutions for healthcare, including disease prediction, clinical decision support, and personalized medicine.",
+      accent: $.aiPurple,
+      bg: "#F4F1FF",
+      icon: <Brain className="w-6 h-6" />,
       difficulty: "Advanced",
-      technique: "Genetic Algorithm + Fuzzy Risk Modeling",
+      technique: "Genetic Algorithm + Fuzzy Clinical Risk Modeling",
       society: "IEEE EMBS",
       starterFile: "/starter/starter_p1_scheduling.py",
       context:
@@ -101,10 +182,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-2-edtech",
+      num: "02",
       code: "T2",
       title: "EdTech & Intelligent Learning Systems",
-      category: "CIS Domain",
-      domainColor: "#00629B",
+      tag: "CIS Domain",
+      desc: "Formulate adaptive learning platforms and curriculum optimization algorithms that dynamically personalize student mastery pathways.",
+      accent: $.ieeeBlue,
+      bg: $.softBlue,
+      icon: <Cpu className="w-6 h-6" />,
       difficulty: "Intermediate–Advanced",
       technique: "Multi-Objective Heuristics + Fuzzy Student Modeling",
       society: "IEEE CIS",
@@ -129,10 +214,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-3-digital-health",
+      num: "03",
       code: "T3",
       title: "Digital Health & Telemedicine",
-      category: "EMBS Domain",
-      domainColor: "#772583",
+      tag: "EMBS Domain",
+      desc: "Design dynamic dispatch and queue prioritization engines that match patient urgency with remote specialist availability under network fluctuations.",
+      accent: $.embsPurple,
+      bg: $.softPurple,
+      icon: <HeartPulse className="w-6 h-6" />,
       difficulty: "Advanced",
       technique: "Adaptive Fuzzy Triage & Queue Dispatch",
       society: "IEEE EMBS",
@@ -157,10 +246,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-4-neurotech",
+      num: "04",
       code: "T4",
       title: "Neurotechnology & Rehabilitation",
-      category: "Flagship Interdisciplinary",
-      domainColor: "#12A8C4",
+      tag: "EMBS × CIS",
+      desc: "Develop adaptive neuro-decoding algorithms using swarm intelligence to optimize spatial filtering weights and intent classification for BCI prosthetics.",
+      accent: $.cyan,
+      bg: "#EFFBFD",
+      icon: <Sparkles className="w-6 h-6" />,
       difficulty: "Advanced",
       technique: "Swarm Neuro-Decoding & Adaptive Filtering",
       society: "IEEE EMBS × CIS",
@@ -185,10 +278,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-5-medical-imaging",
+      num: "05",
       code: "T5",
       title: "Medical Imaging & Computer Vision",
-      category: "EMBS Domain",
-      domainColor: "#772583",
+      tag: "EMBS Domain",
+      desc: "Develop intelligent systems for MRI, CT, ultrasound, and histopathological image analysis, segmentation, and automated interpretation.",
+      accent: $.cyan,
+      bg: "#EFFBFD",
+      icon: <Scan className="w-6 h-6" />,
       difficulty: "Advanced",
       technique: "Evolutionary Segmentation & Hybrid Vision Filters",
       society: "IEEE EMBS",
@@ -213,10 +310,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-6-biomedical-signals",
+      num: "06",
       code: "T6",
       title: "Biomedical Signals & Intelligent Systems",
-      category: "Flagship Interdisciplinary",
-      domainColor: "#12A8C4",
+      tag: "EMBS Domain",
+      desc: "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
+      accent: $.medRed,
+      bg: "#FFF2F4",
+      icon: <ActivitySquare className="w-6 h-6" />,
       difficulty: "Advanced",
       technique: "Fuzzy Signal Classifier + Particle Swarm Optimizer",
       society: "IEEE EMBS × CIS",
@@ -241,10 +342,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-7-smart-healthcare-iot",
+      num: "07",
       code: "T7",
       title: "Smart Healthcare & Medical IoT",
-      category: "CIS Domain",
-      domainColor: "#00629B",
+      tag: "CIS Domain",
+      desc: "Design energy-aware swarm routing heuristics balancing transmission energy, telemetry priority, and sensor battery lifespan across wearable mesh nodes.",
+      accent: $.ieeeBlue,
+      bg: $.softBlue,
+      icon: <Wifi className="w-6 h-6" />,
       difficulty: "Intermediate–Advanced",
       technique: "Constrained Energy-Routing Heuristics",
       society: "IEEE CIS",
@@ -269,10 +374,14 @@ export default function LandingPage() {
     },
     {
       id: "theme-8-healthcare-robotics",
+      num: "08",
       code: "T8",
       title: "Healthcare Robotics & Automation",
-      category: "Flagship Interdisciplinary",
-      domainColor: "#12A8C4",
+      tag: "EMBS × CIS",
+      desc: "Develop autonomous, adaptive, and multi-agent systems for robotic surgery assistance, hospital corridor navigation, and contactless logistics.",
+      accent: $.warning,
+      bg: "#FFF9EB",
+      icon: <Bot className="w-6 h-6" />,
       difficulty: "Advanced",
       technique: "Multi-Agent Swarm Motion Planning & Obstacle Avoidance",
       society: "IEEE EMBS × CIS",
@@ -297,13 +406,18 @@ export default function LandingPage() {
     },
     {
       id: "theme-9-open-innovation",
+      num: "09",
       code: "T9",
       title: "Open Innovation on (CIS and EMBS only)",
-      category: "Flagship Interdisciplinary",
-      domainColor: "#12A8C4",
+      tag: "Flagship Domain",
+      desc: "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
+      accent: $.cyan,
+      bg: "#EFFBFD",
+      icon: <Sparkles className="w-6 h-6" />,
+      flagship: true,
       difficulty: "Advanced",
       technique: "Hybrid Evolutionary-Fuzzy Frameworks",
-      society: "IEEE EMBS × IEEE CIS",
+      society: "IEEE CIS & IEEE EMBS Only",
       starterFile: "/starter/starter_p2_drone.py",
       context:
         "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
@@ -325,784 +439,772 @@ export default function LandingPage() {
     },
   ];
 
-  // Official 4-Phase Schedule
-  const officialSchedule = [
-    {
-      phase: "Phase 1 · 10:00 AM – 12:30 PM",
-      title: "1st Development & AI Evaluation",
-      tag: "Morning Sprint",
-      badgeColor: "bg-ieeeBlue/10 text-ieeeBlue border-ieeeBlue/30",
-      accentBorder: "border-ieeeBlue/40",
-      bullets: [
-        "10:00 AM: Problem Briefing & Official Track Release",
-        "10:30 AM – 12:00 PM: 1st Development Block — Core algorithm design, heuristic modeling & optimization pipeline",
-        "12:00 PM – 12:30 PM: 1st Round AI Evaluation — Automated benchmark testing, convergence scoring & AST analysis",
-      ],
-    },
-    {
-      phase: "Intermission · 12:30 PM – 01:15 PM",
-      title: "Lunch Break & Networking",
-      tag: "Refresh & Strategize",
-      badgeColor: "bg-ofWarning/10 text-ofWarning border-ofWarning/30",
-      accentBorder: "border-ofWarning/40",
-      bullets: [
-        "12:30 PM – 01:15 PM: Dedicated lunch break for all participating teams",
-        "Review Phase 1 AI feedback and plan Phase 2 algorithmic refinements",
-      ],
-    },
-    {
-      phase: "Phase 2 · 01:15 PM – 03:00 PM",
-      title: "2nd Development & Live Patch",
-      tag: "Afternoon Crunch",
-      badgeColor: "bg-embsPurple/10 text-embsPurple border-embsPurple/30",
-      accentBorder: "border-embsPurple/40",
-      highlight: true,
-      bullets: [
-        "01:15 PM – 02:40 PM: 2nd Development Block — Scenario shift adaptation, hyperparameter tuning & stress tests",
-        "02:40 PM – 03:00 PM: The Live Patch Round — 20-minute surprise constraint perturbation (Strictly Zero AI allowed)",
-      ],
-    },
-    {
-      phase: "Phase 3 · 03:00 PM – 04:00 PM",
-      title: "Final Panel Evaluation & Results",
-      tag: "Grand Finale",
-      badgeColor: "bg-ofCyan/10 text-ofCyan border-ofCyan/30",
-      accentBorder: "border-ofCyan/40",
-      bullets: [
-        "03:00 PM – 03:45 PM: Final Panel Evaluation — In-person jury defense & live code execution before expert faculty",
-        "03:45 PM – 04:00 PM: Award Ceremony, E-Certificate Distribution & Valedictory",
-      ],
-    },
-  ];
-
   const faqs = [
     {
-      q: "Who is eligible to participate in OptiForge 2026?",
-      a: "OptiForge is open to all engineering, technology, and science students. Teams can have 2 to 4 members across all branches (CSE, IT, ECE, AI&ML, EEE, MECH, etc.). Interdisciplinary collaboration between CIS and EMBS domains is highly encouraged!",
+      q: "Who can participate?",
+      a: "Any registered student from any institution in India. A team of 2–4 members is required. No prior competition experience needed.",
     },
     {
-      q: "What is the Hackathon Algorithm Design format?",
-      a: "OptiForge tests pure algorithmic optimization and computational intelligence. The tournament features multi-phase development, automated AI benchmark scoring, hidden scenario shifts, an AST code design verifier, a live 20-minute surprise patch round (zero AI allowed), and an in-person faculty jury defense.",
+      q: "What is the registration fee?",
+      a: "₹100 per team member (₹200 for 2 members, ₹300 for 3 members, ₹400 for 4 members), payable securely online via direct UPI / QR gateway or on 30 September 2026.",
     },
     {
-      q: "What is the registration fee and how is it paid?",
-      a: "The registration fee is ₹100 per participant (₹200 for 2 members, ₹300 for 3 members, ₹400 for 4 members). Payments are secured via official direct UPI & QR gateway verified under IEEE Vardhaman Student Branch entity.",
+      q: "How is scoring done?",
+      a: "Multi-metric scoring: automated solution quality (fitness score), runtime efficiency, AST structure analysis, and AI evaluation feedback combined with final jury viva defense.",
     },
     {
       q: "Do we need to build a web frontend or deploy an API?",
-      a: "No! OptiForge tests pure algorithmic optimization. You upload your Python script (.py) or notebook (.ipynb). Our sandboxed engine executes it against held-out benchmark datasets and evaluates fitness, efficiency, and design.",
+      a: "No! OptiForge tests pure algorithmic optimization. You submit your Python script (.py) or notebook (.ipynb). Our sandboxed engine executes it against held-out benchmark datasets.",
     },
     {
       q: "What perks and certificates do participants receive?",
-      a: "All verified participants receive official E-Certificates of Participation & Excellence issued jointly by IEEE EMBS Student Chapter and IEEE CIS Local Chapter, Vardhaman College of Engineering, along with cash prizes, trophies, and tech goodies for podium teams.",
+      a: "All verified participants receive authenticated E-Certificates of Participation & Excellence issued jointly by IEEE EMBS Student Chapter and IEEE CIS Chapter, Vardhaman College of Engineering, along with cash prizes, trophies, and tech goodies for podium teams.",
     },
   ];
 
   return (
-    <div className="space-y-20 sm:space-y-28 pb-24">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Glow ambient background highlights */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-ieeeBlue/8 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-embsPurple/8 rounded-full blur-[100px] pointer-events-none" />
+    <div
+      style={{
+        backgroundColor: $.bg,
+        minHeight: "100vh",
+        color: $.navy,
+        overflow: "hidden",
+        fontFamily: "Inter, sans-serif",
+      }}
+      className="relative"
+    >
+      {/* 0. DYNAMIC MOUSE-FOLLOW SPOTLIGHT FROM LIVE SITE */}
+      {mousePos.hasMouse && (
+        <div
+          className="fixed inset-0 pointer-events-none z-50 mix-blend-soft-light transition-opacity duration-300"
+          style={{
+            background: `radial-gradient(800px circle at ${mousePos.x}px ${mousePos.y}px, rgba(255,255,255,0.8), transparent 40%)`,
+          }}
+        />
+      )}
 
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ofSoftBlue border border-ieeeBlue/25 text-ieeeBlue text-xs font-mono mb-6 shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-ieeeBlue animate-pulse" />
-          <span>IEEE Vardhaman Student Branch · IEEE EMBS × IEEE CIS</span>
-        </div>
+      {/* AMBIENT PARALLAX BACKGROUND LAYERS */}
+      <div
+        className="fixed inset-0 pointer-events-none transition-transform duration-700 ease-out"
+        style={{
+          transform: `translate(${mousePos.nX * -15}px, ${mousePos.nY * -15}px)`,
+        }}
+      >
+        <div
+          className="absolute top-0 left-0 w-full h-full"
+          style={{
+            background: `linear-gradient(135deg, ${$.bg} 0%, #EEF8FC 50%, #F7F0F9 100%)`,
+          }}
+        />
+        <div
+          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full mix-blend-multiply opacity-20 blur-[100px]"
+          style={{ background: $.softBlue }}
+        />
+        <div
+          className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] rounded-full mix-blend-multiply opacity-25 blur-[120px]"
+          style={{ background: $.softPurple }}
+        />
+      </div>
 
-        {/* Title */}
-        <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight text-ofNavy leading-none uppercase">
-          OPTI<span className="text-ieeeBlue">FORGE</span>{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-signature">2026</span>
-        </h1>
-
-        <p className="mt-4 font-mono text-sm sm:text-base text-ieeeBlue uppercase tracking-widest font-bold">
-          Hackathon Algorithm Design · Computational Intelligence Challenge
-        </p>
-
-        <p className="mt-6 max-w-2xl mx-auto text-sm sm:text-base text-ofSlate leading-relaxed font-sans">
-          Engineer high-performance evolutionary heuristics, swarm intelligence, and fuzzy inference
-          systems. Compete across 9 official innovation themes with multi-phase development, automated AI
-          evaluation, live surprise patch rounds, and expert faculty panel defense.
-        </p>
-
-        {/* Event Schedule Pill */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-mono text-ofNavy">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
-            <Calendar className="w-4 h-4 text-ieeeBlue" />
-            <span className="font-semibold">30-09-2026</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
-            <Clock className="w-4 h-4 text-embsPurple" />
-            <span className="font-semibold">10:00 AM – 4:00 PM IST</span>
-          </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
-            <MapPin className="w-4 h-4 text-ofWarning" />
-            <span>Vardhaman College of Engineering</span>
-          </div>
-        </div>
-
-        {/* Live Countdown Timer */}
-        <div className="mt-10 max-w-lg mx-auto p-5 sm:p-6 rounded-2xl bg-white border border-ofBorder shadow-card">
-          <span className="text-[11px] font-mono uppercase tracking-widest text-ofSlate block mb-3 font-semibold">
-            Countdown to Challenge Launch
-          </span>
-          <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
-            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
-                {String(timeLeft.days).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Days</span>
-            </div>
-            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
-                {String(timeLeft.hours).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Hours</span>
-            </div>
-            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
-                {String(timeLeft.minutes).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Mins</span>
-            </div>
-            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-ieeeBlue block">
-                {String(timeLeft.seconds).padStart(2, "0")}
-              </span>
-              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Secs</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero CTA Buttons */}
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Link
-            href="/register"
-            className="px-8 py-3.5 rounded-xl bg-gradient-signature text-white font-display font-bold text-sm shadow-bright hover:brightness-110 transition-all flex items-center gap-2 group"
+      <div className="relative z-10 space-y-24 sm:space-y-32 pb-24">
+        {/* 1. HERO SECTION (MATCHING LIVE SITE e9 COMPONENT) */}
+        <section className="relative pt-24 sm:pt-32 pb-16 px-4 sm:px-8 max-w-[1280px] mx-auto text-center">
+          <div
+            className="space-y-7 transition-transform duration-700 ease-out"
+            style={{
+              transform: `translate(${mousePos.nX * 8}px, ${mousePos.nY * 8}px)`,
+            }}
           >
-            <span>Register Team (₹100 / member)</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-          <a
-            href="#themes"
-            className="px-6 py-3.5 rounded-xl bg-white hover:bg-ofSoftBlue border border-ofBorder hover:border-ieeeBlue text-ofNavy font-semibold text-sm transition-all flex items-center gap-2 shadow-sm"
-          >
-            <FileCode className="w-4 h-4 text-ieeeBlue" />
-            <span>Explore 9 Innovation Themes</span>
-          </a>
-          <Link
-            href="/leaderboard"
-            className="px-6 py-3.5 rounded-xl bg-white hover:bg-ofSoftBlue border border-ofBorder hover:border-embsPurple text-ofNavy font-semibold text-sm transition-all flex items-center gap-2 shadow-sm"
-          >
-            <Trophy className="w-4 h-4 text-embsPurple" />
-            <span>Live Leaderboard</span>
-          </Link>
-        </div>
-      </section>
-
-      {/* 2. OFFICIAL HACKATHON SCHEDULE (4-PHASE LIFECYCLE) */}
-      <section id="schedule" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <Clock className="w-3.5 h-3.5" />
-            <span>Official Event Day Timeline · 30th September 2026</span>
-          </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            Tournament Schedule & Development Blocks
-          </h2>
-          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
-            A structured hackathon lifecycle progressing from initial heuristic development and AI automated
-            scoring through scenario shift adaptations, live surprise patch rounds, and expert panel defense.
-          </p>
-        </div>
-
-        {/* 4-Phase Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {officialSchedule.map((item, idx) => (
+            {/* Header Badge */}
             <div
-              key={idx}
-              className={`rounded-2xl p-6 flex flex-col justify-between space-y-4 transition-all bg-white border ${
-                item.highlight
-                  ? "border-embsPurple/50 shadow-bright ring-1 ring-embsPurple/20"
-                  : "border-ofBorder hover:border-ieeeBlue/40 shadow-card"
-              }`}
+              className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full text-xs font-bold shadow-sm glass-card cursor-default"
+              style={{ color: $.ieeeBlue }}
             >
-              <div className="space-y-3">
+              <span
+                className="w-2.5 h-2.5 rounded-full animate-pulse"
+                style={{ background: $.embsPurple }}
+              />
+              <span>IEEE EMBS × IEEE CIS · Vardhaman College of Engineering</span>
+            </div>
+
+            {/* Big Sora Display Title */}
+            <h1
+              className="text-6xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-none uppercase"
+              style={{ fontFamily: "Sora, sans-serif", color: $.ieeeBlue }}
+            >
+              OPTIFORGE
+              <br />
+              <span
+                className="text-5xl sm:text-6xl lg:text-7xl mt-2 block"
+                style={{ color: $.embsPurple }}
+              >
+                2026
+              </span>
+            </h1>
+
+            {/* Subtitle */}
+            <p
+              className="text-sm sm:text-base uppercase tracking-widest font-semibold"
+              style={{ color: $.slate, fontFamily: "Inter, sans-serif" }}
+            >
+              Computational Intelligence Challenge · Hackathon Algorithm Design
+            </p>
+
+            {/* Description */}
+            <p
+              className="max-w-2xl mx-auto text-sm sm:text-base leading-relaxed"
+              style={{ color: $.slate }}
+            >
+              Engineer high-performance evolutionary heuristics, machine learning models, and intelligent
+              systems. Compete across 9 innovation themes with live development rounds, AI evaluation,
+              scenario shifts, and expert panel defense.
+            </p>
+
+            {/* Meta Pills */}
+            <div
+              className="flex flex-wrap items-center justify-center gap-3 text-xs"
+              style={{ fontFamily: "JetBrains Mono, monospace" }}
+            >
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <Calendar className="w-3.5 h-3.5" style={{ color: $.ieeeBlue }} />
+                <span>30 September 2026</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <Clock className="w-3.5 h-3.5" style={{ color: $.embsPurple }} />
+                <span>10:00 AM – 4:00 PM IST</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <MapPin className="w-3.5 h-3.5" style={{ color: $.medRed }} />
+                <span>Vardhaman College of Engineering</span>
+              </div>
+            </div>
+
+            {/* Live Countdown Box (Nc from live site) */}
+            <div className="max-w-md mx-auto space-y-4 pt-4">
+              <p
+                className="text-[11px] font-bold uppercase tracking-widest"
+                style={{ color: $.slate, fontFamily: "Inter, sans-serif" }}
+              >
+                Countdown to Challenge Launch
+              </p>
+              <div className="flex items-center justify-center gap-3">
+                <div
+                  className="flex flex-col items-center rounded-2xl px-5 py-4 min-w-[76px] transition-transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg glass-card"
+                  style={{ borderBottom: `3px solid ${$.ieeeBlue}` }}
+                >
+                  <span
+                    className="text-3xl font-black tabular-nums font-mono"
+                    style={{ color: $.navy }}
+                  >
+                    {String(timeLeft.days).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: $.slate }}>
+                    Days
+                  </span>
+                </div>
+
+                <div
+                  className="flex flex-col items-center rounded-2xl px-5 py-4 min-w-[76px] transition-transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg glass-card"
+                  style={{ borderBottom: `3px solid ${$.embsPurple}` }}
+                >
+                  <span
+                    className="text-3xl font-black tabular-nums font-mono"
+                    style={{ color: $.navy }}
+                  >
+                    {String(timeLeft.hours).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: $.slate }}>
+                    Hours
+                  </span>
+                </div>
+
+                <div
+                  className="flex flex-col items-center rounded-2xl px-5 py-4 min-w-[76px] transition-transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg glass-card"
+                  style={{ borderBottom: `3px solid ${$.cyan}` }}
+                >
+                  <span
+                    className="text-3xl font-black tabular-nums font-mono"
+                    style={{ color: $.navy }}
+                  >
+                    {String(timeLeft.mins).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: $.slate }}>
+                    Mins
+                  </span>
+                </div>
+
+                <div
+                  className="flex flex-col items-center rounded-2xl px-5 py-4 min-w-[76px] transition-transform hover:scale-105 hover:-translate-y-1 hover:shadow-lg glass-card"
+                  style={{ borderBottom: `3px solid ${$.success}` }}
+                >
+                  <span
+                    className="text-3xl font-black tabular-nums font-mono"
+                    style={{ color: $.navy }}
+                  >
+                    {String(timeLeft.secs).padStart(2, "0")}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-1" style={{ color: $.slate }}>
+                    Secs
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Action Buttons */}
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
+              <Link
+                href="/register"
+                className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-sm text-white overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-lg"
+                style={{ background: $.ieeeBlue }}
+              >
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <span className="relative z-10 flex items-center gap-2">
+                  Register Now (₹100/member)
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Link>
+
+              <Link
+                href="/leaderboard"
+                className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl text-sm font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-sm hover:shadow-md glass-card-subtle"
+                style={{ color: $.ieeeBlue }}
+              >
+                <Trophy className="w-4 h-4" />
+                <span>Live Leaderboard</span>
+              </Link>
+
+              <a
+                href="#themes"
+                className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl text-sm font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-sm hover:shadow-md glass-card-subtle"
+                style={{ color: $.embsPurple }}
+              >
+                <FileCode className="w-4 h-4" />
+                <span>9 Innovation Themes</span>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. PROBLEM DOMAINS: 9 INNOVATION THEMES (MATCHING Z7 CARDS) */}
+        <section id="themes" className="py-12 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-12">
+          <div className="text-center space-y-4">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider glass-card-subtle"
+              style={{ color: $.cyan }}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>9 Innovation Themes</span>
+            </div>
+            <h2
+              className="text-3xl sm:text-5xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Problem Domains
+            </h2>
+            <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{ color: $.slate }}>
+              Explore our 9 problem domains engineered for computational intelligence, algorithm design,
+              and interdisciplinary healthcare innovation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {innovationThemes.map((item, idx) => (
+              <div
+                key={item.id}
+                className="group relative rounded-3xl p-8 space-y-4 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden glass-card flex flex-col justify-between"
+                style={{ background: $.white }}
+              >
+                {/* Hover gradient tint */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: `linear-gradient(135deg, ${item.bg}, transparent)` }}
+                />
+
+                {/* Accent bottom bar */}
+                <div
+                  className="absolute inset-x-0 bottom-0 h-1 transition-colors duration-300"
+                  style={{ background: item.accent }}
+                />
+
+                <div className="relative z-10 space-y-4">
+                  <div className="flex items-start justify-between">
+                    <div
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3"
+                      style={{ background: item.bg, color: item.accent }}
+                    >
+                      {item.icon}
+                    </div>
+                    <span
+                      className="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider transition-colors duration-300 group-hover:bg-white"
+                      style={{
+                        color: item.accent,
+                        background: `${item.accent}15`,
+                        border: `1px solid ${item.accent}30`,
+                      }}
+                    >
+                      {item.tag}
+                    </span>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="text-xl font-black opacity-20"
+                        style={{ fontFamily: "JetBrains Mono, monospace" }}
+                      >
+                        {item.num}
+                      </span>
+                      {item.flagship && (
+                        <span
+                          className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30"
+                          style={{ color: $.warning }}
+                        >
+                          ★ Flagship
+                        </span>
+                      )}
+                    </div>
+
+                    <h3
+                      className="font-bold text-lg leading-snug transition-colors duration-300 group-hover:text-[#00629B]"
+                      style={{ color: $.navy }}
+                    >
+                      {item.title}
+                    </h3>
+
+                    <p className="text-sm leading-relaxed" style={{ color: $.slate }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card footer buttons */}
+                <div className="relative z-10 pt-4 border-t border-ofBorder/60 flex items-center justify-between gap-2">
+                  <button
+                    onClick={() => setSelectedProblem(item)}
+                    className="px-3 py-2 rounded-xl bg-ofSoftBlue hover:bg-ofBorder/60 border border-ofBorder text-xs text-ofNavy flex items-center gap-1.5 transition-colors font-medium"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-ieeeBlue" />
+                    <span>Full Spec</span>
+                  </button>
+                  <a
+                    href={item.starterFile}
+                    download
+                    className="px-3 py-2 rounded-xl bg-ieeeBlue/10 hover:bg-ieeeBlue/20 border border-ieeeBlue/30 text-xs text-ieeeBlue flex items-center gap-1.5 transition-colors font-mono font-semibold"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Starter .py</span>
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 3. HACKATHON SCHEDULE (MATCHING J7 SECTION) */}
+        <section className="py-12 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-12">
+          <div className="text-center space-y-4">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider glass-card-subtle"
+              style={{ color: $.embsPurple }}
+            >
+              <Clock className="w-3.5 h-3.5" />
+              <span>Timeline · 30 September 2026</span>
+            </div>
+            <h2
+              className="text-3xl sm:text-5xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Hackathon Schedule
+            </h2>
+            <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{ color: $.slate }}>
+              Structured progression across development rounds, automated AI evaluation, scenario shift
+              handling, and final panel evaluation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {officialSchedule.map((item, idx) => (
+              <div
+                key={idx}
+                className="group relative rounded-2xl p-6 space-y-4 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                style={
+                  item.highlight
+                    ? {
+                        border: `1px solid ${$.embsPurple}40`,
+                        background: `linear-gradient(135deg, #FFFFFF, ${$.softPurple})`,
+                        boxShadow: "0 12px 40px rgba(119,37,131,0.08)",
+                      }
+                    : {
+                        background: $.white,
+                        border: `1px solid ${$.border}`,
+                        boxShadow: "0 4px 20px rgba(0,0,0,0.04)",
+                      }
+                }
+              >
                 <div className="flex items-center justify-between">
-                  <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded border ${item.badgeColor}`}>
+                  <span
+                    className="font-bold text-lg opacity-30 group-hover:opacity-60 transition-opacity"
+                    style={{ fontFamily: "JetBrains Mono, monospace" }}
+                  >
+                    {item.num}
+                  </span>
+                  <span
+                    className="text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider"
+                    style={
+                      item.highlight
+                        ? { background: `${$.embsPurple}15`, color: $.embsPurple }
+                        : { background: $.softBlue, color: $.ieeeBlue }
+                    }
+                  >
                     {item.tag}
                   </span>
-                  {item.highlight && (
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-embsPurple/15 text-embsPurple uppercase">
-                      Zero AI Window
-                    </span>
-                  )}
                 </div>
 
-                <div className="font-mono text-xs font-bold text-ieeeBlue">
-                  {item.phase}
+                <div
+                  className="flex items-center gap-2 text-xs font-semibold group-hover:scale-105 transition-transform origin-left"
+                  style={{ color: $.ieeeBlue, fontFamily: "JetBrains Mono, monospace" }}
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{item.time}</span>
                 </div>
 
-                <h3 className="font-display font-bold text-ofNavy text-base leading-snug">
-                  {item.title}
-                </h3>
+                <div className="space-y-1.5">
+                  <h3 className="font-bold text-sm" style={{ color: $.navy }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-xs leading-relaxed" style={{ color: $.slate }}>
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
-                <ul className="space-y-2 pt-2 border-t border-ofBorder/60 text-xs text-ofSlate">
-                  {item.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="flex items-start gap-2 leading-relaxed">
-                      <span className="text-ieeeBlue font-bold mt-0.5">•</span>
-                      <span>{bullet}</span>
+        {/* 4. INTEGRITY ARCHITECTURE (EXACT LIVE SITE SECTION) */}
+        <section className="py-12 max-w-[1280px] mx-auto px-4 sm:px-8">
+          <div
+            className="rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-2xl group transition-transform duration-700 ease-out"
+            style={{
+              background: `linear-gradient(135deg, #FFFFFF 0%, ${$.softBlue} 100%)`,
+              border: `1px solid ${$.border}`,
+              transform: `translate(${mousePos.nX * -5}px, ${mousePos.nY * -5}px)`,
+            }}
+          >
+            <div
+              className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full pointer-events-none opacity-20 group-hover:scale-110 transition-transform duration-1000"
+              style={{
+                background: `radial-gradient(circle, ${$.ieeeBlue} 0%, transparent 70%)`,
+                filter: "blur(80px)",
+                transform: "translate(30%, -30%)",
+              }}
+            />
+
+            <div className="relative z-10 space-y-8 max-w-4xl">
+              <div
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider"
+                style={{ background: `${$.ieeeBlue}15`, color: $.ieeeBlue }}
+              >
+                <ShieldAlert className="w-4 h-4" />
+                <span>Integrity Architecture</span>
+              </div>
+
+              <h2
+                className="text-3xl sm:text-5xl font-black"
+                style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+              >
+                Why OptiForge Cannot Simply Be &quot;Prompted&quot; Into a Win
+              </h2>
+
+              <p className="text-base leading-relaxed max-w-3xl" style={{ color: $.slate }}>
+                Most engineering competitions collapse when participants paste problem prompts into LLMs.
+                OptiForge is explicitly engineered with multiple defensive layers to evaluate genuine
+                computational intelligence intuition and engineering skill.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  {
+                    title: "Hidden Scenario Shifts",
+                    color: $.cyan,
+                    desc: "Static prompt solutions break during 2nd Development when dynamic perturbations are injected into test data.",
+                  },
+                  {
+                    title: "AI Evaluation & Reflection",
+                    color: $.aiPurple,
+                    desc: "1st Development solutions undergo automated AI scoring. Teams submit reflection notes on parameter adaptation.",
+                  },
+                  {
+                    title: "Live Patch Agility",
+                    color: $.warning,
+                    desc: "A surprise constraint during 2nd Development tests real-time code refactoring and mental model clarity.",
+                  },
+                  {
+                    title: "Final Panel Defense",
+                    color: $.ieeeBlue,
+                    desc: "Expert faculty judges rigorously question teams on algorithmic representations and convergence.",
+                  },
+                ].map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-6 rounded-2xl space-y-3 transition-all hover:-translate-y-1 hover:shadow-lg"
+                    style={{ background: $.white, border: `1px solid ${$.border}` }}
+                  >
+                    <div className="flex items-center gap-3 font-bold" style={{ color: item.color }}>
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span>{item.title}</span>
+                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: $.slate }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. INTERACTIVE ARENA: HEALTHCARE ROBOTICS SWARM SIMULATION */}
+        <section className="py-6 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-6">
+          <div className="text-center space-y-2">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-mono font-semibold glass-card-subtle"
+              style={{ color: $.ieeeBlue }}
+            >
+              <Radio className="w-3.5 h-3.5" />
+              <span>Interactive Arena · Swarm Robotics & Autonomous Hospital Logistics</span>
+            </div>
+            <h2
+              className="text-3xl sm:text-4xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Live Swarm Motion Simulation Arena
+            </h2>
+            <p className="text-sm max-w-xl mx-auto" style={{ color: $.slate }}>
+              Interactive preview of multi-agent swarm pathfinding, dynamic corridor obstacle clearance, and
+              autonomous clinic logistics.
+            </p>
+          </div>
+
+          <div
+            className="p-4 sm:p-6 rounded-3xl shadow-card"
+            style={{ background: $.white, border: `1px solid ${$.border}` }}
+          >
+            <CoverageMapVisualization />
+          </div>
+        </section>
+
+        {/* 6. RULES & FAQ (EXACT LIVE SITE SECTION) */}
+        <section className="py-12 max-w-3xl mx-auto px-4 sm:px-8 space-y-8">
+          <div className="text-center space-y-3">
+            <h2
+              className="text-3xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Rules & FAQ
+            </h2>
+            <p className="text-base" style={{ color: $.slate }}>
+              Everything you need to know before registering.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((item, idx) => (
+              <div
+                key={idx}
+                className="rounded-2xl p-6 space-y-3 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1"
+                style={{ background: $.white, border: `1px solid ${$.border}` }}
+              >
+                <h4 className="font-bold text-base" style={{ color: $.navy }}>
+                  {item.q}
+                </h4>
+                <p className="text-sm leading-relaxed" style={{ color: $.slate }}>
+                  {item.a}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 7. READY TO COMPETE CTA (MATCHING LIVE SITE BOTTOM CTA) */}
+        <section className="py-16 max-w-[1280px] mx-auto px-4 sm:px-8 text-center space-y-8">
+          <h2
+            className="text-4xl sm:text-6xl font-black"
+            style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+          >
+            Ready to Compete?
+          </h2>
+          <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
+            Register your team of 2–4 members. ₹100 per member, payable on 30 September 2026.
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-5">
+            <Link
+              href="/register"
+              className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-base text-white transition-all hover:scale-105 active:scale-95 shadow-lg overflow-hidden relative"
+              style={{ background: $.ieeeBlue }}
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <span className="relative z-10 flex items-center gap-2">
+                Register Now (₹100/member)
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+            </Link>
+
+            <Link
+              href="/login"
+              className="group inline-flex items-center gap-2 px-8 py-5 rounded-2xl text-base font-bold transition-all hover:scale-105 shadow-sm hover:shadow-md"
+              style={{ background: $.white, border: `2px solid ${$.ieeeBlue}`, color: $.ieeeBlue }}
+            >
+              <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+              <span>Visit OptiForge Portal</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* 8. MODAL: FULL 7-SECTION SPECIFICATION VIEWER */}
+        {selectedProblem && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+            <div className="w-full max-w-3xl rounded-3xl bg-white border border-ofBorder shadow-2xl p-6 sm:p-8 space-y-6 max-h-[88vh] overflow-y-auto relative">
+              <button
+                onClick={() => setSelectedProblem(null)}
+                className="absolute top-5 right-5 p-2 text-ofSlate hover:text-ofNavy transition-colors font-bold text-lg"
+              >
+                ✕
+              </button>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  <span className="px-2.5 py-0.5 rounded bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue font-bold">
+                    {selectedProblem.code}
+                  </span>
+                  <span className="text-ofSlate font-medium">{selectedProblem.society}</span>
+                  <span className="text-embsPurple font-semibold">· {selectedProblem.difficulty}</span>
+                </div>
+                <h2 className="font-display font-bold text-2xl text-ofNavy">
+                  {selectedProblem.title}
+                </h2>
+                <div className="text-xs font-mono text-ieeeBlue font-semibold">
+                  {selectedProblem.technique}
+                </div>
+              </div>
+
+              {/* Section 1: Real-world Context */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  1. Real-World Context
+                </h4>
+                <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.context}</p>
+              </div>
+
+              {/* Section 2: Core Challenge */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  2. Core Optimization Challenge
+                </h4>
+                <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.coreChallenge}</p>
+              </div>
+
+              {/* Section 3: Hard Constraints */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  3. Hard Constraints (Must Satisfy)
+                </h4>
+                <ul className="space-y-1.5 text-xs text-ofSlate">
+                  {selectedProblem.hardConstraints.map((c: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-ofMedRed font-bold">•</span>
+                      <span>{c}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      {/* 3. ANTI-SHORTCUT CALLOUT: WHY THIS CANNOT BE PROMPTED INTO A WIN */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-white via-ofSoftBlue to-ofSoftPurple border border-ofBorder shadow-card relative overflow-hidden">
-          <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-embsPurple/10 border border-embsPurple/30 text-embsPurple text-xs font-mono font-bold">
-              <ShieldAlert className="w-4 h-4" />
-              <span>OptiForge Integrity Architecture</span>
-            </div>
+              {/* Section 4: Optimization Objectives */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  4. Optimization Objectives
+                </h4>
+                <ul className="space-y-1.5 text-xs text-ofSlate">
+                  {selectedProblem.optimizationObjectives.map((obj: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-ieeeBlue font-bold">•</span>
+                      <span>{obj}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <h2 className="font-display font-bold text-2xl sm:text-3xl text-ofNavy">
-              Why OptiForge Cannot Simply Be &quot;Prompted&quot; Into a Win
-            </h2>
-
-            <p className="text-sm text-ofSlate leading-relaxed">
-              Standard hackathons collapse when participants copy problem statements into generic LLMs.
-              OptiForge 2026 is engineered with multiple defensive architectural layers to evaluate genuine
-              computational intelligence intuition, mathematical reasoning, and live engineering agility:
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
-                <div className="text-xs font-display font-bold text-ieeeBlue flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue" />
-                  <span>Hidden Scenario Shifts</span>
-                </div>
+              {/* Section 5: Evaluation Methodology */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  5. Evaluation Methodology & Metrics
+                </h4>
                 <p className="text-xs text-ofSlate leading-relaxed">
-                  Static prompt solutions fail on subsequent attempts when dynamic perturbations (resource drops,
-                  impedance drift, queue spikes) are injected into held-out test data.
+                  Evaluated against synthetic multi-scenario benchmarks measuring solution quality, computational
+                  runtime efficiency, AST design quality, and stability under dynamic perturbations.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
-                <div className="text-xs font-display font-bold text-ieeeBlue flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue" />
-                  <span>Mandatory Reflection Notes</span>
-                </div>
-                <p className="text-xs text-ofSlate leading-relaxed">
-                  Every submission after Attempt 1 requires a &quot;what changed and why&quot; note detailing parameter
-                  adaptation and mathematical defense.
-                </p>
+              {/* Section 6: Attempt Progression */}
+              <div className="space-y-2">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
+                  6. Attempt Progression Overview
+                </h4>
+                <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.attemptProgression}</p>
               </div>
 
-              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
-                <div className="text-xs font-display font-bold text-ofWarning flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-ofWarning" />
-                  <span>Live Patch Round (Strictly Zero AI)</span>
-                </div>
-                <p className="text-xs text-ofSlate leading-relaxed">
-                  A 20-minute live surprise constraint with strictly ZERO AI allowed. Evaluates real-time code
-                  modification, mental model clarity, and edge-case handling.
-                </p>
+              {/* Section 7: Expected Team Output Checklist */}
+              <div className="space-y-2 p-4 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <h4 className="font-mono text-xs uppercase tracking-wider text-ofNavy font-bold">
+                  7. Expected Team Output Checklist (Standardized)
+                </h4>
+                <ul className="space-y-1.5 text-xs text-ofSlate pt-1">
+                  {[
+                    "Algorithm implementation (submitted Python script or notebook)",
+                    "Parameter configuration used, clearly stated in code comments or notes",
+                    "Final objective/fitness score recorded for each attempt",
+                    "Convergence or iteration evidence (logs or printouts demonstrating improvement)",
+                    "Written explanation: representation, operators/rules, and CI technique rationale",
+                    "A mandatory one-line 'what changed and why' note with every attempt after the first",
+                  ].map((chk, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <CheckSquare className="w-3.5 h-3.5 text-ieeeBlue shrink-0 mt-0.5" />
+                      <span>{chk}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
-                <div className="text-xs font-display font-bold text-embsPurple flex items-center gap-2">
-                  <Award className="w-4 h-4 text-embsPurple" />
-                  <span>Final Panel Jury Defense</span>
-                </div>
-                <p className="text-xs text-ofSlate leading-relaxed">
-                  Faculty judges question teams on fitness functions, defuzzification math, chromosome representations,
-                  and convergence graphs in person.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. PREREQUISITES: WHAT YOU GET vs. WHAT YOU BRING */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <Zap className="w-3.5 h-3.5" />
-            <span>Level Playing Field</span>
-          </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            Prerequisites: What You Get vs. What You Bring
-          </h2>
-          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
-            You don&apos;t need web development or cloud infrastructure skills. We provide the execution environment;
-            you bring algorithmic intuition.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Panel Left: What You Get */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ieeeBlue/30 shadow-card space-y-6">
-            <div className="flex items-center gap-3 border-b border-ofBorder pb-4">
-              <div className="w-10 h-10 rounded-xl bg-ieeeBlue/10 border border-ieeeBlue/30 flex items-center justify-center text-ieeeBlue">
-                <Download className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-lg text-ofNavy">What You Get from OptiForge</h3>
-                <p className="text-xs text-ofSlate">Pre-packaged starter kits & verification harness</p>
-              </div>
-            </div>
-
-            <ul className="space-y-3 text-xs text-ofSlate font-sans">
-              {[
-                "Modular Python starter scripts (.py) and notebooks (.ipynb) for all 9 innovation themes",
-                "Pre-built synthetic data generators and scenario loaders",
-                "Offline verification harness with identical scoring metrics",
-                "Isolated sandbox execution environment with standard scientific libraries",
-                "Instant multi-metric feedback (solution quality, runtime, AST design, consistency)",
-                "Working baseline heuristic solution for rapid experimentation",
-              ].map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Panel Right: What You Bring */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-embsPurple/30 shadow-card space-y-6">
-            <div className="flex items-center gap-3 border-b border-ofBorder pb-4">
-              <div className="w-10 h-10 rounded-xl bg-embsPurple/10 border border-embsPurple/30 flex items-center justify-center text-embsPurple">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-lg text-ofNavy">What You Must Bring</h3>
-                <p className="text-xs text-ofSlate">Algorithmic reasoning & problem-solving ability</p>
-              </div>
-            </div>
-
-            <ul className="space-y-3 text-xs text-ofSlate font-sans">
-              {[
-                "Algorithmic formulation: choosing representation (chromosomes, particles, pheromone paths)",
-                "Fitness function engineering: formulating multi-objective trade-offs and penalties",
-                "Hyperparameter tuning: population size, crossover rates, inertia damping, evaporation",
-                "Dynamic resilience: adapting code when hidden scenario shifts alter constraints",
-                "Interpretability & defense: ability to explain choices and convergence curves during viva",
-                "Teamwork & agility: rapid live patch implementation under tight 20-minute countdown",
-              ].map((item, idx) => (
-                <li key={idx} className="flex items-start gap-2.5">
-                  <Sparkles className="w-4 h-4 text-embsPurple shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. INTERACTIVE ARENA: HEALTHCARE ROBOTICS & SWARM COVERAGE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <Radio className="w-3.5 h-3.5" />
-            <span>Interactive Arena · Swarm Robotics & Autonomous Logistics</span>
-          </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            Healthcare Robotics & Autonomous Navigation Arena
-          </h2>
-          <p className="text-sm text-ofSlate max-w-xl mx-auto">
-            Live interactive simulation preview: multi-agent swarm coordination, dynamic hospital corridor
-            obstacle avoidance, and emergency rendezvous algorithms.
-          </p>
-        </div>
-
-        {/* Interactive Coverage Map Component */}
-        <div className="p-4 sm:p-6 rounded-3xl bg-white border border-ofBorder shadow-card">
-          <CoverageMapVisualization />
-        </div>
-      </section>
-
-      {/* 6. ALL 9 OFFICIAL INNOVATION THEMES */}
-      <section id="themes" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-embsPurple/10 border border-embsPurple/30 text-embsPurple text-xs font-mono font-bold">
-            <Binary className="w-3.5 h-3.5" />
-            <span>Official Hackathon Challenge Portfolio</span>
-          </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            9 Official Innovation Themes
-          </h2>
-          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
-            Select 1 theme for your team. All 9 challenges are engineered under IEEE EMBS × IEEE CIS guidance
-            with standardized multi-phase evaluation, benchmark harnesses, and starter scripts.
-          </p>
-        </div>
-
-        {/* 9 Themes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {innovationThemes.map((prob) => (
-            <div
-              key={prob.id}
-              className="rounded-2xl bg-white p-6 flex flex-col justify-between space-y-5 transition-all border border-ofBorder hover:border-ieeeBlue/50 shadow-card hover:shadow-bright"
-            >
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-ieeeBlue/10 border border-ieeeBlue/20 text-ieeeBlue">
-                    {prob.code}
-                  </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ofSoftBlue text-ofSlate font-medium">
-                    {prob.category}
-                  </span>
-                </div>
-
-                <h3 className="font-display font-bold text-base sm:text-lg text-ofNavy leading-snug">
-                  {prob.title}
-                </h3>
-
-                <div className="text-[11px] font-mono text-embsPurple bg-embsPurple/10 border border-embsPurple/20 px-2.5 py-1 rounded font-medium">
-                  {prob.technique}
-                </div>
-
-                <p className="text-xs text-ofSlate leading-relaxed line-clamp-3">
-                  {prob.coreChallenge}
-                </p>
-
-                {/* Hard Constraints Summary */}
-                <div className="space-y-1.5 pt-3 border-t border-ofBorder/60">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-ofSlate font-semibold block">
-                    Key Constraints
-                  </span>
-                  <ul className="text-[11px] text-ofSlate space-y-1">
-                    {prob.hardConstraints.slice(0, 2).map((c, i) => (
-                      <li key={i} className="flex items-start gap-1.5 truncate">
-                        <span className="text-ieeeBlue font-bold">•</span>
-                        <span className="truncate">{c}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-4 border-t border-ofBorder flex items-center justify-between gap-2">
+              <div className="pt-4 border-t border-ofBorder flex items-center justify-between">
                 <button
-                  onClick={() => setSelectedProblem(prob)}
-                  className="px-3 py-2 rounded-xl bg-ofSoftBlue hover:bg-ofBorder/50 border border-ofBorder text-xs text-ofNavy flex items-center gap-1.5 transition-colors font-medium"
+                  onClick={() => setSelectedProblem(null)}
+                  className="px-4 py-2 rounded-xl text-xs text-ofSlate hover:text-ofNavy transition-colors font-medium"
                 >
-                  <Eye className="w-3.5 h-3.5 text-ieeeBlue" />
-                  <span>Full Spec</span>
+                  Close Spec
                 </button>
                 <a
-                  href={prob.starterFile}
+                  href={selectedProblem.starterFile}
                   download
-                  className="px-3 py-2 rounded-xl bg-ieeeBlue/10 hover:bg-ieeeBlue/20 border border-ieeeBlue/30 text-xs text-ieeeBlue flex items-center gap-1.5 transition-colors font-mono font-semibold"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-signature text-white font-semibold text-xs shadow-bright hover:brightness-110 transition-all flex items-center gap-2"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Starter .py</span>
+                  <Download className="w-4 h-4" />
+                  <span>Download Official Starter Script (.py)</span>
                 </a>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 7. SCORING MATRIX: BROAD CATEGORIES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <Trophy className="w-3.5 h-3.5" />
-            <span>Evaluation Framework</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            Hybrid Scoring Architecture
-          </h2>
-          <p className="text-sm text-ofSlate max-w-xl mx-auto">
-            Your final standing blends instant automated sandboxed benchmarks with rigorous human jury defense.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Automated Evaluation Categories */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ofBorder shadow-card space-y-4">
-            <div className="flex items-center gap-2 font-display font-bold text-lg text-ofNavy">
-              <Terminal className="w-5 h-5 text-ieeeBlue" />
-              <span>Part I: Automated Sandbox Benchmarking</span>
-            </div>
-            <p className="text-xs text-ofSlate leading-relaxed">
-              Executed instantly in an isolated runtime sandbox against held-out scenario test suites:
-            </p>
-            <div className="space-y-3 pt-2">
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Solution Quality & Optimality</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Objective value score relative to optimal/greedy baseline benchmarks.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Execution Efficiency & Scalability</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Wall-clock execution time and convergence speed per iteration.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Algorithm Design Quality (AST)</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Static AST inspection verifying heuristic operators, loop structures, and diversity.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Multi-Attempt Consistency</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Performance stability across Attempts 1, 2, and 3 under injected scenario shifts.</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Judge Evaluation Categories */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ofBorder shadow-card space-y-4">
-            <div className="flex items-center gap-2 font-display font-bold text-lg text-ofNavy">
-              <Shield className="w-5 h-5 text-embsPurple" />
-              <span>Part II: Domain Faculty Jury Review</span>
-            </div>
-            <p className="text-xs text-ofSlate leading-relaxed">
-              Assessed by university domain experts during Phase 3 Final Panel Evaluation:
-            </p>
-            <div className="space-y-3 pt-2">
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Code Elegance & Modularity</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Readable, structured, well-commented code following clean scientific standards.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Algorithmic Reasoning & Defense</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Depth of justification for chosen representations, crossover/inertia rules, and live patch.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Convergence & Result Interpretation</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Ability to explain fitness evolution, sensitivity trade-offs, and failure modes.</div>
-              </div>
-              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
-                <div className="text-xs font-bold text-ofNavy">Adaptation to Scenario Shifts</div>
-                <div className="text-[11px] text-ofSlate mt-0.5">Quality of written reflections and dynamic handling of hidden perturbations.</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. RECOGNITION & PERKS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-ofBorder text-center space-y-6 shadow-card relative overflow-hidden">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <Award className="w-4 h-4" />
-            <span>Perks & Recognition</span>
-          </div>
-
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
-            Prizes, Goodies & Participation Honors
-          </h2>
-
-          <p className="text-ofSlate text-sm max-w-xl mx-auto leading-relaxed">
-            Every participating team earns authenticated credentials and competitive prestige under IEEE VCE.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 max-w-3xl mx-auto text-left">
-            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
-              <Trophy className="w-6 h-6 text-ofWarning" />
-              <h4 className="font-display font-bold text-ofNavy text-sm">Prize Pool & Goodies</h4>
-              <p className="text-xs text-ofSlate leading-relaxed">
-                Podium finishes and category awards receive official prize packages, trophies, and tech goodies.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
-              <Award className="w-6 h-6 text-ieeeBlue" />
-              <h4 className="font-display font-bold text-ofNavy text-sm">Official E-Certificates</h4>
-              <p className="text-xs text-ofSlate leading-relaxed">
-                All verified participants receive authenticated E-Certificates of Participation & Excellence.
-              </p>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
-              <Users className="w-6 h-6 text-embsPurple" />
-              <h4 className="font-display font-bold text-ofNavy text-sm">IEEE Student Perks</h4>
-              <p className="text-xs text-ofSlate leading-relaxed">
-                Mentorship from IEEE faculty, networking with peers, and society membership opportunities.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. FAQ ACCORDION */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Frequently Asked Questions</span>
-          </div>
-          <h2 className="font-display font-bold text-3xl text-ofNavy">Need Clarification?</h2>
-        </div>
-
-        <div className="space-y-3">
-          {faqs.map((faq, idx) => (
-            <div
-              key={idx}
-              className="rounded-xl bg-white border border-ofBorder overflow-hidden shadow-sm transition-colors"
-            >
-              <button
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-display font-bold text-sm text-ofNavy hover:text-ieeeBlue transition-colors"
-              >
-                <span>{faq.q}</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-ofSlate shrink-0 transition-transform duration-300 ${
-                    openFaq === idx ? "rotate-180 text-ieeeBlue" : ""
-                  }`}
-                />
-              </button>
-              {openFaq === idx && (
-                <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-ofSlate leading-relaxed border-t border-ofBorder">
-                  {faq.a}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 10. MODAL: FULL 7-SECTION PROBLEM STATEMENT VIEWER */}
-      {selectedProblem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-3xl rounded-3xl bg-white border border-ofBorder shadow-2xl p-6 sm:p-8 space-y-6 max-h-[88vh] overflow-y-auto relative">
-            <button
-              onClick={() => setSelectedProblem(null)}
-              className="absolute top-5 right-5 p-2 text-ofSlate hover:text-ofNavy transition-colors font-bold text-lg"
-            >
-              ✕
-            </button>
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="px-2.5 py-0.5 rounded bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue font-bold">
-                  {selectedProblem.code}
-                </span>
-                <span className="text-ofSlate font-medium">{selectedProblem.society}</span>
-                <span className="text-embsPurple font-semibold">· {selectedProblem.difficulty}</span>
-              </div>
-              <h2 className="font-display font-bold text-2xl text-ofNavy">
-                {selectedProblem.title}
-              </h2>
-              <div className="text-xs font-mono text-ieeeBlue font-semibold">{selectedProblem.technique}</div>
-            </div>
-
-            {/* Section 1: Real-world Context */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                1. Real-World Context
-              </h4>
-              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.context}</p>
-            </div>
-
-            {/* Section 2: Core Challenge */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                2. Core Optimization Challenge
-              </h4>
-              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.coreChallenge}</p>
-            </div>
-
-            {/* Section 3: Hard Constraints */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                3. Hard Constraints (Must Satisfy)
-              </h4>
-              <ul className="space-y-1.5 text-xs text-ofSlate">
-                {selectedProblem.hardConstraints.map((c: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-ofMedRed font-bold">•</span>
-                    <span>{c}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Section 4: Optimization Objectives */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                4. Optimization Objectives
-              </h4>
-              <ul className="space-y-1.5 text-xs text-ofSlate">
-                {selectedProblem.optimizationObjectives.map((obj: string, i: number) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <span className="text-ieeeBlue font-bold">•</span>
-                    <span>{obj}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Section 5: Evaluation Methodology */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                5. Evaluation Methodology & Metrics
-              </h4>
-              <p className="text-xs text-ofSlate leading-relaxed">
-                Evaluated against synthetic multi-scenario benchmarks measuring solution quality, computational
-                runtime efficiency, AST design quality, and stability under dynamic perturbations.
-              </p>
-            </div>
-
-            {/* Section 6: Attempt Progression */}
-            <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
-                6. Attempt Progression Overview
-              </h4>
-              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.attemptProgression}</p>
-            </div>
-
-            {/* Section 7: Expected Team Output Checklist */}
-            <div className="space-y-2 p-4 rounded-xl bg-ofSoftBlue border border-ofBorder">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-ofNavy font-bold">
-                7. Expected Team Output Checklist (Standardized)
-              </h4>
-              <ul className="space-y-1.5 text-xs text-ofSlate pt-1">
-                {[
-                  "Algorithm implementation (submitted Python script or notebook)",
-                  "Parameter configuration used, clearly stated in code comments or notes",
-                  "Final objective/fitness score recorded for each attempt",
-                  "Convergence or iteration evidence (logs or printouts demonstrating improvement)",
-                  "Written explanation: representation, operators/rules, and CI technique rationale",
-                  "A mandatory one-line 'what changed and why' note with every attempt after the first",
-                ].map((chk, i) => (
-                  <li key={i} className="flex items-start gap-2">
-                    <CheckSquare className="w-3.5 h-3.5 text-ieeeBlue shrink-0 mt-0.5" />
-                    <span>{chk}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="pt-4 border-t border-ofBorder flex items-center justify-between">
-              <button
-                onClick={() => setSelectedProblem(null)}
-                className="px-4 py-2 rounded-xl text-xs text-ofSlate hover:text-ofNavy transition-colors font-medium"
-              >
-                Close Spec
-              </button>
-              <a
-                href={selectedProblem.starterFile}
-                download
-                className="px-5 py-2.5 rounded-xl bg-gradient-signature text-white font-semibold text-xs shadow-bright hover:brightness-110 transition-all flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Official Starter Script (.py)</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
