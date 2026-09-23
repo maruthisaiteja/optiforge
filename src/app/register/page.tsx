@@ -35,7 +35,7 @@ export default function RegisterPage() {
   const router = useRouter();
 
   const [teamName, setTeamName] = useState("");
-  const [selectedProblem, setSelectedProblem] = useState("p1-hospital-scheduling");
+  const [selectedProblem, setSelectedProblem] = useState("theme-1-biomedical-ai");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -46,56 +46,107 @@ export default function RegisterPage() {
   const [pendingTeam, setPendingTeam] = useState<any>(null);
   const [isClientLoaded, setIsClientLoaded] = useState(false);
 
-  // 6 Official Problem Statements
+  // 9 Official Innovation Themes
   const problemStatements = [
     {
-      id: "p1-hospital-scheduling",
-      code: "P1",
-      title: "Hospital Staff Scheduling with Fatigue-Aware Optimization",
-      technique: "Genetic Algorithm + Fuzzy Fatigue Model",
+      id: "theme-1-biomedical-ai",
+      code: "T1",
+      tag: "EMBS Domain",
+      title: "Biomedical Artificial Intelligence",
+      technique: "Evolutionary Neural Architecture Search & Hybrid GA-ML",
       society: "IEEE EMBS × IEEE CIS",
-      focus: "ICU shift coverage & nurse fatigue minimization under non-linear operational constraints",
+      focus: "High-dimensional feature space search, hybrid clinical decision boundaries & rare pathology risk stratification",
+      accent: "#7657D9",
+      bg: "#F4F1FF",
     },
     {
-      id: "p2-drone-delivery",
-      code: "P2",
-      title: "Drone-Based Emergency Medical Supply Delivery",
-      technique: "Ant Colony Optimization + Genetic Algorithm",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "3D urban pathing, dynamic no-fly zones & non-linear battery discharge limits",
+      id: "theme-2-edtech",
+      code: "T2",
+      tag: "CIS Domain",
+      title: "EdTech & Intelligent Systems",
+      technique: "Genetic Algorithms + Dynamic Knowledge Space Optimization",
+      society: "IEEE CIS × IEEE EMBS",
+      focus: "Personalized learning trajectories, prerequisite mastery chains & spaced-repetition cognitive load balancing",
+      accent: "#00629B",
+      bg: "#F0F7FB",
     },
     {
-      id: "p3-emergency-hospital",
-      code: "P3",
-      title: "Emergency Hospital Destination Selection Under Dynamic Capacity",
-      technique: "Fuzzy Logic + Particle Swarm Optimization",
+      id: "theme-3-digital-health",
+      code: "T3",
+      tag: "EMBS Domain",
+      title: "Digital Health & Telemedicine",
+      technique: "Particle Swarm Optimization + Fuzzy Dynamic Priority Routing",
       society: "IEEE EMBS × IEEE CIS",
-      focus: "Multi-hospital surge balancing, ambulance diversion & real-time congestion routing",
+      focus: "Dynamic remote consultation routing, decentralized specialist allocation & bandwidth-constrained triage",
+      accent: "#12A8C4",
+      bg: "#EFFBFD",
     },
     {
-      id: "p4-blood-inventory",
-      code: "P4",
-      title: "Hospital Blood Inventory & Compatibility-Aware Allocation",
-      technique: "Genetic Algorithm / Particle Swarm Optimization",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Perishable cold-chain logistics, multi-depot emergency demand & shelf-life degradation",
+      id: "theme-4-neurotech",
+      code: "T4",
+      tag: "EMBS Domain",
+      title: "Neurotechnology & Rehabilitation",
+      technique: "Swarm Intelligence + Fuzzy Adaptive Neural Decoding",
+      society: "IEEE EMBS",
+      focus: "Non-stationary neural intent decoding, EMG artifact filtering & jerk-free robotic rehabilitation trajectories",
+      accent: "#772583",
+      bg: "#F6F1F8",
     },
     {
-      id: "p5-search-and-rescue",
-      code: "P5",
+      id: "theme-5-medical-imaging",
+      code: "T5",
+      tag: "EMBS Domain",
+      title: "Medical Imaging & Computer Vision",
+      technique: "Genetic Algorithms + Heuristic Feature Space Search",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Deformable contour optimization, 3D scan reconstruction & micro-lesion segmentation under severe noise",
+      accent: "#12A8C4",
+      bg: "#EFFBFD",
+    },
+    {
+      id: "theme-6-biomedical-signals",
+      code: "T6",
+      tag: "EMBS Domain",
+      title: "Biomedical Signals & Intelligent Systems",
+      technique: "Fuzzy Inference Systems + Evolutionary Signal Decomposition",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Continuous multi-channel ECG/EEG/PPG telemetry, morphological feature extraction & acute arrhythmia detection",
+      accent: "#D84A5A",
+      bg: "#FFF2F4",
+    },
+    {
+      id: "theme-7-smart-healthcare-iot",
+      code: "T7",
+      tag: "EMBS Domain",
+      title: "Smart Healthcare & Medical IoT",
+      technique: "Ant Colony Optimization + Energy-Aware Swarm Routing",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Ultra-low power medical sensor mesh routing, vital data packet priority & hospital network lifetime extension",
+      accent: "#238B68",
+      bg: "#F0FAF5",
+    },
+    {
+      id: "theme-8-healthcare-robotics",
+      code: "T8",
+      tag: "CIS Domain",
+      title: "Healthcare Robotics & Automation",
+      technique: "Distributed Swarm Intelligence + Multi-Objective GA Pathing",
+      society: "IEEE EMBS × IEEE CIS",
+      focus: "Multi-robot hospital corridor logistics, sterile disinfection navigation & collision-free emergency dispatch",
+      accent: "#D58A19",
+      bg: "#FFFDF2",
+    },
+    {
+      id: "theme-9-open-innovation",
+      code: "T9",
+      tag: "Flagship Domain",
       flagship: true,
-      title: "Multi-Robot Search-and-Rescue Area Coverage",
-      technique: "Distributed Swarm (PSO / ACO / Multi-Agent GA)",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Probabilistic heat-signature map, collapsing corridors & communication dropouts",
-    },
-    {
-      id: "p6-fuzzy-triage",
-      code: "P6",
-      title: "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
-      technique: "Fuzzy Expert System + Genetic Algorithm",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Clinical priority ranking under vital sign noise & critical ICU bed constraints",
+      title: "Open Innovation on (CIS and EMBS only)",
+      technique: "Hybrid Computational Intelligence & Novel Metaheuristics",
+      society: "IEEE CIS & IEEE EMBS Only",
+      focus: "Interdisciplinary breakthrough combining computational intelligence with transformative healthcare & biomedical paradigms",
+      accent: "#12A8C4",
+      bg: "#EFFBFD",
     },
   ];
 
@@ -203,7 +254,7 @@ export default function RegisterPage() {
         localStorage.removeItem(DRAFT_KEY);
       } catch {}
       setTeamName("");
-      setSelectedProblem("p1-hospital-scheduling");
+      setSelectedProblem("theme-1-biomedical-ai");
       setAgreedToTerms(false);
       setMembers([
         {
@@ -269,7 +320,7 @@ export default function RegisterPage() {
     setMembers(updated);
   };
 
-  const totalFee = members.length * 50;
+  const totalFee = members.length * 100;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -281,7 +332,7 @@ export default function RegisterPage() {
     }
 
     if (!selectedProblem) {
-      setErrorMsg("Please select one problem statement from the 6 available tracks.");
+      setErrorMsg("Please select one innovation theme from the 9 available themes.");
       return;
     }
 
@@ -379,7 +430,7 @@ export default function RegisterPage() {
           Register for OptiForge 2026
         </h1>
         <p className="text-xs sm:text-sm text-brand-muted max-w-xl mx-auto">
-          Assemble your squad (2 to 4 members). Fee is ₹50 per participant.
+          Assemble your squad (2 to 4 members). Fee is ₹100 per participant.
         </p>
       </div>
 
@@ -393,7 +444,7 @@ export default function RegisterPage() {
             href={`/payment?teamCode=${pendingTeam.teamCode}${pendingTeam.token ? `&token=${encodeURIComponent(pendingTeam.token)}` : ""}`}
             className="px-3 py-1 rounded-lg bg-amber-500 text-bg-primary font-bold hover:bg-amber-400 transition-colors ml-3 shrink-0"
           >
-            Pay ₹{pendingTeam.paymentAmount || 150} →
+            Pay ₹{pendingTeam.paymentAmount || 200} →
           </Link>
         </div>
       )}
@@ -600,7 +651,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Section 3: Problem Statement Selection (1 of 6) */}
+        {/* Section 3: Innovation Theme Selection (1 of 9) */}
         <div className="rounded-2xl bg-bg-card border border-navy-border/80 p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="flex items-center gap-3 border-b border-navy-border/60 pb-4">
             <div className="w-9 h-9 rounded-xl bg-navy-deep flex items-center justify-center text-teal-accent">
@@ -608,10 +659,10 @@ export default function RegisterPage() {
             </div>
             <div>
               <h3 className="font-display font-bold text-base text-brand-white">
-                Choose Problem Statement
+                Choose Innovation Theme
               </h3>
               <p className="text-xs text-brand-muted">
-                Select 1 of the 6 official problem statements your team will solve during the competition.
+                Select 1 of the 9 official innovation themes your team will solve during the competition.
               </p>
             </div>
           </div>
@@ -694,7 +745,7 @@ export default function RegisterPage() {
                   ₹{totalFee}
                 </span>
                 <span className="text-xs font-mono text-brand-muted">
-                  (₹50 × {members.length} participants)
+                  (₹100 × {members.length} participants)
                 </span>
               </div>
               <p className="text-[11px] text-brand-muted mt-1">
@@ -705,7 +756,7 @@ export default function RegisterPage() {
 
             <div className="flex items-center gap-2 text-xs font-mono text-status-green bg-status-green/10 border border-status-green/30 px-3 py-1.5 rounded-lg">
               <ShieldCheck className="w-4 h-4 shrink-0" />
-              <span>Verified Razorpay Integration</span>
+              <span>Official UPI & QR Gateway</span>
             </div>
           </div>
 

@@ -90,7 +90,7 @@ export async function POST(req: Request) {
       currentAttempt = team.attemptsUsed + 1;
     }
 
-    const trackId = team.domainId || "p1-hospital-scheduling";
+    const trackId = team.domainId || "theme-1-biomedical-ai";
 
     // 1. Plagiarism / Similarity Check across submissions in same track
     let maxSimilarity = 0;

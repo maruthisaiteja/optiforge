@@ -1,74 +1,104 @@
 {
   "users": [
     {
-      "id": "8de662ef-336a-4379-b4ee-6bc88a16236c",
+      "id": "dc939378-61d5-4151-b81e-153e25b01543",
       "username": "admin",
-      "password": "$2b$10$qLg1tzTpfkfeH9myOuILqumSitjaJZE.Em1twVjlfvDb6m14e49p2",
+      "password": "$2b$10$zViTt2yH5yj8G8AHuljnheCgYChntKi8I/wPQ.RvWD7UVxOq2XEgC",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "08b802ed-5b3a-4cfd-a903-cc57ede8f11f",
-      "username": "judge_p1",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Dr. K. Srinivas (Staff Scheduling & GA Expert)",
+      "id": "cb6c20cb-aed8-4e27-a8fd-d8d09c562b51",
+      "username": "judge_t1",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. K. Srinivas (Biomedical AI & Neural Opt Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p1-hospital-scheduling",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-1-biomedical-ai",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "dc0c9963-2b27-49af-8922-a1ce05a43d18",
-      "username": "judge_p2",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Dr. R. Varma (Autonomous Drone Routing & ACO)",
+      "id": "42d82602-96f9-45da-b22d-2362f576568d",
+      "username": "judge_t2",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Prof. M. Anitha (EdTech & Knowledge Graphs Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p2-drone-delivery",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-2-edtech",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "8bc19d23-fbd7-40eb-9f43-640ef64ed534",
-      "username": "judge_p3",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Prof. M. Anitha (Hospital Capacity & PSO Expert)",
+      "id": "a9e25146-088e-4947-91c9-e06c8af7474b",
+      "username": "judge_t3",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. R. Varma (Digital Health & Telemedicine Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p3-emergency-hospital",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-3-digital-health",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "edcdd10f-e122-4aae-8ddd-8cb589adabfd",
-      "username": "judge_p4",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Dr. A. Sharma (Blood Supply Chain & GA Expert)",
+      "id": "1ef96d5d-0c3b-46de-bbb7-70a6c83b24e5",
+      "username": "judge_t4",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. P. Chen (Neurotechnology & Brain Interfaces Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p4-blood-inventory",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-4-neurotech",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "615aeb7f-86e9-4636-8e72-d44e2c0d5940",
-      "username": "judge_p5",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Dr. P. Chen (Multi-Robot Swarm Coverage Expert)",
+      "id": "2f261809-4147-4750-9c01-ac89de174c96",
+      "username": "judge_t5",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. A. Sharma (Medical Imaging & Computer Vision Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p5-search-and-rescue",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-5-medical-imaging",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "42674467-5914-4c3b-a436-d17d10a4fabf",
-      "username": "judge_p6",
-      "password": "$2b$10$Cg7un5caINBoKkM7MN0NIuqPYKyBTN8G5VYziqFXmi8EVA.fTx6Tu",
-      "name": "Prof. S. Reddy (Clinical Fuzzy Triage & ML Expert)",
+      "id": "72af3018-c99a-4cfd-a8c0-7fa66602d00f",
+      "username": "judge_t6",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Prof. S. Reddy (Biomedical Signals & ECG/EEG Expert)",
       "role": "JUDGE",
-      "assignedDomainId": "p6-fuzzy-triage",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "assignedDomainId": "theme-6-biomedical-signals",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "c3a7192a-6c53-40ed-8024-5ca93933b3bb",
+      "username": "judge_t7",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. V. Rao (Smart Healthcare IoT & Swarm Routing Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "theme-7-smart-healthcare-iot",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "0ed9ae25-9932-4e9a-9a07-6ecc6547342d",
+      "username": "judge_t8",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. T. Patel (Healthcare Robotics & Automation Expert)",
+      "role": "JUDGE",
+      "assignedDomainId": "theme-8-healthcare-robotics",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "9374c87f-fca5-4c7e-a81e-3be9e8d15df0",
+      "username": "judge_t9",
+      "password": "$2b$10$7Ukv1gZRsOZOTGskR1e9zuM5Eq0c5KkWzmC1FTEsXCX4qgMWXgO8q",
+      "name": "Dr. N. Gupta (CIS & EMBS Open Innovation Jury Chair)",
+      "role": "JUDGE",
+      "assignedDomainId": "theme-9-open-innovation",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "teams": [
@@ -79,7 +109,7 @@
       "leaderEmail": "chair.embs@vce.ac.in",
       "leaderPhone": "9490298994",
       "password": "$2b$10$MWZejK9ObIVI4ZNYoxx35uh72AtZbV9cj1Bbv4egHFKbGZTd85Ofy",
-      "domainId": "p1-hospital-scheduling",
+      "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "CONFIRMED",
       "paymentAmount": 150,
@@ -89,8 +119,8 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "id": "team-id-7151",
@@ -99,7 +129,7 @@
       "leaderEmail": "team7151@vce.ac.in",
       "leaderPhone": "9490298994",
       "password": "$2b$10$.aHsr/m/toe/kxRW2TA9A.dnNMEzQ9f.mEBiGrQlEkjCHLBnBjs7i",
-      "domainId": "p1-hospital-scheduling",
+      "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
       "paymentAmount": 150,
@@ -109,8 +139,8 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "id": "team-id-1112",
@@ -119,7 +149,7 @@
       "leaderEmail": "team1112@vce.ac.in",
       "leaderPhone": "9490298994",
       "password": "$2b$10$x3ZJ.PiZjzctW.vqupdm2.d23WXHejkBKRqZA4SJszx.6znzYCSNu",
-      "domainId": "p1-hospital-scheduling",
+      "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
       "paymentAmount": 150,
@@ -129,13 +159,13 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "teamMembers": [
     {
-      "id": "02b6d53c-7c66-4d00-91d1-18964c6fe003",
+      "id": "5c0962ff-0151-4214-8a1a-4136cb4ff1f5",
       "teamId": "team-id-1904",
       "name": "Maruthi Sai Teja",
       "collegeName": "Vardhaman College of Engineering",
@@ -145,10 +175,10 @@
       "email": "chair.embs@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "02803dc9-a546-4210-996b-de99a9ebad6a",
+      "id": "e046db62-47cf-4056-83b3-a58ce440a2ba",
       "teamId": "team-id-1904",
       "name": "Sai Teja",
       "collegeName": "Vardhaman College of Engineering",
@@ -158,10 +188,10 @@
       "email": "saiteja.dev@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "83207486-83e1-4290-b7cc-05e25f024e82",
+      "id": "eaf64f1d-a45b-4b68-9489-57abbb60f4ef",
       "teamId": "team-id-1904",
       "name": "K. Rithvik",
       "collegeName": "Vardhaman College of Engineering",
@@ -171,10 +201,10 @@
       "email": "rithvik.k@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "b01e6d3d-2edb-48a4-a764-e83aa8f9cab3",
+      "id": "d91abd26-eeef-4d67-b1b1-d7d3b6d188c7",
       "teamId": "team-id-7151",
       "name": "Team Leader",
       "collegeName": "Vardhaman College of Engineering",
@@ -184,10 +214,10 @@
       "email": "team7151@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "3aeaa71c-0f67-491d-9deb-102d84b7733c",
+      "id": "ef5e63fc-7e9a-4bce-a3df-2640b3308b0a",
       "teamId": "team-id-7151",
       "name": "Member 2",
       "collegeName": "Vardhaman College of Engineering",
@@ -197,10 +227,10 @@
       "email": "member2_7151@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "3d65098a-d2d9-4e48-82d3-d92726d6510b",
+      "id": "38731563-9020-44cc-86a6-8fa05173d55d",
       "teamId": "team-id-7151",
       "name": "Member 3",
       "collegeName": "Vardhaman College of Engineering",
@@ -210,10 +240,10 @@
       "email": "member3_7151@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "b6726482-da0a-4913-bceb-21ec0834ab36",
+      "id": "1349ff59-c24e-4b54-b363-6421c4b8f1c9",
       "teamId": "team-id-1112",
       "name": "Team Leader",
       "collegeName": "Vardhaman College of Engineering",
@@ -223,10 +253,10 @@
       "email": "team1112@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "917ea299-d271-4c11-862b-e0963ed03c89",
+      "id": "c92a16b8-c2ab-4db8-a087-3f4132ebe39a",
       "teamId": "team-id-1112",
       "name": "Member 2",
       "collegeName": "Vardhaman College of Engineering",
@@ -236,10 +266,10 @@
       "email": "member2_1112@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "06f99ed0-3e65-4343-9fd3-5e2128edd836",
+      "id": "9ce764d4-67b9-4802-b3ff-47c03516a1c1",
       "teamId": "team-id-1112",
       "name": "Member 3",
       "collegeName": "Vardhaman College of Engineering",
@@ -249,33 +279,33 @@
       "email": "member3_1112@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "problemTracks": [
     {
-      "id": "p1-hospital-scheduling",
-      "name": "Hospital Staff Scheduling with Fatigue-Aware Optimization",
-      "shortName": "P1: Hospital Staff Scheduling",
+      "id": "theme-1-biomedical-ai",
+      "name": "Biomedical Artificial Intelligence",
+      "shortName": "T1: Biomedical AI",
       "society": "IEEE EMBS × IEEE CIS",
-      "difficulty": "Intermediate–Advanced",
-      "technique": "Genetic Algorithm + Fuzzy Fatigue Model",
-      "context": "A hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.",
-      "coreChallenge": "Construct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).",
+      "difficulty": "Advanced",
+      "technique": "Evolutionary Neural Architecture Search & Hybrid GA-ML",
+      "context": "Clinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.",
+      "coreChallenge": "Design an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.",
       "hardConstraints": [
-        "Minimum qualified staffing must be met across all shifts",
-        "Employees cannot work overlapping shifts",
-        "Minimum rest duration requirements must be strictly satisfied",
-        "Maximum contractual working hours must not be exceeded",
-        "Critical departments require appropriate certified skill coverage"
+        "Sensitivity for life-critical conditions must meet clinical safety minimum (>98%)",
+        "Feature selection must respect clinical interpretability and causal plausibility",
+        "Algorithm must output calibrated diagnostic confidence and uncertainty intervals",
+        "Execution latency per patient record cannot exceed operational clinical SLA",
+        "Model must not collapse under missing or asynchronously sampled clinical inputs"
       ],
       "optimizationObjectives": [
-        "Minimize cumulative fatigue risk score modeled via fuzzy inference",
-        "Minimize overtime hours and penalty costs",
-        "Minimize employee shift preference violations",
-        "Minimize skill mismatch while preserving complete departmental coverage"
+        "Maximize diagnostic ROC-AUC and high-risk case recall",
+        "Minimize false alarms and unnecessary clinical interventions",
+        "Minimize computational complexity for edge clinical deployment",
+        "Maximize stability and consistency across multi-center demographic shifts"
       ],
-      "hiddenTestNote": "A hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.",
+      "hiddenTestNote": "Hidden test cases inject rare co-morbidities and 20% corrupted sensor telemetry. The model must preserve life-critical sensitivity.",
       "expectedOutputChecklist": [
         "Algorithm implementation (submitted notebook/script)",
         "Parameter configuration used, clearly stated",
@@ -284,179 +314,343 @@
         "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
-      "description": "Schedule hospital staff across 7 days balancing hard coverage constraints with a continuous fuzzy fatigue risk model.",
-      "statementMarkdown": "### Problem 1 — Hospital Staff Scheduling with Fatigue-Aware Optimization\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Genetic Algorithm + Fuzzy Fatigue Model\n\n#### Context\nA hospital must schedule doctors, nurses, technicians, and support staff across a seven-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, prior-shift history, and minimum rest requirements. Each department requires a minimum number of staff with particular skills in every shift.\n\n#### Core Challenge\nConstruct a schedule that satisfies hard staffing requirements while reducing overtime, undesirable assignments, excessive night shifts, and fatigue risk — modeled via a fuzzy fatigue score based on consecutive shifts, recent night work, shift duration, rest duration, and cumulative workload (not a simple binary rule).\n\n#### Hard Constraints\n- Minimum qualified staffing must be met.\n- Employees cannot work overlapping shifts.\n- Minimum rest requirements must be satisfied.\n- Maximum working hours must not be exceeded.\n- Critical departments require appropriate skill coverage.\n\n#### Optimization Objectives\nMinimize fatigue risk, overtime, preference violations, and skill mismatch while maintaining complete departmental coverage.\n\n#### Competition & Hidden-Test Design\nA hidden test may remove several employees or change departmental demand. The algorithm should degrade gracefully rather than becoming infeasible.",
+      "description": "Search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries with evolutionary heuristics.",
+      "statementMarkdown": "### Theme 1 — Biomedical Artificial Intelligence\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Evolutionary Neural Architecture Search & Hybrid GA-ML\n\n#### Context\nClinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.\n\n#### Core Challenge\nDesign an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.\n\n#### Hard Constraints\n- Sensitivity for life-critical conditions must exceed 98%.\n- Selected features must maintain causal and physiological plausibility.\n- Diagnostic predictions must provide calibrated uncertainty intervals.\n- Execution latency must adhere to real-time clinical screening SLAs.\n- Pipeline must handle missing clinical covariates gracefully.\n\n#### Optimization Objectives\nMaximize diagnostic ROC-AUC, minimize false alarm fatigue, minimize parameter complexity, and maximize generalization across heterogeneous patient populations.",
       "starterNotebookUrl": "/starter/starter_p1_scheduling.py",
-      "benchmarkType": "HOSPITAL_SCHEDULING_GA_FUZZY",
-      "hiddenShiftAttempt2": "Staff reduction: Emergency leave removes ~20% of nursing staff in Intensive Care and Emergency.",
-      "hiddenShiftAttempt3": "Demand spike: Pediatric and Critical Care departments declare a 35% increase in minimum shift coverage.",
-      "livePatchSurprise": "One additional department declares an emergency minimum-staffing requirement, effective immediately.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "benchmarkType": "BIOMEDICAL_AI_EVOLUTIONARY",
+      "hiddenShiftAttempt2": "Demographic perturbation: Patient age and comorbid distributions shifted by 35% with missing laboratory markers.",
+      "hiddenShiftAttempt3": "Adversarial clinical noise: 20% of continuous ICU vitals perturbed with Gaussian sensor drift.",
+      "livePatchSurprise": "One urgent biomarker feature is rendered unavailable; algorithm must dynamically re-evaluate confidence without retraining from scratch.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "p2-drone-delivery",
-      "name": "Drone-Based Emergency Medical Supply Delivery",
-      "shortName": "P2: Drone Medical Delivery",
-      "society": "IEEE EMBS × IEEE CIS",
-      "difficulty": "Advanced",
-      "technique": "Ant Colony Optimization + Genetic Algorithm",
-      "context": "A fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.",
-      "coreChallenge": "Determine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.",
+      "id": "theme-2-edtech",
+      "name": "EdTech",
+      "shortName": "T2: EdTech Intelligent Systems",
+      "society": "IEEE CIS × IEEE EMBS",
+      "difficulty": "Intermediate–Advanced",
+      "technique": "Genetic Algorithms + Dynamic Knowledge Space Optimization",
+      "context": "Intelligent tutoring platforms must curate individualized learning journeys for diverse cohorts of students with varying baseline proficiencies, cognitive pacing, and knowledge retention curves.",
+      "coreChallenge": "Formulate a multi-objective optimization heuristic that schedules curricular modules, prerequisite mastery chains, and spaced-repetition assessments to maximize student knowledge mastery while preventing cognitive overload and disengagement.",
       "hardConstraints": [
-        "Payload and battery capacities cannot be exceeded",
-        "Drone range must permit safe mission completion or approved charging",
-        "High-priority deliveries have non-negotiable arrival deadlines",
-        "Temperature-sensitive supplies have maximum allowable transit duration",
-        "Drone and charging-station resources cannot be used simultaneously by incompatible tasks"
+        "Mandatory prerequisite dependencies between learning concepts must be strictly preserved",
+        "Daily study hours and cognitive workload must not exceed student capacity",
+        "Syllabus deadlines and examination milestones must be satisfied",
+        "Assessment intervals must respect spaced repetition memory retention bounds",
+        "Recommendations must dynamically adapt to real-time student quiz performance"
       ],
       "optimizationObjectives": [
-        "Maximize on-time priority deliveries to remote medical centers",
-        "Minimize total flight energy consumption and mission distance",
-        "Minimize missed deadlines and priority lateness penalties",
-        "Minimize thermal degradation risk for temperature-sensitive supplies"
+        "Maximize long-term concept retention and learning efficiency",
+        "Minimize student study fatigue and disengagement dropout risk",
+        "Minimize deviation from target examination completion timeline",
+        "Maximize mastery balance across all foundational competencies"
       ],
-      "hiddenTestNote": "Hidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.",
-      "description": "Optimize autonomous medical drone routing, payload dispatch, and charging paths under strict thermal and battery constraints.",
-      "statementMarkdown": "### Problem 2 — Drone-Based Emergency Medical Supply Delivery\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Ant Colony Optimization + Genetic Algorithm\n\n#### Context\nA fleet of autonomous drones must deliver medicines, blood products, vaccines, and emergency supplies from hospitals or distribution centers to remote clinics. Each drone has battery capacity, payload capacity, maximum range, speed, and charging requirements. Delivery requests specify location, payload, priority, deadline, and temperature sensitivity.\n\n#### Core Challenge\nDetermine which drone serves each request, the order of deliveries, charging decisions, and return paths. Temperature-sensitive supplies have strict transit-duration limits — a geographically short route that breaches this limit is invalid or heavily penalized.\n\n#### Hard Constraints\n- Payload and battery capacities cannot be exceeded.\n- Drone range must permit safe completion or approved charging.\n- High-priority deliveries have strict deadlines.\n- Temperature-sensitive supplies have maximum allowable transit duration.\n- Drone and charging-station resources cannot be used simultaneously by incompatible tasks.\n\n#### Optimization Objectives\nMaximize on-time priority deliveries while minimizing total flight energy, distance, missed deadlines, and temperature-risk exposure.\n\n#### Competition & Hidden-Test Design\nHidden cases vary wind/energy multipliers, request density, and priority distributions. Hybrid routing and assignment strategies are rewarded.",
-      "starterNotebookUrl": "/starter/starter_p2_drone.py",
-      "benchmarkType": "DRONE_ROUTING_ACO_GA",
-      "hiddenShiftAttempt2": "Adverse atmospheric conditions: Headwinds increase drone flight energy consumption by 25%.",
-      "hiddenShiftAttempt3": "Request surge: Remote clinic orders double with narrowed 30-minute delivery deadlines.",
-      "livePatchSurprise": "One drone in the fleet suffers mechanical failure and is grounded — all its assigned deliveries must be re-routed live.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "hiddenTestNote": "Hidden evaluation scenarios simulate sudden retention drops and compressed examination timelines.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Optimize individualized student learning trajectories, concept prerequisites, and spaced-repetition assessment schedules.",
+      "statementMarkdown": "### Theme 2 — EdTech Intelligent Systems\n\n**Society:** IEEE CIS × IEEE EMBS | **Track:** Intermediate–Advanced | **Technique:** Genetic Algorithms + Dynamic Knowledge Space Optimization\n\n#### Context\nIntelligent tutoring platforms must curate individualized learning journeys for diverse cohorts of students with varying baseline proficiencies, cognitive pacing, and knowledge retention curves.\n\n#### Core Challenge\nFormulate a multi-objective optimization heuristic that schedules curricular modules, prerequisite mastery chains, and spaced-repetition assessments to maximize student knowledge mastery while preventing cognitive overload and disengagement.\n\n#### Hard Constraints\n- Prerequisite DAG dependencies must never be violated.\n- Maximum daily cognitive load limits must be enforced.\n- Curriculum milestone completion deadlines must be satisfied.\n- Spaced repetition retention intervals must guide review pacing.\n- Adaptive pathways must re-calibrate upon failed assessments.\n\n#### Optimization Objectives\nMaximize cumulative mastery retention, minimize cognitive strain, minimize course completion latency, and equalize competency distribution.",
+      "starterNotebookUrl": "/starter/starter_ga.py",
+      "benchmarkType": "EDTECH_KNOWLEDGE_SPACE_GA",
+      "hiddenShiftAttempt2": "Student schedule compression: Available study hours cut by 40% across mid-semester revision blocks.",
+      "hiddenShiftAttempt3": "Prerequisite failure ripple: Concept mastery threshold raised by 25% requiring dynamic remedial insertions.",
+      "livePatchSurprise": "New mandatory accredited certification module injected into existing student schedule with zero deadline extension.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "p3-emergency-hospital",
-      "name": "Emergency Hospital Destination Selection Under Dynamic Capacity",
-      "shortName": "P3: Hospital Destination Selection",
+      "id": "theme-3-digital-health",
+      "name": "Digital Health & Telemedicine",
+      "shortName": "T3: Digital Health & Telemedicine",
       "society": "IEEE EMBS × IEEE CIS",
       "difficulty": "Advanced",
-      "technique": "Fuzzy Logic + Particle Swarm Optimization",
-      "context": "An emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.",
-      "coreChallenge": "Select the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.",
+      "technique": "Particle Swarm Optimization + Fuzzy Dynamic Priority Routing",
+      "context": "Regional telemedicine networks coordinate remote patient consultations, decentralized clinic transfers, and specialist triage across rural clinics facing bandwidth constraints and fluctuating specialist availability.",
+      "coreChallenge": "Implement a fuzzy-PSO algorithm that dynamically routes consultation queues, allocates specialized clinicians, and manages urgent transfer dispatch based on multi-criteria patient severity and live specialist capacity.",
       "hardConstraints": [
-        "A hospital without the required medical capability or equipment cannot be selected",
-        "Predicted treatment delay and specialist availability must be factored into decision",
-        "ICU or specialist capacity shifts during transport must be accounted for",
-        "Critical patient triage levels receive highest decision priority",
-        "Decisions must remain fully interpretable to clinical EMS operators"
+        "High-urgency emergency triage levels must receive priority clinician allocation",
+        "Clinician working shifts and specialist certification domains must be respected",
+        "Network bandwidth and rural connection latencies must support session quality",
+        "Patient transfer travel time must not exceed physiological safety windows",
+        "System must dynamically reroute upon unexpected specialist disconnection"
       ],
       "optimizationObjectives": [
-        "Minimize expected total time to definitive medical treatment",
-        "Minimize uncertainty-related risk and diversion probability",
-        "Minimize inappropriate resource utilization and unnecessary transfers"
+        "Minimize patient wait time to specialist medical consultation",
+        "Minimize regional clinician workload variance and burnout",
+        "Maximize diagnostic throughput across decentralized clinics",
+        "Minimize emergency ambulance transfer delays and secondary diversions"
       ],
-      "hiddenTestNote": "Hidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.",
-      "description": "Select optimal emergency hospital destinations balancing dynamic travel time, emergency queue delays, and specialist availability.",
-      "statementMarkdown": "### Problem 3 — Emergency Hospital Destination Selection Under Dynamic Capacity\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Particle Swarm Optimization\n\n#### Context\nAn emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have different travel times, emergency-department queues, ICU availability, specialist availability, equipment availability, and predicted treatment delays.\n\n#### Core Challenge\nSelect the hospital minimizing expected time to definitive treatment — not simply travel time. Inputs are uncertain and may conflict: the nearest hospital may be congested, while a more distant one may have immediate specialist availability.\n\n#### Hard Constraints\n- A hospital without the required capability cannot be selected.\n- Predicted treatment delay must be considered.\n- ICU or specialist capacity may change during transport.\n- Critical patients receive higher decision priority.\n- Decisions should remain interpretable to clinical operators.\n\n#### Optimization Objectives\nMinimize expected time to treatment, uncertainty-related risk, and inappropriate resource utilization.\n\n#### Competition & Hidden-Test Design\nHidden scenarios alter hospital queues and specialist availability. Teams must present fuzzy membership functions and explain why the chosen hospital is preferred.",
+      "hiddenTestNote": "Hidden scenarios introduce sudden network degradation across rural nodes and unexpected clinician dropouts.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Dynamic telemedicine queue routing, specialist allocation, and emergency transfer load-balancing.",
+      "statementMarkdown": "### Theme 3 — Digital Health & Telemedicine\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Particle Swarm Optimization + Fuzzy Dynamic Priority Routing\n\n#### Context\nRegional telemedicine networks coordinate remote patient consultations, decentralized clinic transfers, and specialist triage across rural clinics facing bandwidth constraints and fluctuating specialist availability.\n\n#### Core Challenge\nImplement a fuzzy-PSO algorithm that dynamically routes consultation queues, allocates specialized clinicians, and manages urgent transfer dispatch based on multi-criteria patient severity and live specialist capacity.\n\n#### Hard Constraints\n- Priority emergency cases receive immediate specialist routing.\n- Clinician duty limits and credentials must be enforced.\n- Rural network bandwidth constraints must be respected.\n- Emergency transfer transit times must remain within safe physiological limits.\n- Dynamic fault recovery upon specialist disconnects.\n\n#### Optimization Objectives\nMinimize wait times, equalize clinician burdens, maximize consultation volume, and prevent clinic overload.",
       "starterNotebookUrl": "/starter/starter_p3_hospital.py",
-      "benchmarkType": "HOSPITAL_SELECTION_FUZZY_PSO",
-      "hiddenShiftAttempt2": "Sudden regional incident: The nearest Tier-1 trauma center experiences extreme ER queue congestion.",
-      "hiddenShiftAttempt3": "Specialist unavailability: On-call neurosurgeon and cardiac catheterization teams become unavailable at two candidate centers.",
-      "livePatchSurprise": "The current top-ranked hospital destination just went to 100% full ICU capacity.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "benchmarkType": "TELEMEDICINE_FUZZY_PSO",
+      "hiddenShiftAttempt2": "Bandwidth drop: 5 rural clinics experience severe packet loss requiring low-bitrate triage prioritization.",
+      "hiddenShiftAttempt3": "Surge emergency: Epidemic alert causes a 300% surge in pediatric telemedicine consultation requests.",
+      "livePatchSurprise": "One primary regional hospital network goes offline; all active patient consultations must be rerouted instantly.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "p4-blood-inventory",
-      "name": "Hospital Blood Inventory and Compatibility-Aware Allocation",
-      "shortName": "P4: Blood Inventory Allocation",
+      "id": "theme-4-neurotech",
+      "name": "Neurotechnology & Rehabilitation",
+      "shortName": "T4: Neurotechnology & Rehab",
+      "society": "IEEE EMBS",
+      "difficulty": "Advanced",
+      "technique": "Swarm Intelligence + Fuzzy Adaptive Neural Decoding",
+      "context": "Assistive neuroprosthetics and robotic rehabilitation exoskeletons decode noisy neural signals to restore motor function for post-stroke and spinal cord injury patients undergoing therapy.",
+      "coreChallenge": "Develop a swarm-optimized adaptive decoding algorithm that converts non-stationary neural intent and muscular EMG telemetry into smooth, jerk-free therapeutic robotic trajectories under non-linear muscle fatigue.",
+      "hardConstraints": [
+        "Kinematic and joint torque bounds must strictly guarantee patient biomechanical safety",
+        "Decoding latency must remain below physiological delay thresholds (<50ms)",
+        "Algorithm must adapt continuously to electrode impedance drift and muscle fatigue",
+        "Trajectory jerk and acceleration must remain within therapeutic recovery limits",
+        "System must trigger instantaneous fail-safe lockdown upon signal loss"
+      ],
+      "optimizationObjectives": [
+        "Maximize intent classification accuracy and motion smoothness",
+        "Minimize patient muscle fatigue and compensatory posture stress",
+        "Maximize target reaching accuracy and rehabilitation task completion",
+        "Minimize convergence latency during online neuroprosthetic recalibration"
+      ],
+      "hiddenTestNote": "Hidden evaluations inject simulated muscle tremors and sudden electrode displacement.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Adaptive neural intent decoding and jerk-free robotic trajectory optimization for neurorehabilitation.",
+      "statementMarkdown": "### Theme 4 — Neurotechnology & Rehabilitation\n\n**Society:** IEEE EMBS | **Track:** Advanced | **Technique:** Swarm Intelligence + Fuzzy Adaptive Neural Decoding\n\n#### Context\nAssistive neuroprosthetics and robotic rehabilitation exoskeletons decode noisy neural signals to restore motor function for post-stroke and spinal cord injury patients undergoing therapy.\n\n#### Core Challenge\nDevelop a swarm-optimized adaptive decoding algorithm that converts non-stationary neural intent and muscular EMG telemetry into smooth, jerk-free therapeutic robotic trajectories under non-linear muscle fatigue.\n\n#### Hard Constraints\n- Biomechanical joint torque limits must never be exceeded.\n- End-to-end decoding latency must remain strictly below 50ms.\n- Adaptive calibration must track ongoing electrode impedance drift.\n- Trajectory jerk must comply with rehabilitation comfort standards.\n- Fail-safe posture locking upon telemetry disconnection.\n\n#### Optimization Objectives\nMaximize motion decoding accuracy, minimize patient fatigue, maximize task precision, and ensure ultra-fast online adaptation.",
+      "starterNotebookUrl": "/starter/starter_pso.py",
+      "benchmarkType": "NEUROTECH_SWARM_DECODING",
+      "hiddenShiftAttempt2": "Electrode shift: Telemetry channel 3 and 7 experience signal dropout due to patient perspiration.",
+      "hiddenShiftAttempt3": "Spastic tremor onset: Involuntary high-frequency muscular spasms injected into EMG feedback loop.",
+      "livePatchSurprise": "Exoskeleton actuator speed clamped to 50% for emergency patient comfort compliance.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "theme-5-medical-imaging",
+      "name": "Medical Imaging & Computer Vision",
+      "shortName": "T5: Medical Imaging & Vision",
       "society": "IEEE EMBS × IEEE CIS",
       "difficulty": "Advanced",
-      "technique": "Genetic Algorithm / Particle Swarm Optimization",
-      "context": "A hospital maintains inventories of multiple blood groups (A, B, AB, O with Rh factors). Units have limited shelf lives (typically 35–42 days) and daily demand is uncertain. Emergency mass demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit (e.g. universal O-negative) may reduce critical flexibility for a future emergency.",
-      "coreChallenge": "Determine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.",
+      "technique": "Genetic Algorithms + Heuristic Feature Space Search",
+      "context": "High-throughput diagnostic radiology suites must detect micro-lesions, delineate anatomical boundaries, and reconstruct 3D volumes from low-dose CT, MRI, and ultrasound imaging corrupted by speckle noise and motion artifacts.",
+      "coreChallenge": "Engineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.",
       "hardConstraints": [
-        "Blood-group biological compatibility must be strictly respected",
-        "Expired units cannot be transfused under any circumstance",
-        "Inventory levels cannot become negative",
-        "Emergency demand receives absolute highest fulfillment priority",
-        "Procurement capacity and delivery schedules have minimum lead times"
+        "False negative rate on malignant findings must remain below clinical safety limits",
+        "Geometric contours must maintain anatomical boundary continuity and smoothness",
+        "Volumetric reconstruction must execute within clinical emergency turnaround budgets",
+        "Algorithm must demonstrate invariance to scan orientation and slice thickness variations",
+        "All segmentations must generate pixel-level confidence maps for radiologist review"
       ],
       "optimizationObjectives": [
-        "Minimize blood unit expiry and wastage across all ABO/Rh groups",
-        "Minimize stockout probability and emergency shortage severity",
-        "Minimize emergency procurement rush costs",
-        "Preserve compatibility flexibility for rare blood groups"
+        "Maximize Dice similarity coefficient and IoU on lesion target regions",
+        "Minimize boundary Hausdorff distance and false positive segmentations",
+        "Minimize computational runtime and peak memory usage",
+        "Maximize robustness against motion blur, metallic artifacts, and low SNR"
       ],
-      "hiddenTestNote": "Hidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.",
-      "description": "Manage multi-type blood inventory, procurement schedules, and compatible substitution policies under shelf-life constraints.",
-      "statementMarkdown": "### Problem 4 — Hospital Blood Inventory and Compatibility-Aware Allocation\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Genetic Algorithm / Particle Swarm Optimization\n\n#### Context\nA hospital maintains inventories of multiple blood groups. Units have limited shelf lives and demand is uncertain. Emergency demand can arrive without warning. Compatible substitutions may be used during shortages, but consuming a compatible unit may reduce flexibility for a future emergency.\n\n#### Core Challenge\nDetermine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.\n\n#### Hard Constraints\n- Blood-group compatibility must be respected.\n- Expired units cannot be used.\n- Inventory cannot become negative.\n- Emergency demand receives highest priority.\n- Procurement capacity and delivery timing are limited.\n\n#### Optimization Objectives\nMinimize wastage, stockout probability, emergency shortage severity, and procurement cost while preserving compatibility flexibility.\n\n#### Competition & Hidden-Test Design\nHidden scenarios vary demand distributions, delivery delays, and emergency events. A robust policy should outperform a simple reorder-point strategy.",
-      "starterNotebookUrl": "/starter/starter_p4_blood.py",
-      "benchmarkType": "BLOOD_INVENTORY_GA_PSO",
-      "hiddenShiftAttempt2": "Multiple emergency trauma arrivals trigger sudden surge in O-negative and B-positive demand.",
-      "hiddenShiftAttempt3": "Supply chain disruption: Blood bank delivery van delayed by 48 hours.",
-      "livePatchSurprise": "A critical blood-group shortage is declared for O-negative with an incoming mass-casualty transport.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "hiddenTestNote": "Hidden test cases introduce low-dose ultra-noisy scans and small boundary-adjacent micro-calcifications.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Multi-scale feature optimization, deformable boundary detection, and robust medical image segmentation.",
+      "statementMarkdown": "### Theme 5 — Medical Imaging & Computer Vision\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Genetic Algorithms + Heuristic Feature Space Search\n\n#### Context\nHigh-throughput diagnostic radiology suites must detect micro-lesions, delineate anatomical boundaries, and reconstruct 3D volumes from low-dose CT, MRI, and ultrasound imaging corrupted by speckle noise and motion artifacts.\n\n#### Core Challenge\nEngineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.\n\n#### Hard Constraints\n- Malignant lesion false negative rate strictly capped at clinical thresholds.\n- Deformable contours must maintain anatomical topological continuity.\n- Execution runtime must satisfy acute emergency radiology SLAs.\n- Robustness against anisotropic slice thickness variations.\n- Calibrated spatial confidence maps required for all segmentations.\n\n#### Optimization Objectives\nMaximize Dice score, minimize Hausdorff boundary distance, optimize GPU memory efficiency, and resist scan noise.",
+      "starterNotebookUrl": "/starter/starter_ga.py",
+      "benchmarkType": "MEDICAL_IMAGING_HEURISTIC_SEARCH",
+      "hiddenShiftAttempt2": "Low-dose scan noise: SNR reduced by 50% with metallic dental implant streak artifacts.",
+      "hiddenShiftAttempt3": "Micro-lesion challenge: Target pathology diameter reduced to sub-voxel resolution (<3mm).",
+      "livePatchSurprise": "Slice thickness increased by 4x; algorithm must infer 3D contours without volumetric slice re-interpolation.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "p5-search-and-rescue",
-      "name": "Multi-Robot Search-and-Rescue Area Coverage",
-      "shortName": "P5: Multi-Robot Search & Rescue",
+      "id": "theme-6-biomedical-signals",
+      "name": "Biomedical Signals & Intelligent Systems",
+      "shortName": "T6: Biomedical Signals",
       "society": "IEEE EMBS × IEEE CIS",
-      "difficulty": "Advanced (Flagship Showcase)",
-      "technique": "PSO / ACO / Multi-Agent Genetic Algorithm",
-      "context": "A set of autonomous mobile robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or hazardous. Survivor locations are unknown but certain zones have higher prior probability.",
-      "coreChallenge": "Divide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.",
+      "difficulty": "Intermediate–Advanced",
+      "technique": "Fuzzy Inference Systems + Evolutionary Signal Decomposition",
+      "context": "Intensive care units stream continuous multi-channel physiological signals (ECG, PPG, EEG, arterial pressure) where baseline wander, patient motion, and electrosurgical interference trigger frequent false alarms.",
+      "coreChallenge": "Formulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.",
       "hardConstraints": [
-        "Robot battery must not fall below a safe return-to-base threshold",
-        "Communication connectivity must be maintained where required",
-        "Dangerous and collapsed regions carry higher movement penalties or are strictly forbidden",
-        "Robots must avoid unnecessary trajectory overlap",
-        "Detected survivor locations trigger dynamic task reassignment and rendezvous"
+        "Real-time streaming throughput must match patient monitor sampling rates (>500 Hz)",
+        "Critical cardiac events (ventricular fibrillation, asystole) must trigger alerts within 2 seconds",
+        "Fuzzy membership rules must adhere to established clinical cardiology guidelines",
+        "Processing pipeline must preserve morphological diagnostic peaks (QRS complexes, P waves)",
+        "Filter coefficients must maintain phase linearity without introducing latency distortion"
       ],
       "optimizationObjectives": [
-        "Maximize expected survivor detection probability across high-priority zones",
-        "Maximize total area coverage within battery budget",
-        "Minimize redundant search overlap between robots",
-        "Minimize response delay after initial survivor contact"
+        "Minimize ICU monitor false alarm rate by >70% while preserving 100% true event sensitivity",
+        "Maximize signal-to-noise ratio (SNR) improvement across noisy leads",
+        "Minimize computational footprint for wearable battery-powered cardiac patches",
+        "Maximize adaptability across diverse baseline physiological variations"
       ],
-      "hiddenTestNote": "Hidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. This is the flagship showcase problem — its visualization (coverage map) is featured prominently in the platform and the judges' round.",
-      "description": "Coordinate a multi-robot swarm to search complex disaster zones, avoiding hazards and dynamically replanning upon survivor discovery.",
-      "statementMarkdown": "### Problem 5 — Multi-Robot Search-and-Rescue Area Coverage (Flagship Showcase)\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** PSO / ACO / Multi-Agent Genetic Algorithm\n\n#### Context\nA set of autonomous robots must search an unknown disaster environment for survivors. Each robot has limited battery capacity, sensor range, movement speed, and communication range. Some areas are inaccessible or dangerous. Survivor locations are unknown but certain zones have higher prior probability.\n\n#### Core Challenge\nDivide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a likely survivor, nearby robots may need to redirect to assist, verify, or relay information.\n\n#### Hard Constraints\n- Robot battery cannot fall below a safe return threshold.\n- Communication requirements must be maintained where required.\n- Dangerous regions carry higher movement cost or may be forbidden.\n- Robots should avoid unnecessary overlap.\n- Detected survivor locations trigger dynamic task reassignment.\n\n#### Optimization Objectives\nMaximize expected survivor detection and area coverage while minimizing energy, overlap, and response delay after a discovery.\n\n#### Competition & Hidden-Test Design\nHidden maps vary obstacle density and survivor-probability distributions. Dynamic replanning is a major differentiator. **This is the flagship showcase problem — its visualization (coverage map) is featured prominently.**",
+      "hiddenTestNote": "Hidden test cases inject severe electrosurgical cautery bursts and motion-induced baseline wandering.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Evolutionary fuzzy filtering, morphological feature extraction, and real-time acute arrhythmia detection.",
+      "statementMarkdown": "### Theme 6 — Biomedical Signals & Intelligent Systems\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Fuzzy Inference Systems + Evolutionary Signal Decomposition\n\n#### Context\nIntensive care units stream continuous multi-channel physiological signals (ECG, PPG, EEG, arterial pressure) where baseline wander, patient motion, and electrosurgical interference trigger frequent false alarms.\n\n#### Core Challenge\nFormulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.\n\n#### Hard Constraints\n- Processing throughput must sustain continuous 500Hz multi-lead streaming.\n- Lethal arrhythmias must trigger alarms within 2 seconds of onset.\n- Fuzzy membership bounds must respect cardiology diagnostic criteria.\n- Morphological QRS fiducial point fidelity must be preserved.\n- Zero phase distortion in digital filtering stages.\n\n#### Optimization Objectives\nDrastically eliminate false alarm fatigue, maximize morphological SNR, minimize battery power draw, and guarantee 100% critical sensitivity.",
+      "starterNotebookUrl": "/starter/starter_fuzzy.py",
+      "benchmarkType": "BIOMEDICAL_SIGNALS_EVOLUTIONARY_FUZZY",
+      "hiddenShiftAttempt2": "Motion artifact injection: High-amplitude respiratory baseline wander superimposed on Lead II.",
+      "hiddenShiftAttempt3": "Ectopic beat clustering: Premature ventricular contractions (PVCs) occurring in rapid trigeminy bursts.",
+      "livePatchSurprise": "One lead disconnects entirely; system must reconstruct cardiac rhythm from single remaining PPG sensor.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "theme-7-smart-healthcare-iot",
+      "name": "Smart Healthcare & Medical IoT",
+      "shortName": "T7: Smart Healthcare & IoT",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Intermediate–Advanced",
+      "technique": "Ant Colony Optimization + Energy-Aware Swarm Routing",
+      "context": "Hospital campuses deploy hundreds of battery-operated wearable biomedical sensors, smart infusion pumps, and environmental monitors transmitting vital health data over mesh IoT networks with limited bandwidth and battery reserves.",
+      "coreChallenge": "Design an Ant Colony Optimization routing protocol that balances transmission energy consumption, vital data packet priority, and network lifetime while guaranteeing deterministic latency for critical patient alerts.",
+      "hardConstraints": [
+        "Critical alert telemetry packets must have bounded delivery latency (<100ms)",
+        "Sensor battery depletion must not cause localized network partitioning or blind spots",
+        "Packet transmission power must comply with medical RF safety standards",
+        "Routing protocol must dynamically self-heal upon node failure or patient movement",
+        "Bandwidth must prioritize continuous vital signs over periodic telemetry"
+      ],
+      "optimizationObjectives": [
+        "Maximize overall sensor network operational lifetime (energy harvesting balance)",
+        "Minimize end-to-end telemetry latency for emergency vital updates",
+        "Minimize packet loss rate under hospital RF interference and congestion",
+        "Minimize routing control message overhead across battery-constrained nodes"
+      ],
+      "hiddenTestNote": "Hidden tests simulate sudden node failures and dense mobile patient ward transfers.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Ant colony routing, energy-aware medical sensor clustering, and deterministic QoS telemetry delivery.",
+      "statementMarkdown": "### Theme 7 — Smart Healthcare & Medical IoT\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Ant Colony Optimization + Energy-Aware Swarm Routing\n\n#### Context\nHospital campuses deploy hundreds of battery-operated wearable biomedical sensors, smart infusion pumps, and environmental monitors transmitting vital health data over mesh IoT networks with limited bandwidth and battery reserves.\n\n#### Core Challenge\nDesign an Ant Colony Optimization routing protocol that balances transmission energy consumption, vital data packet priority, and network lifetime while guaranteeing deterministic latency for critical patient alerts.\n\n#### Hard Constraints\n- Emergency vital packets delivered with bounded latency (<100ms).\n- Uniform energy depletion avoiding bottleneck dead nodes.\n- Medical RF power emission constraints strictly observed.\n- Seamless self-healing topology adaptation when patients walk between wards.\n- Priority-tiered packet queueing policies.\n\n#### Optimization Objectives\nMaximize IoT mesh operational longevity, minimize alert latency, minimize packet dropping, and optimize routing protocol efficiency.",
+      "starterNotebookUrl": "/starter/starter_aco.py",
+      "benchmarkType": "HEALTHCARE_IOT_ACO_ROUTING",
+      "hiddenShiftAttempt2": "Gateway congestion: 2 primary IoT gateway hubs encounter 80% packet collision from MRI RF interference.",
+      "hiddenShiftAttempt3": "Patient ambulation: 40 monitored patients relocate across wards simultaneously changing mesh topology.",
+      "livePatchSurprise": "Battery threshold warning: All sensor nodes instructed to reduce transmission power by 30% immediately.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
+    },
+    {
+      "id": "theme-8-healthcare-robotics",
+      "name": "Healthcare Robotics & Automation",
+      "shortName": "T8: Healthcare Robotics",
+      "society": "IEEE EMBS × IEEE CIS",
+      "difficulty": "Advanced",
+      "technique": "Distributed Swarm Intelligence + Multi-Objective GA Pathing",
+      "context": "Modern hospital environments deploy autonomous mobile robots and robotic assistants for contactless surgical instrument transport, UV-C ultraviolet disinfection, and pharmacy dispensing across dynamic, human-dense hospital corridors.",
+      "coreChallenge": "Formulate a multi-robot swarm optimization algorithm that coordinates collision-free paths, dynamically allocates delivery tasks, and optimizes coverage schedules while navigating around doctors, patients, and emergency stretchers.",
+      "hardConstraints": [
+        "Collision avoidance with staff, patients, and mobile beds must be guaranteed 100%",
+        "Sterile zone disinfection coverage protocols must meet medical sanitation standards",
+        "Urgent pharmaceutical delivery tasks must meet strict delivery windows",
+        "Robots must preserve battery reserves to guarantee return to charging docks",
+        "Corridor congestion and deadlock states must be resolved deterministically"
+      ],
+      "optimizationObjectives": [
+        "Maximize total daily autonomous delivery throughput and ward coverage",
+        "Minimize total robot travel distance and battery recharging downtime",
+        "Minimize human pathway disruption and acoustic noise in patient recovery wards",
+        "Minimize response latency for on-demand STAT pharmacy orders"
+      ],
+      "hiddenTestNote": "Hidden scenarios introduce sudden hallway closures and emergency stretcher priority traffic.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Swarm multi-robot path coordination, collision-free delivery routing, and automated hospital logistics.",
+      "statementMarkdown": "### Theme 8 — Healthcare Robotics & Automation\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Distributed Swarm Intelligence + Multi-Objective GA Pathing\n\n#### Context\nModern hospital environments deploy autonomous mobile robots and robotic assistants for contactless surgical instrument transport, UV-C ultraviolet disinfection, and pharmacy dispensing across dynamic, human-dense hospital corridors.\n\n#### Core Challenge\nFormulate a multi-robot swarm optimization algorithm that coordinates collision-free paths, dynamically allocates delivery tasks, and optimizes coverage schedules while navigating around doctors, patients, and emergency stretchers.\n\n#### Hard Constraints\n- Zero collision tolerance with pedestrians, beds, and sterile equipment.\n- Complete sanitization coverage in designated infection control units.\n- Delivery deadlines for critical STAT medications strictly met.\n- Safe minimum battery margins for automated dock return.\n- Deadlock resolution algorithms for narrow single-lane corridors.\n\n#### Optimization Objectives\nMaximize logistic throughput, minimize energy expenditure, minimize hospital corridor footprint, and maximize dispatch agility.",
       "starterNotebookUrl": "/starter/starter_p5_sar.py",
-      "benchmarkType": "SWARM_ROBOTICS_COVERAGE",
-      "hiddenShiftAttempt2": "Debris collapse: 3 new obstacle zones spawn dynamically, cutting off direct corridors.",
-      "hiddenShiftAttempt3": "Secondary search zone: High survivor probability shifts unexpectedly to previously low-prior sector.",
-      "livePatchSurprise": "One robot experiences communication transmitter failure — swarm coordination logic must adapt with remaining mesh nodes.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "benchmarkType": "HEALTHCARE_ROBOTICS_SWARM",
+      "hiddenShiftAttempt2": "Corridor quarantine: 2 main transit corridors sealed for biological containment; all routes blocked.",
+      "hiddenShiftAttempt3": "STAT surgery call: Emergency surgical instrument delivery dispatched with 4-minute hard deadline.",
+      "livePatchSurprise": "One robot experiences motor failure in narrow hallway; remaining swarm must reroute without deadlock.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "p6-fuzzy-triage",
-      "name": "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
-      "shortName": "P6: Fuzzy ER Triage",
-      "society": "IEEE EMBS × IEEE CIS",
+      "id": "theme-9-open-innovation",
+      "name": "Open Innovation on (CIS and EMBS only)",
+      "shortName": "T9: Open Innovation (CIS & EMBS)",
+      "society": "IEEE CIS & IEEE EMBS Only",
       "difficulty": "Advanced",
-      "technique": "Fuzzy Logic + Genetic Algorithm",
-      "context": "An emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.",
-      "coreChallenge": "Design an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.",
+      "technique": "Hybrid Computational Intelligence & Novel Metaheuristics",
+      "context": "Breakthrough scientific discoveries emerge when computational intelligence paradigms (evolutionary computation, neural swarms, fuzzy systems) converge with transformative healthcare and biomedical challenges.",
+      "coreChallenge": "Propose, formulate, and optimize a novel algorithmic solution to an unconstrained healthcare or computational intelligence challenge, demonstrating rigorous mathematical formulation, computational efficiency, and real-world societal impact.",
       "hardConstraints": [
-        "Critical patients must not be assigned low-priority categories under benchmark scenarios",
-        "Fuzzy rules must remain clinically interpretable to medical doctors",
-        "Resource allocation must respect available emergency department capacity",
-        "Uncertain, noisy, or missing physiological measurements should be handled gracefully",
-        "The system must avoid excessive mathematical dependence on any single vital sign"
+        "Solution must combine Computational Intelligence (CIS) and Biomedical/Healthcare (EMBS) domains",
+        "Algorithm implementation must execute deterministically and be fully benchmarkable",
+        "Mathematical formulation and objective trade-offs must be rigorously formalized",
+        "Methodology must demonstrate clear superiority over standard baseline heuristics",
+        "Implementation must include an offline verification harness and reproducible test suite"
       ],
       "optimizationObjectives": [
-        "Minimize critical-patient waiting time to physician assessment",
-        "Minimize inappropriate under-triage and over-triage rates",
-        "Minimize emergency department resource overload and queue bottlenecks",
-        "Maximize stability under noisy or incomplete clinical measurements"
+        "Maximize algorithmic novelty and heuristic convergence capability",
+        "Maximize solution quality relative to standard heuristic benchmarks",
+        "Maximize real-world translational potential and clinical relevance",
+        "Maximize code modularity, algorithmic clarity, and defense rigor"
       ],
-      "hiddenTestNote": "Hidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.",
-      "description": "Design an interpretable fuzzy triage system mapping multi-vital measurements to urgency priorities and allocating clinical resources.",
-      "statementMarkdown": "### Problem 6 — Fuzzy Emergency-Room Triage with Adaptive Rule Optimization\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Fuzzy Logic + Genetic Algorithm\n\n#### Context\nAn emergency department receives patients with varying symptoms and uncertain severity. Measurements may include heart rate, blood pressure, oxygen saturation, temperature, pain level, age, consciousness, and symptom indicators. No single measurement is sufficient to determine urgency alone.\n\n#### Core Challenge\nDesign an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk, and allocate limited treatment resources by triage priority.\n\n#### Hard Constraints\n- Critical patients must not be assigned low-priority categories under benchmark scenarios.\n- Rules should remain interpretable.\n- Resource allocation must respect available capacity.\n- Uncertain or missing measurements should be handled gracefully.\n- The system must avoid excessive dependence on one feature.\n\n#### Optimization Objectives\nMinimize critical-patient waiting time, inappropriate prioritization, resource overload, and instability under noisy measurements.\n\n#### Competition & Hidden-Test Design\nHidden cases contain noisy measurements, missing values, and conflicting indicators. Teams must defend their membership functions, rule base, and optimization strategy to judges.",
-      "starterNotebookUrl": "/starter/starter_p6_triage.py",
-      "benchmarkType": "FUZZY_TRIAGE_GA",
-      "hiddenShiftAttempt2": "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
-      "hiddenShiftAttempt3": "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
-      "livePatchSurprise": "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
-      "createdAt": "2026-09-17T17:00:14.219Z",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "hiddenTestNote": "Judges will evaluate algorithmic robustness against custom unannounced perturbation test suites.",
+      "expectedOutputChecklist": [
+        "Algorithm implementation (submitted notebook/script)",
+        "Parameter configuration used, clearly stated",
+        "Final objective/score for each attempt",
+        "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+        "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+        "A one-line 'what changed and why' note with every attempt after the first"
+      ],
+      "description": "Unconstrained visionary computational intelligence algorithms applied to transformative biomedical challenges.",
+      "statementMarkdown": "### Theme 9 — Open Innovation (CIS and EMBS only)\n\n**Society:** IEEE CIS & IEEE EMBS Only | **Track:** Advanced | **Technique:** Hybrid Computational Intelligence & Novel Metaheuristics\n\n#### Context\nBreakthrough scientific discoveries emerge when computational intelligence paradigms (evolutionary computation, neural swarms, fuzzy systems) converge with transformative healthcare and biomedical challenges.\n\n#### Core Challenge\nPropose, formulate, and optimize a novel algorithmic solution to an unconstrained healthcare or computational intelligence challenge, demonstrating rigorous mathematical formulation, computational efficiency, and real-world societal impact.\n\n#### Hard Constraints\n- Convergence of IEEE CIS (computational intelligence) and IEEE EMBS (biomedicine).\n- Deterministic and verifiable code execution harness.\n- Clear mathematical formulation of objectives, fitness functions, and constraints.\n- Empirically demonstrable improvement over classical baseline algorithms.\n- Reproducible test suite with automated benchmarking.\n\n#### Optimization Objectives\nMaximize algorithmic innovation, achieve superior fitness convergence, maximize healthcare impact, and demonstrate flawless viva defense.",
+      "starterNotebookUrl": "/starter/starter_ga.py",
+      "benchmarkType": "OPEN_INNOVATION_CIS_EMBS",
+      "hiddenShiftAttempt2": "Constraint stress test: Penalty multiplier for constraint violations doubled in evaluation harness.",
+      "hiddenShiftAttempt3": "Generalization challenge: Objective function tested against unseen higher-dimensional parameter space.",
+      "livePatchSurprise": "Defend and modify algorithmic fitness function live before judges under 15-minute countdown.",
+      "createdAt": "2026-09-23T15:18:13.519Z",
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "submissions": [],
@@ -465,10 +659,10 @@
     {
       "id": "ann-1",
       "title": "Welcome to OptiForge 2026 — Registration Now Open",
-      "message": "Registrations are actively underway across Telangana and Andhra Pradesh. Prepare your teams for the live challenge on 25-09-2026 (9:00 AM - 4:00 PM IST).",
+      "message": "Registrations are actively underway across Telangana and Andhra Pradesh. Prepare your teams for the live Hackathon Algorithm Design on 30-09-2026 (10:00 AM - 4:00 PM IST).",
       "type": "INFO",
       "isActive": true,
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "systemSettings": [
@@ -476,85 +670,85 @@
       "key": "active_stage",
       "value": "PRE_EVENT",
       "description": "Current tournament stage",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "leaderboard_frozen",
       "value": "false",
       "description": "Freeze leaderboard updates",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "leaderboard_visible",
       "value": "true",
       "description": "Public visibility of leaderboard",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "live_patch_duration_mins",
       "value": "20",
       "description": "Duration of live patch round in minutes",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "live_patch_deadline",
       "value": "",
       "description": "Active countdown deadline for Stage 7 live patch",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "weight_auto",
       "value": "60",
       "description": "Confidential: Percentage weight of auto-score",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "weight_judge",
       "value": "40",
       "description": "Confidential: Percentage weight of manual judge score",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "registration_open",
       "value": "true",
       "description": "Allow team registrations",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "event_date",
-      "value": "25-09-2026",
+      "value": "30-09-2026",
       "description": "Official event date",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "event_time",
-      "value": "9:00 AM - 4:00 PM",
+      "value": "10:00 AM - 4:00 PM",
       "description": "Official event timing",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     },
     {
       "key": "organizer_entity",
       "value": "IEEE Vardhaman Student Branch",
       "description": "Organizing student branch",
-      "updatedAt": "2026-09-17T17:00:14.219Z"
+      "updatedAt": "2026-09-23T15:18:13.519Z"
     }
   ],
   "auditLogs": [
     {
-      "id": "f3357648-b6c3-4d66-ad02-8ef9dda4debe",
+      "id": "552abd48-dc74-482d-a3eb-3ebf3645d7a0",
       "action": "PAYMENT_CONFIRMED",
       "performedBy": "chair.embs@vce.ac.in",
       "details": "Direct UPI Payment of ₹150 verified for Team 1904 (OPT-26-1904). 12-digit UTR: 512165830063. Payee: Maruthi Sai Teja (9490298994@axl)",
       "reason": "Direct UPI Transfer (Verified)",
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "createdAt": "2026-09-23T15:18:13.519Z"
     },
     {
-      "id": "f5738f5a-56ac-42af-9b14-68ae63f53e95",
+      "id": "41141eca-1d90-449a-89db-a3de994c266f",
       "action": "DATABASE_INITIALIZED",
       "performedBy": "system",
-      "details": "OptiForge 2026 initialized with 6 official problem statements and 6 expert judges",
-      "reason": "Official tournament release",
-      "createdAt": "2026-09-17T17:00:14.219Z"
+      "details": "OptiForge 2026 initialized with 9 official innovation themes and 9 expert domain judges",
+      "reason": "Official Hackathon Algorithm Design release",
+      "createdAt": "2026-09-23T15:18:13.519Z"
     }
   ]
 }

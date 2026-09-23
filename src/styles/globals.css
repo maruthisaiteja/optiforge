@@ -1,31 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --bg-primary: #0B0F1A;
-  --bg-secondary: #131A2B;
-  --navy-deep: #1F2A63;
-  --teal-accent: #2FE6D6;
-  --orange-accent: #E15A2C;
-  --electric-violet: #7B5CFA;
-  --white: #F5F7FA;
-  --grey-muted: #8B93A7;
-  --success-green: #3ED598;
-  --error-red: #FF5C5C;
-  --font-orbitron: 'Orbitron', 'Chakra Petch', sans-serif;
-  --font-inter: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --of-bg: #F8FAFC;
+  --of-white: #FFFFFF;
+  --of-soft-blue: #F0F7FB;
+  --of-soft-purple: #F6F1F8;
+  --ieee-blue: #00629B;
+  --embs-purple: #772583;
+  --of-cyan: #12A8C4;
+  --of-navy: #102A43;
+  --of-slate: #52606D;
+  --of-border: #D9E6EE;
+  --of-success: #238B68;
+  --of-warning: #D58A19;
+  --of-med-red: #D84A5A;
+  --of-ai-purple: #7657D9;
+
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #F0F7FB;
+  --bg-card: #FFFFFF;
+  --primary-brand: #00629B;
+  --secondary-brand: #772583;
+  --bright-accent: #12A8C4;
+  --main-text: #102A43;
+  --secondary-text: #52606D;
+  --border-color: #D9E6EE;
+  --navy-deep: #F0F7FB;
+  --teal-accent: #00629B;
+  --orange-accent: #D58A19;
+  --electric-violet: #772583;
+  --white: #102A43;
+  --grey-muted: #52606D;
 }
 
 body {
-  background-color: var(--bg-primary);
-  color: var(--white);
-  font-family: var(--font-inter);
+  background-color: #F8FAFC;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(8, 127, 140, 0.06) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(0, 140, 149, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 50% at 50% 100%, rgba(0, 102, 204, 0.04) 0%, transparent 60%);
+  background-attachment: fixed;
+  color: #102A43;
+  font-family: 'Inter', system-ui, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Sora', 'Outfit', sans-serif;
+  letter-spacing: -0.025em;
+  color: #102A43;
+}
+
+/* Glassmorphism helpers matching live site */
+.glass-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 12px 40px rgba(16, 42, 67, 0.08);
+}
+
+.glass-card-subtle {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
 /* Custom Scrollbars */
@@ -35,36 +80,37 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B0F1A;
+  background: #F0F7FB;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1F2A63;
+  background: #D9E6EE;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #2FE6D6;
+  background: #00629B;
 }
 
 /* Signature Glow Helpers */
 .shadow-glow {
-  box-shadow: 0 0 24px rgba(47, 230, 214, 0.35);
+  box-shadow: 0 4px 20px rgba(0, 98, 155, 0.15);
 }
 
 .shadow-glow-violet {
-  box-shadow: 0 0 24px rgba(123, 92, 250, 0.35);
+  box-shadow: 0 4px 20px rgba(119, 37, 131, 0.15);
 }
 
-.shadow-glow-orange {
-  box-shadow: 0 0 24px rgba(225, 90, 44, 0.35);
+.shadow-glow-cyan {
+  box-shadow: 0 4px 20px rgba(18, 168, 196, 0.20);
 }
 
 /* Print Rules for Certificates */
 @media print {
   body {
-    background-color: #0c101d !important;
-    color: white !important;
+    background-color: #FFFFFF !important;
+    background-image: none !important;
+    color: #102A43 !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }

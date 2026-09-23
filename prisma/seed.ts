@@ -13,8 +13,8 @@ async function main() {
     { key: "weight_auto", value: "60", description: "Percentage weight of auto-score" },
     { key: "weight_judge", value: "40", description: "Percentage weight of manual judge score" },
     { key: "registration_open", value: "true", description: "Allow team registrations" },
-    { key: "event_date", value: "25-09-2026", description: "Official event date" },
-    { key: "event_time", value: "9:00 AM - 4:00 PM", description: "Official event timing" },
+    { key: "event_date", value: "30-09-2026", description: "Official event date" },
+    { key: "event_time", value: "10:00 AM - 4:00 PM", description: "Official event timing" },
     { key: "organizer_entity", value: "IEEE Vardhaman Student Branch", description: "Organizing student branch" },
   ];
 

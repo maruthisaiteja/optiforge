@@ -64,10 +64,10 @@ export default function Navbar() {
         {/* Desktop Nav Links */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-brand-muted">
           <Link
-            href="/#tracks"
+            href="/#themes"
             className="hover:text-teal-accent transition-colors py-1 hover:border-b border-teal-accent"
           >
-            Problem Tracks
+            Innovation Themes
           </Link>
           <Link
             href="/#how-it-works"
@@ -167,11 +167,11 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="md:hidden border-b border-navy-border/80 bg-bg-secondary px-4 pt-3 pb-5 space-y-3">
           <Link
-            href="/#tracks"
+            href="/#themes"
             onClick={() => setMobileMenuOpen(false)}
             className="block px-3 py-2 rounded-md text-base font-medium text-brand-white hover:bg-navy-deep/40"
           >
-            Problem Tracks
+            Innovation Themes
           </Link>
           <Link
             href="/#how-it-works"

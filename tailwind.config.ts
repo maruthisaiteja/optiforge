@@ -11,52 +11,73 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: "#0B0F1A",
-          secondary: "#131A2B",
-          card: "#161F36",
-          elevated: "#1C2744",
+          primary: "#F8FAFC",      // $.bg
+          secondary: "#F0F7FB",    // $.softBlue
+          card: "#FFFFFF",         // $.white
+          elevated: "#FFFFFF",
         },
         navy: {
-          deep: "#1F2A63",
-          border: "#263566",
+          deep: "#F0F7FB",         // Soft Blue for neutral badge/input backgrounds
+          border: "#D9E6EE",       // $.border
         },
         teal: {
-          accent: "#2FE6D6",
-          glow: "rgba(47, 230, 214, 0.25)",
+          accent: "#00629B",       // $.ieeeBlue
+          glow: "rgba(0, 98, 155, 0.15)",
+        },
+        cyan: {
+          accent: "#12A8C4",       // $.cyan
         },
         orange: {
-          accent: "#E15A2C",
+          accent: "#D58A19",       // $.warning
         },
         electric: {
-          violet: "#7B5CFA",
-          glow: "rgba(123, 92, 250, 0.25)",
+          violet: "#772583",       // $.embsPurple
+          glow: "rgba(119, 37, 131, 0.15)",
         },
         brand: {
-          white: "#F5F7FA",
-          muted: "#8B93A7",
-          dim: "#55607A",
+          white: "#102A43",        // $.navy (main text)
+          muted: "#52606D",        // $.slate (secondary text)
+          dim: "#829AB1",
         },
         status: {
-          green: "#3ED598",
-          red: "#FF5C5C",
-          yellow: "#FFB020",
+          green: "#238B68",        // $.success
+          red: "#D84A5A",          // $.medRed
+          yellow: "#D58A19",       // $.warning
         },
+        // Exact tokens imported from https://ieee-embs-vce.vercel.app/optiforge
+        ofBg: "#F8FAFC",
+        ofWhite: "#FFFFFF",
+        ofSoftBlue: "#F0F7FB",
+        ofSoftPurple: "#F6F1F8",
+        ieeeBlue: "#00629B",
+        embsPurple: "#772583",
+        ofCyan: "#12A8C4",
+        ofNavy: "#102A43",
+        ofSlate: "#52606D",
+        ofBorder: "#D9E6EE",
+        ofSuccess: "#238B68",
+        ofWarning: "#D58A19",
+        ofMedRed: "#D84A5A",
+        ofAiPurple: "#7657D9",
       },
       fontFamily: {
-        display: ["var(--font-orbitron)", "sans-serif"],
-        body: ["var(--font-inter)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
+        display: ["Sora", "Outfit", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
       backgroundImage: {
-        "gradient-signature": "linear-gradient(135deg, #2FE6D6 0%, #7B5CFA 100%)",
-        "gradient-orange": "linear-gradient(135deg, #E15A2C 0%, #FF8A00 100%)",
-        "gradient-card": "linear-gradient(180deg, rgba(31, 42, 99, 0.4) 0%, rgba(19, 26, 43, 0.8) 100%)",
-        "gradient-glow": "radial-gradient(circle at 50% 50%, rgba(47, 230, 214, 0.15) 0%, rgba(11, 15, 26, 0) 70%)",
+        "gradient-signature": "linear-gradient(135deg, #00629B 0%, #772583 100%)",
+        "gradient-teal-blue": "linear-gradient(135deg, #008C95 0%, #0066CC 100%)",
+        "gradient-card": "linear-gradient(180deg, #FFFFFF 0%, #F0F7FB 100%)",
+        "gradient-hero": "linear-gradient(135deg, #F8FAFC 0%, #EEF8FC 50%, #F7F0F9 100%)",
+        "gradient-glow": "radial-gradient(circle at 50% 50%, rgba(18, 168, 196, 0.15) 0%, rgba(248, 250, 252, 0) 70%)",
       },
       boxShadow: {
-        glow: "0 0 24px rgba(47, 230, 214, 0.35)",
-        "glow-violet": "0 0 24px rgba(123, 92, 250, 0.35)",
-        "glow-orange": "0 0 24px rgba(225, 90, 44, 0.35)",
+        glow: "0 4px 20px rgba(0, 98, 155, 0.15)",
+        "glow-violet": "0 4px 20px rgba(119, 37, 131, 0.15)",
+        "glow-cyan": "0 4px 20px rgba(18, 168, 196, 0.20)",
+        card: "0 1px 3px rgba(23,33,33,.06), 0 4px 16px -2px rgba(23,33,33,.06)",
+        bright: "0 4px 20px -2px rgba(0,98,155,.08), 0 2px 6px -1px rgba(0,0,0,.04)",
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",

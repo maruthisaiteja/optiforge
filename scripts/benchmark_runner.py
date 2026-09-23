@@ -1,7 +1,7 @@
 """
 OptiForge 2026 - Benchmark Evaluation Harness
 Author: Antigravity Dev Team for IEEE EMBS & IEEE CIS, Vardhaman College of Engineering
-Safe, deterministic benchmarking of student submissions across the 4 CI tracks.
+Safe, deterministic benchmarking of student submissions across the 6 CI tracks.
 """
 
 import sys
@@ -11,6 +11,13 @@ import ast
 import traceback
 import math
 import random
+import os
+
+# Defense-in-depth: Sterilize execution environment immediately
+try:
+    os.environ.clear()
+except Exception:
+    pass
 
 def analyze_code_structure(code_str: str, track_id: str):
     """
@@ -24,8 +31,16 @@ def analyze_code_structure(code_str: str, track_id: str):
         "constructs": []
     }
     
-    # Disallow hazardous modules
-    forbidden = ["os", "subprocess", "shutil", "socket", "http", "requests", "urllib", "eval", "exec"]
+    # Disallow hazardous modules and sandbox escape constructs
+    forbidden_modules = [
+        "os", "subprocess", "shutil", "socket", "http", "requests", "urllib",
+        "sys", "pty", "posix", "ctypes", "pickle", "importlib"
+    ]
+    forbidden_calls = ["eval", "exec", "open", "__import__", "getattr", "setattr", "delattr", "compile"]
+    forbidden_attrs = [
+        "__subclasses__", "__bases__", "__base__", "__mro__", "__globals__",
+        "__builtins__", "__code__", "__closure__", "__dict__", "__class__"
+    ]
     
     try:
         tree = ast.parse(code_str)
@@ -35,20 +50,25 @@ def analyze_code_structure(code_str: str, track_id: str):
         findings["heuristic_score"] = 10.0
         return findings
 
-    # Walk AST
+    # Walk AST with hardened security inspection
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
-                for f in forbidden:
+                for f in forbidden_modules:
                     if alias.name == f or alias.name.startswith(f + "."):
                         findings["has_dangerous_calls"] = True
         elif isinstance(node, ast.ImportFrom):
             if node.module:
-                for f in forbidden:
+                for f in forbidden_modules:
                     if node.module == f or node.module.startswith(f + "."):
                         findings["has_dangerous_calls"] = True
         elif isinstance(node, ast.Call):
-            if isinstance(node.func, ast.Name) and node.func.id in ["eval", "exec", "open", "__import__"]:
+            if isinstance(node.func, ast.Name) and node.func.id in forbidden_calls:
+                findings["has_dangerous_calls"] = True
+            elif isinstance(node.func, ast.Attribute) and node.func.attr in forbidden_calls:
+                findings["has_dangerous_calls"] = True
+        elif isinstance(node, ast.Attribute):
+            if node.attr in forbidden_attrs:
                 findings["has_dangerous_calls"] = True
         
         # Track-specific construct detection

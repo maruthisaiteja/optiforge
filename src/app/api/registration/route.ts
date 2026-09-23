@@ -94,11 +94,11 @@ export async function POST(req: Request) {
     const rawPassword = `Forge#${teamCode.split("-")[2]}`;
     const hashedPassword = await hashPassword(rawPassword);
 
-    // Dynamic fee: ₹50 per member
-    const paymentAmount = members.length * 50;
+    // Dynamic fee: ₹100 per member (as per official event spec)
+    const paymentAmount = members.length * 100;
 
-    // Assigned problem statement (single chosen PS, with fallback to prefTracks or default)
-    const assignedDomain = selectedProblem || chosenProblem || (prefTracks && prefTracks.length > 0 ? prefTracks[0] : "p1-hospital-scheduling");
+    // Assigned innovation theme (single chosen theme, with fallback to prefTracks or default)
+    const assignedDomain = selectedProblem || chosenProblem || (prefTracks && prefTracks.length > 0 ? prefTracks[0] : "theme-1-biomedical-ai");
 
     const newTeam = await db.team.create({
       data: {

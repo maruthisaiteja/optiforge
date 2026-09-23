@@ -14,19 +14,19 @@ A premier computational intelligence algorithm competition web platform organize
 - **High-Impact Public Landing Page**:
   - Interactive HTML5 Canvas Swarm Intelligence particle network.
   - Real-time countdown timer to 25th September 2026, 9:00 AM IST.
-  - Interactive showcases for 4 Problem Tracks (GA, PSO, ACO, Fuzzy Logic).
+  - Interactive showcases for 6 Problem Tracks across Computational Intelligence.
   - Organizer branding and collapsible FAQ accordion.
 
 - **Dynamic Team Registration & Payment**:
   - Multi-member team roster (2 to 4 members) with validation (duplicate email prevention, 10-digit Indian phone validation).
   - Dynamic fee auto-calculation: **₹50 per participant** (₹100 for 2, ₹150 for 3, ₹200 for 4).
-  - Verified payee: **"IEEE Vardhaman Student Branch"**.
-  - Dual Razorpay Mode: Live/Test Razorpay Gateway + zero-friction Instant Sandbox Verification mode.
+  - Verified payee: **"IEEE Vardhaman Student Branch"** (Direct UPI Settlement & Razorpay Gateway).
+  - Secure 12-digit UTR bank reconciliation with duplicate transaction prevention (Sandbox bypass strictly disabled in production).
   - Generates official Team ID (`OPT-26-XXXX`) and default credentials upon payment confirmation.
 
 - **Live Team Competition Arena**:
   - Full problem statements rendered with rich markdown typography.
-  - Downloadable starter Python templates (`starter_ga.py`, `starter_pso.py`, `starter_aco.py`, `starter_fuzzy.py`).
+  - Downloadable starter Python templates for all 6 problem tracks (`starter_p1_scheduling.py` to `starter_p6_triage.py`).
   - Submission deadline countdown timer.
   - Strict 3-attempt ceiling with confirmation safeguard modal.
   - Score Reveal animation counting up (0 $\rightarrow$ Final Score) displaying all 4 sub-scores.

@@ -34,7 +34,7 @@ export default function ParticleSwarm() {
     // Create particles
     const particleCount = Math.min(65, Math.floor((width * height) / 18000));
     const particles: Particle[] = [];
-    const colors = ["#2FE6D6", "#7B5CFA", "#E15A2C", "#3ED598"];
+    const colors = ["#00629B", "#772583", "#18A9C9", "#00629B"];
 
     for (let i = 0; i < particleCount; i++) {
       particles.push({
@@ -71,7 +71,7 @@ export default function ParticleSwarm() {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(47, 230, 214, ${alpha})`;
+            ctx.strokeStyle = `rgba(0, 98, 155, ${alpha * 0.5})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }

@@ -59,12 +59,12 @@ export default function TeamDashboard() {
   const [viewingSubCode, setViewingSubCode] = useState<any>(null);
   const [showFullProblemSpec, setShowFullProblemSpec] = useState(false);
 
-  // Event launch countdown: 25-09-2026 09:00:00 IST
-  const eventStartTime = new Date("2026-09-25T09:00:00+05:30").getTime();
+  // Event launch countdown: 30-09-2026 10:00:00 IST
+  const eventStartTime = new Date("2026-09-30T10:00:00+05:30").getTime();
   const [eventCountdown, setEventCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Competition window deadline countdown: 25-09-2026 16:00:00 IST
-  const deadline = new Date("2026-09-25T16:00:00+05:30").getTime();
+  // Competition window deadline countdown: 30-09-2026 16:00:00 IST
+  const deadline = new Date("2026-09-30T16:00:00+05:30").getTime();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
   // Live patch countdown
@@ -111,7 +111,7 @@ export default function TeamDashboard() {
     const interval = setInterval(() => {
       const now = new Date().getTime();
 
-      // Countdown to Event Day Launch (25-09-2026 09:00 AM)
+      // Countdown to Event Day Launch (30-09-2026 10:00 AM)
       const diffStart = eventStartTime - now;
       if (diffStart > 0) {
         const days = Math.floor(diffStart / (1000 * 60 * 60 * 24));
@@ -121,7 +121,7 @@ export default function TeamDashboard() {
         setEventCountdown({ days, hours, minutes, seconds });
       }
 
-      // Countdown to Event Close (25-09-2026 16:00 PM)
+      // Countdown to Event Close (30-09-2026 16:00 PM)
       const diffEnd = deadline - now;
       if (diffEnd > 0) {
         const hours = Math.floor(diffEnd / (1000 * 60 * 60));
@@ -284,9 +284,9 @@ export default function TeamDashboard() {
                 <div className="flex items-center justify-between text-xs font-mono text-teal-accent">
                   <span className="flex items-center gap-1.5">
                     <Calendar className="w-3.5 h-3.5" />
-                    <span>Event Day: 25-09-2026</span>
+                    <span>Event Day: 30-09-2026</span>
                   </span>
-                  <span className="text-[10px] text-brand-dim">9:00 AM IST</span>
+                  <span className="text-[10px] text-brand-dim">10:00 AM IST</span>
                 </div>
                 <div className="grid grid-cols-4 gap-1.5 text-center font-mono pt-1">
                   <div className="p-2 rounded-lg bg-bg-secondary border border-navy-border/60">
@@ -521,16 +521,16 @@ export default function TeamDashboard() {
                   Competition Submission Arena Unlocks on Event Day
                 </h3>
                 <p className="text-xs text-brand-muted leading-relaxed font-sans max-w-2xl">
-                  The automated code execution pipeline, hidden test perturbations, 3-attempt scoring runner, and live patch round will unlock on <span className="text-brand-white font-semibold">Friday, 25th September 2026 at 9:00 AM IST</span>. Please review your problem statement and download the starter notebook in the meantime.
+                  The automated code execution pipeline, hidden test perturbations, 3-attempt scoring runner, and live patch round will unlock on <span className="text-brand-white font-semibold">Wednesday, 30th September 2026 at 10:00 AM IST</span>. Please review your problem statement and download the starter notebook in the meantime.
                 </p>
               </div>
             </div>
 
             <Link
-              href="/problems"
+              href="/#themes"
               className="px-4 py-2.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono shrink-0 transition-colors"
             >
-              Browse All 6 Problems →
+              Browse All 9 Innovation Themes →
             </Link>
           </div>
         </div>

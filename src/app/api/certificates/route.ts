@@ -34,7 +34,7 @@ export async function GET(req: Request) {
       trackName: track?.name || "Computational Intelligence Track",
       rank,
       certificateType,
-      issueDate: "25th September 2026",
+      issueDate: "30th September 2026",
       organizer: "IEEE Vardhaman Student Branch",
       verificationCode: `OPT26-${team.teamCode}-${Buffer.from(team.teamName).toString("hex").slice(0, 6).toUpperCase()}`,
     });

@@ -57,6 +57,16 @@ export async function POST(req: Request) {
       );
     }
 
+    // Gate sandbox verification bypass mode
+    if (body.isSandbox || body.sandbox) {
+      if (process.env.NODE_ENV === "production" && process.env.ENABLE_SANDBOX_PAYMENT !== "true") {
+        return NextResponse.json(
+          { error: "Instant Sandbox Verification mode is strictly disabled in production." },
+          { status: 403 }
+        );
+      }
+    }
+
     // Extract and validate the 12-digit numeric UTR
     const rawUtr = (utrNumber || razorpayPaymentId || "").toString().trim();
     const cleanUtr = rawUtr.replace(/\D/g, "");
@@ -71,6 +81,19 @@ export async function POST(req: Request) {
     if (cleanUtr.length !== 12) {
       return NextResponse.json(
         { error: "Invalid UTR format. Please enter the exact 12-digit UPI Reference / UTR Number from your payment details." },
+        { status: 400 }
+      );
+    }
+
+    // Reject obvious dummy / test patterns (e.g. 000000000000, 123456789012)
+    const dummyPatterns = [
+      /^(\d)\1{11}$/,
+      /^123456789012$/,
+      /^012345678901$/,
+    ];
+    if (dummyPatterns.some((pattern) => pattern.test(cleanUtr))) {
+      return NextResponse.json(
+        { error: "Invalid UPI Reference Number. Please enter the authentic 12-digit UTR from your actual bank transaction receipt." },
         { status: 400 }
       );
     }

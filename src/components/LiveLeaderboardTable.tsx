@@ -35,6 +35,17 @@ export default function LiveLeaderboardTable({
   const [selectedTrack, setSelectedTrack] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const uniqueTracks = React.useMemo(() => {
+    const trackMap = new Map<string, string>();
+    trackMap.set("ALL", "All Themes");
+    entries.forEach((e) => {
+      if (e.trackId && e.trackName) {
+        trackMap.set(e.trackId, e.trackName);
+      }
+    });
+    return Array.from(trackMap.entries()).map(([id, label]) => ({ id, label }));
+  }, [entries]);
+
   const filteredEntries = entries.filter((e) => {
     const matchesTrack = selectedTrack === "ALL" || e.trackId === selectedTrack;
     const matchesSearch =
@@ -65,13 +76,7 @@ export default function LiveLeaderboardTable({
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Track Filter Pills */}
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          {[
-            { id: "ALL", label: "All Tracks" },
-            { id: "track-ga", label: "Genetic Algorithms" },
-            { id: "track-pso", label: "Particle Swarm (PSO)" },
-            { id: "track-aco", label: "Ant Colony (ACO)" },
-            { id: "track-fuzzy", label: "Fuzzy Logic" },
-          ].map((t) => (
+          {uniqueTracks.map((t) => (
             <button
               key={t.id}
               onClick={() => setSelectedTrack(t.id)}

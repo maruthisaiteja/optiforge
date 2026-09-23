@@ -19,6 +19,60 @@ export async function GET() {
     });
 
 const VIVA_QUESTIONS: Record<string, string[]> = {
+  "theme-1-biomedical-ai": [
+    "How does your predictive clinical model handle highly imbalanced patient outcome distributions?",
+    "What loss function and regularization constraints ensure medical interpretability for healthcare practitioners?",
+    "How does your algorithm adapt when critical patient physiological telemetry contains missing sensor values?",
+    "How do you mathematically guard against demographic or hospital-specific bias in your model predictions?",
+  ],
+  "theme-2-edtech": [
+    "How does your student knowledge state model update dynamically as a learner attempts multiple exercises?",
+    "How do you mathematically balance personalization depth versus comprehensive curriculum coverage?",
+    "What optimization strategy avoids cognitive overload or disengagement in adaptive learning path generation?",
+    "How does your system prevent recommending duplicate or redundant pedagogical modules?",
+  ],
+  "theme-3-digital-health": [
+    "Walk through your defuzzification and triage queue priority mechanism under emergency network bandwidth drops.",
+    "How does your consultation dispatch system ensure low patient waiting latency across diverse medical specialties?",
+    "How do you handle sudden surge demand when remote clinics report simultaneous acute patient arrivals?",
+    "What mathematical criteria determine when a patient requires urgent in-person escalation vs remote monitoring?",
+  ],
+  "theme-4-neurotech": [
+    "How does your BCI spatial filter handle non-stationary EEG signal drift across hours of continuous usage?",
+    "What feature extraction techniques isolate motor imagery artifacts from ocular or muscular noise?",
+    "How does your algorithm maintain low latency (<50ms) for real-time neuro-robotic prosthetic feedback?",
+    "How did your model adapt during testing when electrode impedance fluctuated unpredictably?",
+  ],
+  "theme-5-medical-imaging": [
+    "How do your segmentation contours preserve minute lesion boundaries under low-contrast radiological scans?",
+    "What fitness metric did you choose to evaluate segmentation quality against clinical ground truth masks?",
+    "How does your feature optimizer prevent overfitting to a single scanner vendor or patient cohort?",
+    "What computational trade-offs were made to ensure rapid inference runtime on clinical workstations?",
+  ],
+  "theme-6-biomedical-signals": [
+    "Explain how your wavelet or filter bank isolates subtle ECG arrhythmic beats from baseline wander.",
+    "How does your fuzzy classifier handle overlapping boundaries between benign and pathological signal morphologies?",
+    "What is your mathematical threshold for triggering high-priority physiological alarms?",
+    "How does your pipeline ensure deterministic real-time throughput on streaming multi-channel biosensors?",
+  ],
+  "theme-7-smart-healthcare-iot": [
+    "How does your energy-efficient routing algorithm prolong battery life across distributed medical IoT nodes?",
+    "What is your duty-cycling policy during critical physiological event telemetry spikes?",
+    "How does your network routing topology recover when an intermediate edge gateway node unexpectedly fails?",
+    "How do you mathematically guarantee latency bounds for time-sensitive intensive-care alerts?",
+  ],
+  "theme-8-healthcare-robotics": [
+    "How does your motion planning formulation guarantee smooth, collision-free kinematics near clinical staff?",
+    "When an obstacle blocks a primary hospital delivery corridor, how rapidly does your planner compute an alternate path?",
+    "What objective weighting prevents jerky robotic actuator accelerations during delicate medical transport?",
+    "How did your multi-agent swarm allocation behave when task urgency shifted dynamically across wards?",
+  ],
+  "theme-9-open-innovation": [
+    "What novel computational intelligence paradigm did your team formulate to bridge EMBS and CIS domains?",
+    "How do you mathematically validate that your hybrid approach outperforms classical baseline heuristics?",
+    "How does your multi-objective formulation navigate competing trade-offs between accuracy, runtime, and complexity?",
+    "What real-world clinical or technological bottleneck does your solution solve most effectively?",
+  ],
   "p1-hospital-scheduling": [
     "How did you mathematically model consecutive night-shift fatigue in your fuzzy inference system?",
     "What happens if 3 critical nurses take emergency leave simultaneously? How does your algorithm adapt?",

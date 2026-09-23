@@ -74,20 +74,20 @@ async function verify() {
   }
   console.log("✔ Zero dummy submissions in database: PASSED");
 
-  // 5. Verify 6 Problem Statements
-  if (db.problemTracks.length !== 6) {
-    throw new Error(`FAIL: Expected 6 problem statements, found ${db.problemTracks.length}`);
+  // 5. Verify 9 Innovation Themes
+  if (db.problemTracks.length !== 9) {
+    throw new Error(`FAIL: Expected 9 innovation themes, found ${db.problemTracks.length}`);
   }
-  console.log(`✔ All 6 Problem Statements verified:`);
+  console.log(`✔ All 9 Innovation Themes verified:`);
   db.problemTracks.forEach((tr, i) => {
     console.log(`   ${i + 1}. [${tr.id}] ${tr.shortName}`);
   });
 
-  // 6. Verify Admin and 6 Judges
+  // 6. Verify Admin and 9 Judges
   const adminUser = db.users.find(u => u.role === "ADMIN");
   const judgeUsers = db.users.filter(u => u.role === "JUDGE");
   if (!adminUser) throw new Error("FAIL: Admin user not found!");
-  if (judgeUsers.length !== 6) throw new Error(`FAIL: Expected 6 judges, found ${judgeUsers.length}`);
+  if (judgeUsers.length !== 9) throw new Error(`FAIL: Expected 9 judges, found ${judgeUsers.length}`);
   console.log(`✔ Admin (${adminUser.username}) and ${judgeUsers.length} Expert Judges verified: PASSED`);
 
   console.log("\n=== ALL AUDIT CHECKS PASSED PERFECTLY ===");

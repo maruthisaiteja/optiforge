@@ -26,12 +26,15 @@ import {
   CheckSquare,
   HelpCircle,
   Radio,
+  Activity,
+  Bot,
+  Flame,
 } from "lucide-react";
 import CoverageMapVisualization from "@/components/CoverageMapVisualization";
 
 export default function LandingPage() {
-  // Countdown Timer to 25-09-2026 09:00 AM IST
-  const targetDate = new Date("2026-09-25T09:00:00+05:30").getTime();
+  // Countdown Timer to 30-09-2026 10:00 AM IST
+  const targetDate = new Date("2026-09-30T10:00:00+05:30").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -66,189 +69,324 @@ export default function LandingPage() {
   // Accordion FAQ state
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const officialProblems = [
+  // 9 Official Innovation Themes
+  const innovationThemes = [
     {
-      id: "p1-hospital-scheduling",
-      num: "P1",
-      title: "Hospital Staff Scheduling with Fatigue-Aware Optimization",
-      shortTitle: "Hospital Staff Scheduling",
-      society: "IEEE EMBS × IEEE CIS",
-      difficulty: "Intermediate–Advanced",
-      technique: "Genetic Algorithm + Fuzzy Fatigue Model",
+      id: "theme-1-biomedical-ai",
+      code: "T1",
+      title: "Biomedical Artificial Intelligence",
+      category: "EMBS Domain",
+      domainColor: "#772583",
+      difficulty: "Advanced",
+      technique: "Genetic Algorithm + Fuzzy Risk Modeling",
+      society: "IEEE EMBS",
       starterFile: "/starter/starter_p1_scheduling.py",
       context:
-        "A hospital must schedule doctors, nurses, technicians, and support staff across a 7-day planning horizon. Each employee has availability, skills, contractual working-hour limits, shift preferences, and rest requirements.",
+        "Modern clinical workflows generate continuous multidimensional telemetry. Predictive models must accurately evaluate patient outcomes, survival risk, and treatment responsiveness under clinical uncertainty.",
       coreChallenge:
-        "Construct a schedule satisfying hard staffing requirements while reducing overtime and fatigue risk — modeled via continuous fuzzy inference based on consecutive shifts, night work, and cumulative workload.",
+        "Engineer an interpretable diagnostic optimization pipeline combining evolutionary feature selection with fuzzy risk stratification to minimize misdiagnosis and maximize early triage accuracy.",
       hardConstraints: [
-        "Minimum qualified staffing met across all shifts",
-        "Employees cannot work overlapping shifts",
-        "Minimum rest duration strictly satisfied",
-        "Maximum contractual working hours not exceeded",
-        "Critical departments require appropriate certified skill coverage",
+        "Patient outcome predictions must meet clinical safety and interpretability standards",
+        "Imbalanced cohort distributions must not induce class collapse or blind majority voting",
+        "Feature selection bounds must prevent demographic and institutional over-parameterization",
+        "Real-time inference execution budget strictly bounded for bedside deployment",
       ],
       optimizationObjectives: [
-        "Minimize cumulative fuzzy fatigue risk score",
-        "Minimize overtime hours and penalty costs",
-        "Minimize employee shift preference violations",
-        "Minimize skill mismatch while preserving department coverage",
+        "Maximize area under the ROC curve (AUROC) across stratified held-out cohorts",
+        "Minimize false negative rate on critical, high-mortality clinical indicators",
+        "Minimize feature space redundancy and sensor acquisition complexity",
+        "Maximize stability under noisy or missing bedside telemetry streams",
       ],
-      attemptProgression: "Attempt 1: Base schedule → Attempt 2: Shift (Staff reduction) → Attempt 3: Shift (Department demand spike)",
+      attemptProgression: "Attempt 1: Baseline predictive classifier → Attempt 2: Shift (Missing physiological features) → Attempt 3: Shift (Severe demographic prevalence drift)",
     },
     {
-      id: "p2-drone-delivery",
-      num: "P2",
-      title: "Drone-Based Emergency Medical Supply Delivery",
-      shortTitle: "Drone Medical Delivery",
-      society: "IEEE EMBS × IEEE CIS",
-      difficulty: "Advanced",
-      technique: "Ant Colony Optimization + Genetic Algorithm",
+      id: "theme-2-edtech",
+      code: "T2",
+      title: "EdTech & Intelligent Learning Systems",
+      category: "CIS Domain",
+      domainColor: "#00629B",
+      difficulty: "Intermediate–Advanced",
+      technique: "Multi-Objective Heuristics + Fuzzy Student Modeling",
+      society: "IEEE CIS",
       starterFile: "/starter/starter_p2_drone.py",
       context:
-        "A fleet of autonomous drones must deliver medicines, blood products, and emergency supplies from hospitals to remote clinics. Each drone has battery capacity, payload limit, speed, and charging requirements.",
+        "Intelligent tutoring platforms must guide diverse cohorts through complex STEM curricula. Each learner has varying cognitive load thresholds, mastery trajectories, attention spans, and pacing preferences.",
       coreChallenge:
-        "Determine which drone serves each request, delivery order, charging decisions, and return paths under strict transit-duration limits for temperature-sensitive supplies.",
+        "Formulate a dynamic curriculum optimization algorithm that constructs personalized adaptive learning pathways, minimizing cognitive fatigue while maximizing concept retention and completion rates.",
       hardConstraints: [
-        "Payload and battery capacities cannot be exceeded",
-        "Drone range must permit safe completion or approved charging",
-        "High-priority deliveries have strict non-negotiable arrival deadlines",
-        "Temperature-sensitive supplies have maximum allowable transit duration",
-        "Drone and charging-station resources cannot be shared by incompatible tasks",
+        "Prerequisite concept dependencies must be strictly respected in all generated paths",
+        "Daily cognitive load bounds must not exceed maximum learner fatigue ceilings",
+        "Curriculum coverage standards must remain comprehensive across all core competencies",
+        "Recommendation latency must support responsive, real-time client interaction",
       ],
       optimizationObjectives: [
-        "Maximize on-time priority deliveries to remote medical centers",
-        "Minimize total flight energy consumption and mission distance",
-        "Minimize missed deadlines and priority lateness penalties",
-        "Minimize thermal degradation risk for sensitive cargo",
+        "Maximize long-term concept retention probability and mastery velocity",
+        "Minimize learner drop-off risk, disengagement, and cognitive overload penalties",
+        "Minimize path variance across heterogeneous cohorts without sacrificing individualization",
+        "Maximize engagement balance across instructional media and practice modalities",
       ],
-      attemptProgression: "Attempt 1: Standard routing → Attempt 2: Shift (Adverse headwinds +25% energy) → Attempt 3: Shift (Demand surge & tight deadlines)",
+      attemptProgression: "Attempt 1: Linear mastery optimization → Attempt 2: Shift (Sudden drop in learner study time) → Attempt 3: Shift (Bimodal student mastery divergence)",
     },
     {
-      id: "p3-emergency-hospital",
-      num: "P3",
-      title: "Emergency Hospital Destination Selection Under Dynamic Capacity",
-      shortTitle: "Hospital Destination Selection",
-      society: "IEEE EMBS × IEEE CIS",
+      id: "theme-3-digital-health",
+      code: "T3",
+      title: "Digital Health & Telemedicine",
+      category: "EMBS Domain",
+      domainColor: "#772583",
       difficulty: "Advanced",
-      technique: "Fuzzy Logic + Particle Swarm Optimization",
+      technique: "Adaptive Fuzzy Triage & Queue Dispatch",
+      society: "IEEE EMBS",
       starterFile: "/starter/starter_p3_hospital.py",
       context:
-        "An emergency ambulance must select a destination hospital for a critically ill patient. Candidate hospitals have variable travel times, ER queues, ICU beds, and specialist availability.",
+        "Decentralized telemedicine networks connect rural clinics to specialized tertiary medical centers. Network bandwidth fluctuates dynamically while acute patient consultations arrive intermittently.",
       coreChallenge:
-        "Select the hospital minimizing expected time to definitive treatment — not simply travel time — balancing dynamic queues, travel time, and specialist presence under clinical uncertainty.",
+        "Design a dynamic dispatch and queue prioritization engine that matches patient urgency with specialist availability under fluctuating network bandwidth and strict escalation deadlines.",
       hardConstraints: [
-        "Hospital without required capability/equipment cannot be selected",
-        "Predicted treatment delay and specialist availability factored in",
-        "ICU or specialist capacity shifts during transport accounted for",
-        "Critical patient triage levels receive highest decision priority",
-        "Decisions must remain fully interpretable to clinical EMS operators",
+        "Acute emergency consults must be dispatched within non-negotiable critical windows",
+        "Specialist contractual working hours and clinical load limits cannot be exceeded",
+        "Tele-consultation session bandwidth requirements must match available channel capacity",
+        "Patient data privacy and sovereign encryption protocols must be strictly maintained",
       ],
       optimizationObjectives: [
-        "Minimize expected total time to definitive medical treatment",
-        "Minimize uncertainty-related risk and diversion probability",
-        "Minimize inappropriate resource utilization and secondary transfers",
+        "Minimize patient waiting time to certified specialist consultation",
+        "Maximize specialist utilization efficiency while preventing physician burnout",
+        "Minimize emergency escalation delays for critical cardiovascular and stroke consults",
+        "Maximize throughput of scheduled routine consultations across rural clusters",
       ],
-      attemptProgression: "Attempt 1: Base destination ranking → Attempt 2: Shift (Tier-1 ER congestion) → Attempt 3: Shift (Key specialist unavailability)",
+      attemptProgression: "Attempt 1: Deterministic queue dispatch → Attempt 2: Shift (50% bandwidth constriction & rural surge) → Attempt 3: Shift (Specialist emergency leave spike)",
     },
     {
-      id: "p4-blood-inventory",
-      num: "P4",
-      title: "Hospital Blood Inventory and Compatibility-Aware Allocation",
-      shortTitle: "Blood Inventory Allocation",
-      society: "IEEE EMBS × IEEE CIS",
+      id: "theme-4-neurotech",
+      code: "T4",
+      title: "Neurotechnology & Rehabilitation",
+      category: "Flagship Interdisciplinary",
+      domainColor: "#12A8C4",
       difficulty: "Advanced",
-      technique: "Genetic Algorithm / Particle Swarm Optimization",
-      starterFile: "/starter/starter_p4_blood.py",
+      technique: "Swarm Neuro-Decoding & Adaptive Filtering",
+      society: "IEEE EMBS × CIS",
+      starterFile: "/starter/starter_p4_grid.py",
       context:
-        "A hospital maintains inventories of multiple blood groups (A, B, AB, O with Rh factors) with 35–42 day shelf lives. Daily demand is uncertain, and compatible substitutions may consume universal O-negative units.",
+        "Brain-Computer Interfaces (BCIs) and neuro-prosthetic limb controllers capture non-stationary multi-channel electroencephalogram (EEG) signals that degrade rapidly due to electrode impedance drift.",
       coreChallenge:
-        "Determine procurement quantities, allocation decisions, inventory rotation, and emergency substitution policies, balancing stockout risk against expiry-related wastage.",
+        "Develop an adaptive neuro-decoding algorithm using swarm intelligence to optimize spatial filtering weights and spectral feature boundaries for low-latency intent classification.",
       hardConstraints: [
-        "Blood-group biological compatibility strictly respected",
-        "Expired units cannot be transfused under any circumstance",
-        "Inventory levels cannot become negative",
-        "Emergency demand receives absolute highest fulfillment priority",
-        "Procurement capacity and delivery schedules have minimum lead times",
+        "End-to-end motor intention classification latency must strictly remain < 50 milliseconds",
+        "Filter coefficients must remain bounded within stable numerical poles",
+        "Classification output cannot trigger spurious prosthetic activations during rest states",
+        "System must recalibrate autonomously without requiring complete user re-training",
       ],
       optimizationObjectives: [
-        "Minimize blood unit expiry and wastage across all ABO/Rh groups",
-        "Minimize stockout probability and emergency shortage severity",
-        "Minimize emergency procurement rush costs",
-        "Preserve compatibility flexibility for rare blood groups",
+        "Maximize motor imagery classification accuracy across multi-class limb commands",
+        "Minimize classification error rate under electrode signal impedance drift",
+        "Minimize computational complexity for embedded prosthetic microcontrollers",
+        "Maximize user comfort and adaptation velocity during continuous rehabilitation cycles",
       ],
-      attemptProgression: "Attempt 1: Multi-day inventory policy → Attempt 2: Shift (Mass trauma emergency demand) → Attempt 3: Shift (48h supply delay)",
+      attemptProgression: "Attempt 1: Stationary EEG spatial decoding → Attempt 2: Shift (Electrode impedance degradation +20% noise) → Attempt 3: Shift (Fast motor task switching)",
     },
     {
-      id: "p5-search-and-rescue",
-      num: "P5",
-      title: "Multi-Robot Search-and-Rescue Area Coverage (Flagship Showcase)",
-      shortTitle: "Multi-Robot Search & Rescue",
-      society: "IEEE EMBS × IEEE CIS",
-      difficulty: "Advanced (Flagship Showcase)",
-      technique: "PSO / ACO / Multi-Agent Genetic Algorithm",
-      starterFile: "/starter/starter_p5_sar.py",
-      isFlagship: true,
-      context:
-        "A set of autonomous mobile robots must search an unknown disaster environment for survivors. Each robot has limited battery, sensor range, movement speed, and communication limits.",
-      coreChallenge:
-        "Divide the search area among robots to maximize survivor-detection probability while minimizing redundant exploration and battery consumption. When one robot detects a survivor, nearby robots dynamically replan to assist.",
-      hardConstraints: [
-        "Robot battery must not fall below safe return-to-base threshold",
-        "Communication connectivity maintained where required",
-        "Dangerous and collapsed regions carry high penalties or forbidden",
-        "Robots must avoid unnecessary trajectory overlap",
-        "Detected survivor triggers dynamic task reassignment and rendezvous",
-      ],
-      optimizationObjectives: [
-        "Maximize expected survivor detection probability across high-priority zones",
-        "Maximize total area coverage within battery budget",
-        "Minimize redundant search overlap between robots",
-        "Minimize response delay after initial survivor contact",
-      ],
-      attemptProgression: "Attempt 1: Swarm area search → Attempt 2: Shift (Debris collapse / corridor cutoff) → Attempt 3: Shift (Secondary zone probability shift)",
-    },
-    {
-      id: "p6-fuzzy-triage",
-      num: "P6",
-      title: "Fuzzy Emergency-Room Triage with Adaptive Rule Optimization",
-      shortTitle: "Fuzzy ER Triage",
-      society: "IEEE EMBS × IEEE CIS",
+      id: "theme-5-medical-imaging",
+      code: "T5",
+      title: "Medical Imaging & Computer Vision",
+      category: "EMBS Domain",
+      domainColor: "#772583",
       difficulty: "Advanced",
-      technique: "Fuzzy Logic + Genetic Algorithm",
+      technique: "Evolutionary Segmentation & Hybrid Vision Filters",
+      society: "IEEE EMBS",
+      starterFile: "/starter/starter_p5_swarm.py",
+      context:
+        "Clinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.",
+      coreChallenge:
+        "Engineer an evolutionary contour optimization model that adapts morphological filter parameters and active contour energy functions to extract micro-lesions in heterogeneous scans.",
+      hardConstraints: [
+        "Extracted lesion contours must maintain topological continuity without self-intersection",
+        "Segmentations must preserve critical organ boundaries and avoid over-dilation",
+        "Processing time per volumetric slice must meet operational radiological timeframes",
+        "Algorithm cannot hallucinate structures not supported by raw sensor intensity data",
+      ],
+      optimizationObjectives: [
+        "Maximize Dice Similarity Coefficient and Jaccard Index against expert clinical annotations",
+        "Minimize Hausdorff Distance on complex and irregular lesion boundaries",
+        "Minimize false positive artifact segmentations in low-dose CT / low-field MRI",
+        "Maximize generalization stability across diverse hospital imaging protocols",
+      ],
+      attemptProgression: "Attempt 1: High-contrast benchmark slice segmentation → Attempt 2: Shift (Motion blur & low-dose quantum noise) → Attempt 3: Shift (Micro-lesion boundary ambiguity)",
+    },
+    {
+      id: "theme-6-biomedical-signals",
+      code: "T6",
+      title: "Biomedical Signals & Intelligent Systems",
+      category: "Flagship Interdisciplinary",
+      domainColor: "#12A8C4",
+      difficulty: "Advanced",
+      technique: "Fuzzy Signal Classifier + Particle Swarm Optimizer",
+      society: "IEEE EMBS × CIS",
       starterFile: "/starter/starter_p6_triage.py",
       context:
-        "An emergency department receives patients with varying symptoms and uncertain severity (heart rate, blood pressure, oxygen saturation, pain, consciousness).",
+        "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
       coreChallenge:
-        "Design an interpretable fuzzy triage system mapping patient observations to priority levels, capturing combinations of moderately abnormal values that together indicate high risk.",
+        "Formulate a fuzzy-evolutionary signal processing pipeline that adaptively suppresses artifacts, extracts morphological fiducial points, and flags fatal cardiac arrhythmias in real time.",
       hardConstraints: [
-        "Critical patients must not be assigned low-priority categories",
-        "Fuzzy rules must remain clinically interpretable to medical doctors",
-        "Resource allocation must respect available emergency department capacity",
-        "Uncertain, noisy, or missing physiological measurements handled gracefully",
-        "Avoid excessive mathematical dependence on any single vital sign",
+        "Lethal arrhythmias (ventricular fibrillation, tachycardia) must trigger alerts within 3 seconds",
+        "False alarm suppression must never suppress legitimate acute cardiac distress events",
+        "Digital filters must preserve QRS complex amplitudes and ST-segment elevations",
+        "Memory footprint must operate within low-power wearable telemetry hardware constraints",
       ],
       optimizationObjectives: [
-        "Minimize critical-patient waiting time to physician assessment",
-        "Minimize inappropriate under-triage and over-triage rates",
-        "Minimize emergency department resource overload and queue bottlenecks",
-        "Maximize stability under noisy or incomplete clinical measurements",
+        "Maximize sensitivity and specificity across held-out PhysioNet arrhythmia databases",
+        "Minimize false alarm fatigue index in continuous bedside telemetry monitoring",
+        "Minimize R-peak detection timing jitter under severe baseline wander",
+        "Maximize execution efficiency and signal-to-noise ratio improvement",
       ],
-      attemptProgression: "Attempt 1: Rule base formulation → Attempt 2: Shift (Noisy sensor telemetry) → Attempt 3: Shift (Conflicting vitals edge cases)",
+      attemptProgression: "Attempt 1: Clean rhythm classification → Attempt 2: Shift (Severe muscular EMG artifact burst) → Attempt 3: Shift (Polymorphic premature ventricular beats)",
+    },
+    {
+      id: "theme-7-smart-healthcare-iot",
+      code: "T7",
+      title: "Smart Healthcare & Medical IoT",
+      category: "CIS Domain",
+      domainColor: "#00629B",
+      difficulty: "Intermediate–Advanced",
+      technique: "Constrained Energy-Routing Heuristics",
+      society: "IEEE CIS",
+      starterFile: "/starter/starter_p1_scheduling.py",
+      context:
+        "Wearable biosensor networks and hospital IoT beacons operate on minute battery budgets. Sensor telemetry must traverse wireless mesh gateways to hospital servers without loss.",
+      coreChallenge:
+        "Design a multi-objective swarm routing heuristic that balances node energy consumption, transmission latency, packet collision probability, and battery lifetime across the mesh.",
+      hardConstraints: [
+        "Emergency telemetry packets must be guaranteed delivery within strict latency deadlines",
+        "Individual sensor node battery depletion cannot prematurely partition the sensor network",
+        "Wireless channel duty cycle regulations must be strictly satisfied",
+        "Dynamic node joins and departures must be accommodated without network reboot",
+      ],
+      optimizationObjectives: [
+        "Maximize cumulative operational lifespan of all battery-powered sensor nodes",
+        "Minimize end-to-end telemetry transmission delay for critical physiological packets",
+        "Minimize packet delivery loss and wireless contention re-transmission overhead",
+        "Maximize energy expenditure uniformity across all forwarding gateway nodes",
+      ],
+      attemptProgression: "Attempt 1: Static topology routing → Attempt 2: Shift (Gateway node battery exhaustion) → Attempt 3: Shift (High-frequency telemetry surge from ICU)",
+    },
+    {
+      id: "theme-8-healthcare-robotics",
+      code: "T8",
+      title: "Healthcare Robotics & Automation",
+      category: "Flagship Interdisciplinary",
+      domainColor: "#12A8C4",
+      difficulty: "Advanced",
+      technique: "Multi-Agent Swarm Motion Planning & Obstacle Avoidance",
+      society: "IEEE EMBS × CIS",
+      starterFile: "/starter/starter_p5_swarm.py",
+      context:
+        "Autonomous mobile service robots and assistive robotic arms operate in congested hospital corridors, sterile surgical theaters, and pharmaceutical distribution cleanrooms.",
+      coreChallenge:
+        "Formulate a swarm robotics trajectory planner that optimizes delivery paths, avoids dynamic obstacles (gurneys, clinicians), and guarantees smooth, jerk-free kinematics.",
+      hardConstraints: [
+        "Robots must maintain strict safety clearance corridors around all human occupants",
+        "Kinematic acceleration and jerk limits must be enforced to prevent supply spills",
+        "Emergency corridors must be cleared immediately when emergency code alarms trigger",
+        "Robotic battery recharge schedules must ensure 24/7 continuous facility coverage",
+      ],
+      optimizationObjectives: [
+        "Minimize total delivery mission time for pharmaceuticals and emergency supplies",
+        "Minimize trajectory length and cumulative mechanical energy expenditure",
+        "Minimize hallway bottleneck congestion and dead-end agent lockouts",
+        "Maximize obstacle clearance smoothness and safety margins in crowded wards",
+      ],
+      attemptProgression: "Attempt 1: Static corridor pathfinding → Attempt 2: Shift (Corridor closure & gurney traffic jam) → Attempt 3: Shift (Simultaneous emergency multi-ward supply dispatch)",
+    },
+    {
+      id: "theme-9-open-innovation",
+      code: "T9",
+      title: "Open Innovation on (CIS and EMBS only)",
+      category: "Flagship Interdisciplinary",
+      domainColor: "#12A8C4",
+      difficulty: "Advanced",
+      technique: "Hybrid Evolutionary-Fuzzy Frameworks",
+      society: "IEEE EMBS × IEEE CIS",
+      starterFile: "/starter/starter_p2_drone.py",
+      context:
+        "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
+      coreChallenge:
+        "Architect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
+      hardConstraints: [
+        "Proposed algorithmic architecture must combine both EMBS and CIS core tenets",
+        "Solutions must be accompanied by rigorous mathematical formulation and code harness",
+        "Computational complexity must scale tractably with real-world clinical datasets",
+        "All third-party scientific baselines and data sources must be credited and reproducible",
+      ],
+      optimizationObjectives: [
+        "Maximize algorithmic novelty, cross-domain ingenuity, and mathematical elegance",
+        "Maximize empirical performance gain over standard industry benchmark baselines",
+        "Maximize clinical applicability and translational potential in healthcare settings",
+        "Maximize computational execution efficiency and parameter sensitivity robustness",
+      ],
+      attemptProgression: "Attempt 1: Novel hybrid architecture → Attempt 2: Shift (Adversarial stress testing & edge cases) → Attempt 3: Shift (Multi-objective trade-off sensitivity test)",
+    },
+  ];
+
+  // Official 4-Phase Schedule
+  const officialSchedule = [
+    {
+      phase: "Phase 1 · 10:00 AM – 12:30 PM",
+      title: "1st Development & AI Evaluation",
+      tag: "Morning Sprint",
+      badgeColor: "bg-ieeeBlue/10 text-ieeeBlue border-ieeeBlue/30",
+      accentBorder: "border-ieeeBlue/40",
+      bullets: [
+        "10:00 AM: Problem Briefing & Official Track Release",
+        "10:30 AM – 12:00 PM: 1st Development Block — Core algorithm design, heuristic modeling & optimization pipeline",
+        "12:00 PM – 12:30 PM: 1st Round AI Evaluation — Automated benchmark testing, convergence scoring & AST analysis",
+      ],
+    },
+    {
+      phase: "Intermission · 12:30 PM – 01:15 PM",
+      title: "Lunch Break & Networking",
+      tag: "Refresh & Strategize",
+      badgeColor: "bg-ofWarning/10 text-ofWarning border-ofWarning/30",
+      accentBorder: "border-ofWarning/40",
+      bullets: [
+        "12:30 PM – 01:15 PM: Dedicated lunch break for all participating teams",
+        "Review Phase 1 AI feedback and plan Phase 2 algorithmic refinements",
+      ],
+    },
+    {
+      phase: "Phase 2 · 01:15 PM – 03:00 PM",
+      title: "2nd Development & Live Patch",
+      tag: "Afternoon Crunch",
+      badgeColor: "bg-embsPurple/10 text-embsPurple border-embsPurple/30",
+      accentBorder: "border-embsPurple/40",
+      highlight: true,
+      bullets: [
+        "01:15 PM – 02:40 PM: 2nd Development Block — Scenario shift adaptation, hyperparameter tuning & stress tests",
+        "02:40 PM – 03:00 PM: The Live Patch Round — 20-minute surprise constraint perturbation (Strictly Zero AI allowed)",
+      ],
+    },
+    {
+      phase: "Phase 3 · 03:00 PM – 04:00 PM",
+      title: "Final Panel Evaluation & Results",
+      tag: "Grand Finale",
+      badgeColor: "bg-ofCyan/10 text-ofCyan border-ofCyan/30",
+      accentBorder: "border-ofCyan/40",
+      bullets: [
+        "03:00 PM – 03:45 PM: Final Panel Evaluation — In-person jury defense & live code execution before expert faculty",
+        "03:45 PM – 04:00 PM: Award Ceremony, E-Certificate Distribution & Valedictory",
+      ],
     },
   ];
 
   const faqs = [
     {
       q: "Who is eligible to participate in OptiForge 2026?",
-      a: "OptiForge is open to all engineering, technology, and science students. Teams can have 2 to 4 members across branches (CSE, IT, ECE, AI&ML, EEE, MECH, etc.). Interdisciplinary teams are highly encouraged!",
+      a: "OptiForge is open to all engineering, technology, and science students. Teams can have 2 to 4 members across all branches (CSE, IT, ECE, AI&ML, EEE, MECH, etc.). Interdisciplinary collaboration between CIS and EMBS domains is highly encouraged!",
     },
     {
-      q: "Why can't this competition simply be prompted into an LLM?",
-      a: "OptiForge features hidden scenario shifts injected between attempts, AST code verification for heuristic structure, a live 15–20 minute surprise patch round with zero AI allowed, and an in-person judge viva where teams must mathematically defend their algorithmic choices.",
+      q: "What is the Hackathon Algorithm Design format?",
+      a: "OptiForge tests pure algorithmic optimization and computational intelligence. The tournament features multi-phase development, automated AI benchmark scoring, hidden scenario shifts, an AST code design verifier, a live 20-minute surprise patch round (zero AI allowed), and an in-person faculty jury defense.",
     },
     {
       q: "What is the registration fee and how is it paid?",
-      a: "The registration fee is ₹50 per participant (₹100 for 2 members, ₹150 for 3 members, ₹200 for 4 members). Payments are secured via Razorpay and verified under the official IEEE Vardhaman Student Branch entity.",
+      a: "The registration fee is ₹100 per participant (₹200 for 2 members, ₹300 for 3 members, ₹400 for 4 members). Payments are secured via official direct UPI & QR gateway verified under IEEE Vardhaman Student Branch entity.",
     },
     {
       q: "Do we need to build a web frontend or deploy an API?",
@@ -256,85 +394,85 @@ export default function LandingPage() {
     },
     {
       q: "What perks and certificates do participants receive?",
-      a: "All verified participants receive official E-Certificates of Participation & Excellence issued jointly by IEEE EMBS Student Chapter and IEEE CIS Local Chapter, Vardhaman College of Engineering, along with goodies and prize recognition for top teams.",
+      a: "All verified participants receive official E-Certificates of Participation & Excellence issued jointly by IEEE EMBS Student Chapter and IEEE CIS Local Chapter, Vardhaman College of Engineering, along with cash prizes, trophies, and tech goodies for podium teams.",
     },
   ];
 
   return (
-    <div className="space-y-24 sm:space-y-32 pb-24">
+    <div className="space-y-20 sm:space-y-28 pb-24">
       {/* 1. HERO SECTION */}
-      <section className="relative pt-12 sm:pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        {/* Glow ambient circle */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-teal-accent/15 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-electric-violet/15 rounded-full blur-[100px] pointer-events-none" />
+      <section className="relative pt-10 sm:pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        {/* Glow ambient background highlights */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-ieeeBlue/8 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/3 w-[350px] h-[350px] bg-embsPurple/8 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy-deep/80 border border-teal-accent/30 text-teal-accent text-xs font-mono mb-6 shadow-glow">
-          <span className="w-2 h-2 rounded-full bg-teal-accent animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-ofSoftBlue border border-ieeeBlue/25 text-ieeeBlue text-xs font-mono mb-6 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-ieeeBlue animate-pulse" />
           <span>IEEE Vardhaman Student Branch · IEEE EMBS × IEEE CIS</span>
         </div>
 
         {/* Title */}
-        <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight text-brand-white leading-none uppercase">
-          OPTI<span className="text-teal-accent">FORGE</span>{" "}
+        <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl tracking-tight text-ofNavy leading-none uppercase">
+          OPTI<span className="text-ieeeBlue">FORGE</span>{" "}
           <span className="text-transparent bg-clip-text bg-gradient-signature">2026</span>
         </h1>
 
-        <p className="mt-4 font-mono text-sm sm:text-base text-teal-accent/90 uppercase tracking-widest font-semibold">
-          Student Algorithm Design Challenge · Computational Intelligence
+        <p className="mt-4 font-mono text-sm sm:text-base text-ieeeBlue uppercase tracking-widest font-bold">
+          Hackathon Algorithm Design · Computational Intelligence Challenge
         </p>
 
-        <p className="mt-6 max-w-2xl mx-auto text-sm sm:text-base text-brand-muted leading-relaxed font-sans">
+        <p className="mt-6 max-w-2xl mx-auto text-sm sm:text-base text-ofSlate leading-relaxed font-sans">
           Engineer high-performance evolutionary heuristics, swarm intelligence, and fuzzy inference
-          systems. Compete across 6 real-world challenges with live multi-attempt scoring, scenario shifts,
-          a live surprise patch round, and expert judge defense.
+          systems. Compete across 9 official innovation themes with multi-phase development, automated AI
+          evaluation, live surprise patch rounds, and expert faculty panel defense.
         </p>
 
         {/* Event Schedule Pill */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-brand-white">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-secondary border border-navy-border">
-            <Calendar className="w-4 h-4 text-teal-accent" />
-            <span>25-09-2026</span>
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs font-mono text-ofNavy">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
+            <Calendar className="w-4 h-4 text-ieeeBlue" />
+            <span className="font-semibold">30-09-2026</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-secondary border border-navy-border">
-            <Clock className="w-4 h-4 text-electric-violet" />
-            <span>9:00 AM – 4:00 PM IST</span>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
+            <Clock className="w-4 h-4 text-embsPurple" />
+            <span className="font-semibold">10:00 AM – 4:00 PM IST</span>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-secondary border border-navy-border">
-            <MapPin className="w-4 h-4 text-orange-accent" />
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-ofBorder shadow-sm">
+            <MapPin className="w-4 h-4 text-ofWarning" />
             <span>Vardhaman College of Engineering</span>
           </div>
         </div>
 
         {/* Live Countdown Timer */}
-        <div className="mt-10 max-w-lg mx-auto p-4 sm:p-6 rounded-2xl bg-bg-secondary/70 border border-navy-border/80 backdrop-blur-md shadow-2xl">
-          <span className="text-[11px] font-mono uppercase tracking-widest text-brand-muted block mb-3">
+        <div className="mt-10 max-w-lg mx-auto p-5 sm:p-6 rounded-2xl bg-white border border-ofBorder shadow-card">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-ofSlate block mb-3 font-semibold">
             Countdown to Challenge Launch
           </span>
           <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
-            <div className="p-2 sm:p-3 rounded-xl bg-navy-deep/80 border border-navy-border">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-brand-white block">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
+              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
                 {String(timeLeft.days).padStart(2, "0")}
               </span>
-              <span className="text-[10px] font-mono text-brand-muted uppercase">Days</span>
+              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Days</span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl bg-navy-deep/80 border border-navy-border">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-brand-white block">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
+              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
                 {String(timeLeft.hours).padStart(2, "0")}
               </span>
-              <span className="text-[10px] font-mono text-brand-muted uppercase">Hours</span>
+              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Hours</span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl bg-navy-deep/80 border border-navy-border">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-brand-white block">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
+              <span className="font-display font-bold text-2xl sm:text-3xl text-ofNavy block">
                 {String(timeLeft.minutes).padStart(2, "0")}
               </span>
-              <span className="text-[10px] font-mono text-brand-muted uppercase">Mins</span>
+              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Mins</span>
             </div>
-            <div className="p-2 sm:p-3 rounded-xl bg-navy-deep/80 border border-navy-border">
-              <span className="font-display font-bold text-2xl sm:text-3xl text-teal-accent block">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-ofSoftBlue border border-ofBorder">
+              <span className="font-display font-bold text-2xl sm:text-3xl text-ieeeBlue block">
                 {String(timeLeft.seconds).padStart(2, "0")}
               </span>
-              <span className="text-[10px] font-mono text-brand-muted uppercase">Secs</span>
+              <span className="text-[10px] font-mono text-ofSlate uppercase font-semibold">Secs</span>
             </div>
           </div>
         </div>
@@ -343,131 +481,84 @@ export default function LandingPage() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/register"
-            className="px-8 py-3.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-sm shadow-glow hover:brightness-110 transition-all flex items-center gap-2 group"
+            className="px-8 py-3.5 rounded-xl bg-gradient-signature text-white font-display font-bold text-sm shadow-bright hover:brightness-110 transition-all flex items-center gap-2 group"
           >
-            <span>Register Team (₹50 / member)</span>
+            <span>Register Team (₹100 / member)</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <a
-            href="#problems"
-            className="px-6 py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border hover:border-teal-accent text-brand-white font-medium text-sm transition-all flex items-center gap-2"
+            href="#themes"
+            className="px-6 py-3.5 rounded-xl bg-white hover:bg-ofSoftBlue border border-ofBorder hover:border-ieeeBlue text-ofNavy font-semibold text-sm transition-all flex items-center gap-2 shadow-sm"
           >
-            <FileCode className="w-4 h-4 text-teal-accent" />
-            <span>Explore 6 Problem Statements</span>
+            <FileCode className="w-4 h-4 text-ieeeBlue" />
+            <span>Explore 9 Innovation Themes</span>
           </a>
           <Link
             href="/leaderboard"
-            className="px-6 py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border hover:border-electric-violet text-brand-white font-medium text-sm transition-all flex items-center gap-2"
+            className="px-6 py-3.5 rounded-xl bg-white hover:bg-ofSoftBlue border border-ofBorder hover:border-embsPurple text-ofNavy font-semibold text-sm transition-all flex items-center gap-2 shadow-sm"
           >
-            <Trophy className="w-4 h-4 text-electric-violet" />
+            <Trophy className="w-4 h-4 text-embsPurple" />
             <span>Live Leaderboard</span>
           </Link>
         </div>
       </section>
 
-      {/* 2. HOW IT WORKS: 8-STEP LIFECYCLE STEPPER (Directly below Hero) */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+      {/* 2. OFFICIAL HACKATHON SCHEDULE (4-PHASE LIFECYCLE) */}
+      <section id="schedule" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
-            <Layers className="w-3.5 h-3.5" />
-            <span>Complete Tournament Architecture</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
+            <Clock className="w-3.5 h-3.5" />
+            <span>Official Event Day Timeline · 30th September 2026</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
-            How OptiForge Works: The 8-Stage Lifecycle
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
+            Tournament Schedule & Development Blocks
           </h2>
-          <p className="text-sm text-brand-muted max-w-2xl mx-auto">
-            A structured competition progression testing foundational formulation, dynamic scenario adaptation,
-            real-time agility, and academic defense.
+          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
+            A structured hackathon lifecycle progressing from initial heuristic development and AI automated
+            scoring through scenario shift adaptations, live surprise patch rounds, and expert panel defense.
           </p>
         </div>
 
-        {/* 8-Step Grid / Stepper */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            {
-              step: "Stage 01",
-              time: "09:00 - 09:30",
-              title: "Problem Selection & Strategy",
-              desc: "Teams review all 6 real-world challenges, submit track preferences, and analyze domain formulations.",
-              badge: "Strategy",
-            },
-            {
-              step: "Stage 02",
-              time: "09:30 - 10:00",
-              title: "Starter Code & Test Harness",
-              desc: "Download official Python starter scripts, offline evaluation harness, and synthetic test datasets.",
-              badge: "Distribution",
-            },
-            {
-              step: "Stage 03",
-              time: "10:00 - 11:15",
-              title: "Attempt 1 — Baseline",
-              desc: "Implement core heuristic algorithm for the base scenario. Immediate sandboxed auto-score on leaderboard.",
-              badge: "Scored Attempt #1",
-            },
-            {
-              step: "Stage 04",
-              time: "11:30 - 12:45",
-              title: "Hidden Shift #1 & Attempt 2",
-              desc: "Surprise parameter perturbation injected into test suite. Adapt code and submit mandatory reflection note.",
-              badge: "Scored Attempt #2",
-            },
-            {
-              step: "Stage 05",
-              time: "13:15 - 14:15",
-              title: "Hidden Shift #2 & Attempt 3",
-              desc: "Stress edge case injected. Final algorithm refinement for maximum convergence, efficiency, and stability.",
-              badge: "Scored Attempt #3",
-            },
-            {
-              step: "Stage 06",
-              time: "14:15",
-              title: "Leaderboard Freeze",
-              desc: "Public rankings freeze. Teams lock their final submissions before confidential judging rounds begin.",
-              badge: "Rankings Lock",
-            },
-            {
-              step: "Stage 07",
-              time: "14:30 - 15:00",
-              title: "The Live Patch Round",
-              desc: "15–20 minute surprise constraint window. ZERO AI ALLOWED. Tests real-time problem-solving agility.",
-              badge: "Zero AI Test",
-              highlight: true,
-            },
-            {
-              step: "Stage 08",
-              time: "15:00 - 16:00",
-              title: "Judges' Viva Q&A & Results",
-              desc: "1-on-1 viva defense before domain faculty judges. Defend representations, operators, and shift handling.",
-              badge: "Expert Jury",
-            },
-          ].map((item, idx) => (
+        {/* 4-Phase Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {officialSchedule.map((item, idx) => (
             <div
               key={idx}
-              className={`rounded-2xl p-5 space-y-3 transition-all ${
+              className={`rounded-2xl p-6 flex flex-col justify-between space-y-4 transition-all bg-white border ${
                 item.highlight
-                  ? "bg-orange-accent/10 border-2 border-orange-accent/50 shadow-glow"
-                  : "bg-bg-card border border-navy-border/80 hover:border-teal-accent/40"
+                  ? "border-embsPurple/50 shadow-bright ring-1 ring-embsPurple/20"
+                  : "border-ofBorder hover:border-ieeeBlue/40 shadow-card"
               }`}
             >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-teal-accent">{item.step}</span>
-                <span
-                  className={`text-[10px] font-mono px-2 py-0.5 rounded ${
-                    item.highlight
-                      ? "bg-orange-accent/20 text-orange-accent border border-orange-accent/40 font-bold"
-                      : "bg-bg-secondary text-brand-dim"
-                  }`}
-                >
-                  {item.badge}
-                </span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className={`text-[10px] font-mono font-bold px-2.5 py-0.5 rounded border ${item.badgeColor}`}>
+                    {item.tag}
+                  </span>
+                  {item.highlight && (
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-embsPurple/15 text-embsPurple uppercase">
+                      Zero AI Window
+                    </span>
+                  )}
+                </div>
+
+                <div className="font-mono text-xs font-bold text-ieeeBlue">
+                  {item.phase}
+                </div>
+
+                <h3 className="font-display font-bold text-ofNavy text-base leading-snug">
+                  {item.title}
+                </h3>
+
+                <ul className="space-y-2 pt-2 border-t border-ofBorder/60 text-xs text-ofSlate">
+                  {item.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="flex items-start gap-2 leading-relaxed">
+                      <span className="text-ieeeBlue font-bold mt-0.5">•</span>
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="font-mono text-[11px] text-brand-muted flex items-center gap-1.5">
-                <Clock className="w-3 h-3 text-electric-violet" />
-                <span>{item.time}</span>
-              </div>
-              <h3 className="font-display font-semibold text-brand-white text-sm">{item.title}</h3>
-              <p className="text-xs text-brand-muted leading-relaxed font-sans">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -475,67 +566,65 @@ export default function LandingPage() {
 
       {/* 3. ANTI-SHORTCUT CALLOUT: WHY THIS CANNOT BE PROMPTED INTO A WIN */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-bg-card via-bg-card to-navy-deep border border-electric-violet/40 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-electric-violet/10 rounded-full blur-[90px] pointer-events-none" />
-
+        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-white via-ofSoftBlue to-ofSoftPurple border border-ofBorder shadow-card relative overflow-hidden">
           <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-electric-violet/20 border border-electric-violet/40 text-electric-violet text-xs font-mono font-semibold">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-embsPurple/10 border border-embsPurple/30 text-embsPurple text-xs font-mono font-bold">
               <ShieldAlert className="w-4 h-4" />
               <span>OptiForge Integrity Architecture</span>
             </div>
 
-            <h2 className="font-display font-bold text-2xl sm:text-3xl text-brand-white">
+            <h2 className="font-display font-bold text-2xl sm:text-3xl text-ofNavy">
               Why OptiForge Cannot Simply Be &quot;Prompted&quot; Into a Win
             </h2>
 
-            <p className="text-sm text-brand-muted leading-relaxed">
-              Most engineering competitions collapse when participants paste problem prompts into generic LLMs.
-              OptiForge is explicitly engineered with multiple defensive architectural layers to evaluate genuine
-              computational intelligence intuition and engineering skill:
+            <p className="text-sm text-ofSlate leading-relaxed">
+              Standard hackathons collapse when participants copy problem statements into generic LLMs.
+              OptiForge 2026 is engineered with multiple defensive architectural layers to evaluate genuine
+              computational intelligence intuition, mathematical reasoning, and live engineering agility:
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-              <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/80 space-y-1.5">
-                <div className="text-xs font-display font-semibold text-teal-accent flex items-center gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
+                <div className="text-xs font-display font-bold text-ieeeBlue flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue" />
                   <span>Hidden Scenario Shifts</span>
                 </div>
-                <p className="text-xs text-brand-muted leading-relaxed">
-                  Static prompt solutions break on Attempts 2 & 3 when dynamic perturbations (resource drops, surges)
-                  are injected into held-out test data.
+                <p className="text-xs text-ofSlate leading-relaxed">
+                  Static prompt solutions fail on subsequent attempts when dynamic perturbations (resource drops,
+                  impedance drift, queue spikes) are injected into held-out test data.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/80 space-y-1.5">
-                <div className="text-xs font-display font-semibold text-teal-accent flex items-center gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
+                <div className="text-xs font-display font-bold text-ieeeBlue flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue" />
                   <span>Mandatory Reflection Notes</span>
                 </div>
-                <p className="text-xs text-brand-muted leading-relaxed">
+                <p className="text-xs text-ofSlate leading-relaxed">
                   Every submission after Attempt 1 requires a &quot;what changed and why&quot; note detailing parameter
-                  adaptation and algorithmic defense.
+                  adaptation and mathematical defense.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/80 space-y-1.5">
-                <div className="text-xs font-display font-semibold text-orange-accent flex items-center gap-2">
-                  <ShieldAlert className="w-3.5 h-3.5" />
-                  <span>Stage 7 Live Patch (Zero AI)</span>
+              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
+                <div className="text-xs font-display font-bold text-ofWarning flex items-center gap-2">
+                  <Flame className="w-4 h-4 text-ofWarning" />
+                  <span>Live Patch Round (Strictly Zero AI)</span>
                 </div>
-                <p className="text-xs text-brand-muted leading-relaxed">
-                  A 15–20 minute live surprise constraint with strictly ZERO AI allowed. Tests live code modification,
-                  mental model clarity, and edge-case handling.
+                <p className="text-xs text-ofSlate leading-relaxed">
+                  A 20-minute live surprise constraint with strictly ZERO AI allowed. Evaluates real-time code
+                  modification, mental model clarity, and edge-case handling.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/80 space-y-1.5">
-                <div className="text-xs font-display font-semibold text-electric-violet flex items-center gap-2">
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Stage 8 Expert Viva Defense</span>
+              <div className="p-4 rounded-xl bg-white border border-ofBorder shadow-sm space-y-1.5">
+                <div className="text-xs font-display font-bold text-embsPurple flex items-center gap-2">
+                  <Award className="w-4 h-4 text-embsPurple" />
+                  <span>Final Panel Jury Defense</span>
                 </div>
-                <p className="text-xs text-brand-muted leading-relaxed">
+                <p className="text-xs text-ofSlate leading-relaxed">
                   Faculty judges question teams on fitness functions, defuzzification math, chromosome representations,
-                  and convergence graphs.
+                  and convergence graphs in person.
                 </p>
               </div>
             </div>
@@ -546,35 +635,35 @@ export default function LandingPage() {
       {/* 4. PREREQUISITES: WHAT YOU GET vs. WHAT YOU BRING */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
             <Zap className="w-3.5 h-3.5" />
             <span>Level Playing Field</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
             Prerequisites: What You Get vs. What You Bring
           </h2>
-          <p className="text-sm text-brand-muted max-w-2xl mx-auto">
-            You don&apos;t need web development or infrastructure skills. We provide the execution environment;
+          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
+            You don&apos;t need web development or cloud infrastructure skills. We provide the execution environment;
             you bring algorithmic intuition.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Panel Left: What You Get */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-bg-card border border-teal-accent/30 space-y-6">
-            <div className="flex items-center gap-3 border-b border-navy-border/60 pb-4">
-              <div className="w-10 h-10 rounded-xl bg-teal-accent/20 border border-teal-accent/40 flex items-center justify-center text-teal-accent">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ieeeBlue/30 shadow-card space-y-6">
+            <div className="flex items-center gap-3 border-b border-ofBorder pb-4">
+              <div className="w-10 h-10 rounded-xl bg-ieeeBlue/10 border border-ieeeBlue/30 flex items-center justify-center text-ieeeBlue">
                 <Download className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-lg text-brand-white">What You Get from OptiForge</h3>
-                <p className="text-xs text-brand-muted">Pre-packaged starter kits & verification harness</p>
+                <h3 className="font-display font-bold text-lg text-ofNavy">What You Get from OptiForge</h3>
+                <p className="text-xs text-ofSlate">Pre-packaged starter kits & verification harness</p>
               </div>
             </div>
 
-            <ul className="space-y-3 text-xs text-brand-muted font-sans">
+            <ul className="space-y-3 text-xs text-ofSlate font-sans">
               {[
-                "Modular Python starter scripts (.py) and notebooks (.ipynb) for all 6 tracks",
+                "Modular Python starter scripts (.py) and notebooks (.ipynb) for all 9 innovation themes",
                 "Pre-built synthetic data generators and scenario loaders",
                 "Offline verification harness with identical scoring metrics",
                 "Isolated sandbox execution environment with standard scientific libraries",
@@ -582,7 +671,7 @@ export default function LandingPage() {
                 "Working baseline heuristic solution for rapid experimentation",
               ].map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-teal-accent shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-ieeeBlue shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -590,18 +679,18 @@ export default function LandingPage() {
           </div>
 
           {/* Panel Right: What You Bring */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-bg-card border border-electric-violet/30 space-y-6">
-            <div className="flex items-center gap-3 border-b border-navy-border/60 pb-4">
-              <div className="w-10 h-10 rounded-xl bg-electric-violet/20 border border-electric-violet/40 flex items-center justify-center text-electric-violet">
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-embsPurple/30 shadow-card space-y-6">
+            <div className="flex items-center gap-3 border-b border-ofBorder pb-4">
+              <div className="w-10 h-10 rounded-xl bg-embsPurple/10 border border-embsPurple/30 flex items-center justify-center text-embsPurple">
                 <Cpu className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-lg text-brand-white">What You Must Bring</h3>
-                <p className="text-xs text-brand-muted">Algorithmic reasoning & problem-solving ability</p>
+                <h3 className="font-display font-bold text-lg text-ofNavy">What You Must Bring</h3>
+                <p className="text-xs text-ofSlate">Algorithmic reasoning & problem-solving ability</p>
               </div>
             </div>
 
-            <ul className="space-y-3 text-xs text-brand-muted font-sans">
+            <ul className="space-y-3 text-xs text-ofSlate font-sans">
               {[
                 "Algorithmic formulation: choosing representation (chromosomes, particles, pheromone paths)",
                 "Fitness function engineering: formulating multi-objective trade-offs and penalties",
@@ -611,7 +700,7 @@ export default function LandingPage() {
                 "Teamwork & agility: rapid live patch implementation under tight 20-minute countdown",
               ].map((item, idx) => (
                 <li key={idx} className="flex items-start gap-2.5">
-                  <Sparkles className="w-4 h-4 text-electric-violet shrink-0 mt-0.5" />
+                  <Sparkles className="w-4 h-4 text-embsPurple shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{item}</span>
                 </li>
               ))}
@@ -620,84 +709,82 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 5. PROBLEM 5 FLAGSHIP SHOWCASE WITH INTERACTIVE COVERAGE MAP */}
+      {/* 5. INTERACTIVE ARENA: HEALTHCARE ROBOTICS & SWARM COVERAGE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
             <Radio className="w-3.5 h-3.5" />
-            <span>Flagship Interactive Arena</span>
+            <span>Interactive Arena · Swarm Robotics & Autonomous Logistics</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
-            Problem 5: Multi-Robot Search & Rescue
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
+            Healthcare Robotics & Autonomous Navigation Arena
           </h2>
-          <p className="text-sm text-brand-muted max-w-xl mx-auto">
-            Live interactive preview of the flagship showcase problem: swarm robotics, obstacle avoidance,
-            and dynamic survivor rendezvous.
+          <p className="text-sm text-ofSlate max-w-xl mx-auto">
+            Live interactive simulation preview: multi-agent swarm coordination, dynamic hospital corridor
+            obstacle avoidance, and emergency rendezvous algorithms.
           </p>
         </div>
 
-        {/* The interactive Coverage Map Component */}
-        <CoverageMapVisualization />
+        {/* Interactive Coverage Map Component */}
+        <div className="p-4 sm:p-6 rounded-3xl bg-white border border-ofBorder shadow-card">
+          <CoverageMapVisualization />
+        </div>
       </section>
 
-      {/* 6. ALL 6 OFFICIAL PROBLEM STATEMENTS */}
-      <section id="problems" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      {/* 6. ALL 9 OFFICIAL INNOVATION THEMES */}
+      <section id="themes" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-electric-violet/10 border border-electric-violet/30 text-electric-violet text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-embsPurple/10 border border-embsPurple/30 text-embsPurple text-xs font-mono font-bold">
             <Binary className="w-3.5 h-3.5" />
-            <span>Official Track Portfolio</span>
+            <span>Official Hackathon Challenge Portfolio</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
-            6 Official Problem Statements
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
+            9 Official Innovation Themes
           </h2>
-          <p className="text-sm text-brand-muted max-w-2xl mx-auto">
-            All 6 challenges are engineered under IEEE EMBS × IEEE CIS guidance with standardized 7-section
-            formulations and starter notebooks.
+          <p className="text-sm text-ofSlate max-w-2xl mx-auto">
+            Select 1 theme for your team. All 9 challenges are engineered under IEEE EMBS × IEEE CIS guidance
+            with standardized multi-phase evaluation, benchmark harnesses, and starter scripts.
           </p>
         </div>
 
-        {/* 6 Problem Cards */}
+        {/* 9 Themes Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {officialProblems.map((prob) => (
+          {innovationThemes.map((prob) => (
             <div
               key={prob.id}
-              className={`rounded-2xl bg-bg-card p-6 flex flex-col justify-between space-y-5 transition-all border ${
-                prob.isFlagship
-                  ? "border-teal-accent/50 shadow-glow"
-                  : "border-navy-border/80 hover:border-teal-accent/40"
-              }`}
+              className="rounded-2xl bg-white p-6 flex flex-col justify-between space-y-5 transition-all border border-ofBorder hover:border-ieeeBlue/50 shadow-card hover:shadow-bright"
             >
-              <div className="space-y-4">
+              <div className="space-y-3.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-teal-accent/10 border border-teal-accent/30 text-teal-accent">
-                    {prob.num}
+                  <span className="font-mono text-xs font-bold px-2.5 py-1 rounded bg-ieeeBlue/10 border border-ieeeBlue/20 text-ieeeBlue">
+                    {prob.code}
                   </span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-bg-secondary text-brand-muted">
-                    {prob.difficulty}
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-ofSoftBlue text-ofSlate font-medium">
+                    {prob.category}
                   </span>
                 </div>
 
-                <h3 className="font-display font-bold text-lg text-brand-white leading-snug">
+                <h3 className="font-display font-bold text-base sm:text-lg text-ofNavy leading-snug">
                   {prob.title}
                 </h3>
 
-                <div className="text-[11px] font-mono text-electric-violet bg-electric-violet/10 border border-electric-violet/20 px-2.5 py-1 rounded">
+                <div className="text-[11px] font-mono text-embsPurple bg-embsPurple/10 border border-embsPurple/20 px-2.5 py-1 rounded font-medium">
                   {prob.technique}
                 </div>
 
-                <p className="text-xs text-brand-muted leading-relaxed line-clamp-3">
+                <p className="text-xs text-ofSlate leading-relaxed line-clamp-3">
                   {prob.coreChallenge}
                 </p>
 
                 {/* Hard Constraints Summary */}
-                <div className="space-y-1.5 pt-2 border-t border-navy-border/50">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-brand-dim block">
+                <div className="space-y-1.5 pt-3 border-t border-ofBorder/60">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-ofSlate font-semibold block">
                     Key Constraints
                   </span>
-                  <ul className="text-[11px] text-brand-muted space-y-1">
+                  <ul className="text-[11px] text-ofSlate space-y-1">
                     {prob.hardConstraints.slice(0, 2).map((c, i) => (
                       <li key={i} className="flex items-start gap-1.5 truncate">
-                        <span className="text-teal-accent">•</span>
+                        <span className="text-ieeeBlue font-bold">•</span>
                         <span className="truncate">{c}</span>
                       </li>
                     ))}
@@ -706,18 +793,18 @@ export default function LandingPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-navy-border/60 flex items-center justify-between gap-2">
+              <div className="pt-4 border-t border-ofBorder flex items-center justify-between gap-2">
                 <button
                   onClick={() => setSelectedProblem(prob)}
-                  className="px-3 py-2 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-xs text-brand-white flex items-center gap-1.5 transition-colors font-medium"
+                  className="px-3 py-2 rounded-xl bg-ofSoftBlue hover:bg-ofBorder/50 border border-ofBorder text-xs text-ofNavy flex items-center gap-1.5 transition-colors font-medium"
                 >
-                  <Eye className="w-3.5 h-3.5 text-teal-accent" />
+                  <Eye className="w-3.5 h-3.5 text-ieeeBlue" />
                   <span>Full Spec</span>
                 </button>
                 <a
                   href={prob.starterFile}
                   download
-                  className="px-3 py-2 rounded-xl bg-teal-accent/10 hover:bg-teal-accent/20 border border-teal-accent/30 text-xs text-teal-accent flex items-center gap-1.5 transition-colors font-mono"
+                  className="px-3 py-2 rounded-xl bg-ieeeBlue/10 hover:bg-ieeeBlue/20 border border-ieeeBlue/30 text-xs text-ieeeBlue flex items-center gap-1.5 transition-colors font-mono font-semibold"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Starter .py</span>
@@ -728,120 +815,120 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 7. SCORING MATRIX: BROAD CATEGORIES (Strict Visibility Compliant) */}
+      {/* 7. SCORING MATRIX: BROAD CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
             <Trophy className="w-3.5 h-3.5" />
             <span>Evaluation Framework</span>
           </div>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
             Hybrid Scoring Architecture
           </h2>
-          <p className="text-sm text-brand-muted max-w-xl mx-auto">
-            Your final standing blends instant automated sandboxed benchmarks with rigorous human viva defense.
+          <p className="text-sm text-ofSlate max-w-xl mx-auto">
+            Your final standing blends instant automated sandboxed benchmarks with rigorous human jury defense.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Automated Evaluation Categories */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-bg-card border border-navy-border/80 space-y-4">
-            <div className="flex items-center gap-2 font-display font-bold text-lg text-brand-white">
-              <Terminal className="w-5 h-5 text-teal-accent" />
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ofBorder shadow-card space-y-4">
+            <div className="flex items-center gap-2 font-display font-bold text-lg text-ofNavy">
+              <Terminal className="w-5 h-5 text-ieeeBlue" />
               <span>Part I: Automated Sandbox Benchmarking</span>
             </div>
-            <p className="text-xs text-brand-muted leading-relaxed">
+            <p className="text-xs text-ofSlate leading-relaxed">
               Executed instantly in an isolated runtime sandbox against held-out scenario test suites:
             </p>
             <div className="space-y-3 pt-2">
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Solution Quality & Optimality</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Objective value score relative to optimal/greedy baseline benchmarks.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Solution Quality & Optimality</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Objective value score relative to optimal/greedy baseline benchmarks.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Execution Efficiency & Scalability</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Wall-clock execution time and convergence speed per iteration.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Execution Efficiency & Scalability</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Wall-clock execution time and convergence speed per iteration.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Algorithm Design Quality (AST)</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Static AST inspection verifying heuristic operators, loop structures, and diversity.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Algorithm Design Quality (AST)</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Static AST inspection verifying heuristic operators, loop structures, and diversity.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Multi-Attempt Consistency</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Performance stability across Attempts 1, 2, and 3 under injected scenario shifts.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Multi-Attempt Consistency</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Performance stability across Attempts 1, 2, and 3 under injected scenario shifts.</div>
               </div>
             </div>
           </div>
 
           {/* Judge Evaluation Categories */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-bg-card border border-navy-border/80 space-y-4">
-            <div className="flex items-center gap-2 font-display font-bold text-lg text-brand-white">
-              <Shield className="w-5 h-5 text-electric-violet" />
+          <div className="p-6 sm:p-8 rounded-3xl bg-white border border-ofBorder shadow-card space-y-4">
+            <div className="flex items-center gap-2 font-display font-bold text-lg text-ofNavy">
+              <Shield className="w-5 h-5 text-embsPurple" />
               <span>Part II: Domain Faculty Jury Review</span>
             </div>
-            <p className="text-xs text-brand-muted leading-relaxed">
-              Assessed by university domain experts during Stage 8 Viva Q&A:
+            <p className="text-xs text-ofSlate leading-relaxed">
+              Assessed by university domain experts during Phase 3 Final Panel Evaluation:
             </p>
             <div className="space-y-3 pt-2">
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Code Elegance & Modularity</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Readable, structured, well-commented code following clean scientific standards.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Code Elegance & Modularity</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Readable, structured, well-commented code following clean scientific standards.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Algorithmic Reasoning & Defense</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Depth of justification for chosen representations, crossover/inertia rules, and live patch.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Algorithmic Reasoning & Defense</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Depth of justification for chosen representations, crossover/inertia rules, and live patch.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Convergence & Result Interpretation</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Ability to explain fitness evolution, sensitivity trade-offs, and failure modes.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Convergence & Result Interpretation</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Ability to explain fitness evolution, sensitivity trade-offs, and failure modes.</div>
               </div>
-              <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60">
-                <div className="text-xs font-semibold text-brand-white">Adaptation to Scenario Shifts</div>
-                <div className="text-[11px] text-brand-muted mt-0.5">Quality of written reflections and dynamic handling of hidden perturbations.</div>
+              <div className="p-3.5 rounded-xl bg-ofSoftBlue border border-ofBorder">
+                <div className="text-xs font-bold text-ofNavy">Adaptation to Scenario Shifts</div>
+                <div className="text-[11px] text-ofSlate mt-0.5">Quality of written reflections and dynamic handling of hidden perturbations.</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. RECOGNITION & PERKS (PRIZE POOL & GOODIES) */}
+      {/* 8. RECOGNITION & PERKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-bg-card border border-navy-border/80 text-center space-y-6 relative overflow-hidden">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+        <div className="p-8 sm:p-12 rounded-3xl bg-white border border-ofBorder text-center space-y-6 shadow-card relative overflow-hidden">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
             <Award className="w-4 h-4" />
             <span>Perks & Recognition</span>
           </div>
 
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-white">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-ofNavy">
             Prizes, Goodies & Participation Honors
           </h2>
 
-          <p className="text-brand-muted text-sm max-w-xl mx-auto leading-relaxed">
-            Every participating team earns verified credentials and competitive prestige.
+          <p className="text-ofSlate text-sm max-w-xl mx-auto leading-relaxed">
+            Every participating team earns authenticated credentials and competitive prestige under IEEE VCE.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 max-w-3xl mx-auto text-left">
-            <div className="p-5 rounded-2xl bg-bg-secondary border border-navy-border space-y-2">
-              <Trophy className="w-6 h-6 text-orange-accent" />
-              <h4 className="font-display font-semibold text-brand-white text-sm">Prize Pool & Goodies</h4>
-              <p className="text-xs text-brand-muted leading-relaxed">
+            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
+              <Trophy className="w-6 h-6 text-ofWarning" />
+              <h4 className="font-display font-bold text-ofNavy text-sm">Prize Pool & Goodies</h4>
+              <p className="text-xs text-ofSlate leading-relaxed">
                 Podium finishes and category awards receive official prize packages, trophies, and tech goodies.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-bg-secondary border border-navy-border space-y-2">
-              <Award className="w-6 h-6 text-teal-accent" />
-              <h4 className="font-display font-semibold text-brand-white text-sm">Official E-Certificates</h4>
-              <p className="text-xs text-brand-muted leading-relaxed">
+            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
+              <Award className="w-6 h-6 text-ieeeBlue" />
+              <h4 className="font-display font-bold text-ofNavy text-sm">Official E-Certificates</h4>
+              <p className="text-xs text-ofSlate leading-relaxed">
                 All verified participants receive authenticated E-Certificates of Participation & Excellence.
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-bg-secondary border border-navy-border space-y-2">
-              <Users className="w-6 h-6 text-electric-violet" />
-              <h4 className="font-display font-semibold text-brand-white text-sm">IEEE Student Perks</h4>
-              <p className="text-xs text-brand-muted leading-relaxed">
-                Mentorship from IEEE faculty, networking with peers, and membership discount opportunities.
+            <div className="p-5 rounded-2xl bg-ofSoftBlue border border-ofBorder space-y-2">
+              <Users className="w-6 h-6 text-embsPurple" />
+              <h4 className="font-display font-bold text-ofNavy text-sm">IEEE Student Perks</h4>
+              <p className="text-xs text-ofSlate leading-relaxed">
+                Mentorship from IEEE faculty, networking with peers, and society membership opportunities.
               </p>
             </div>
           </div>
@@ -851,32 +938,32 @@ export default function LandingPage() {
       {/* 9. FAQ ACCORDION */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue text-xs font-mono font-semibold">
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Frequently Asked Questions</span>
           </div>
-          <h2 className="font-display font-bold text-3xl text-brand-white">Need Clarification?</h2>
+          <h2 className="font-display font-bold text-3xl text-ofNavy">Need Clarification?</h2>
         </div>
 
         <div className="space-y-3">
           {faqs.map((faq, idx) => (
             <div
               key={idx}
-              className="rounded-xl bg-bg-card border border-navy-border/80 overflow-hidden transition-colors"
+              className="rounded-xl bg-white border border-ofBorder overflow-hidden shadow-sm transition-colors"
             >
               <button
                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-display font-semibold text-sm text-brand-white hover:text-teal-accent transition-colors"
+                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-display font-bold text-sm text-ofNavy hover:text-ieeeBlue transition-colors"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
-                  className={`w-4 h-4 text-brand-muted shrink-0 transition-transform duration-300 ${
-                    openFaq === idx ? "rotate-180 text-teal-accent" : ""
+                  className={`w-4 h-4 text-ofSlate shrink-0 transition-transform duration-300 ${
+                    openFaq === idx ? "rotate-180 text-ieeeBlue" : ""
                   }`}
                 />
               </button>
               {openFaq === idx && (
-                <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-brand-muted leading-relaxed border-t border-navy-border/40">
+                <div className="px-4 sm:px-5 pb-5 pt-1 text-xs text-ofSlate leading-relaxed border-t border-ofBorder">
                   {faq.a}
                 </div>
               )}
@@ -887,54 +974,54 @@ export default function LandingPage() {
 
       {/* 10. MODAL: FULL 7-SECTION PROBLEM STATEMENT VIEWER */}
       {selectedProblem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-          <div className="w-full max-w-3xl rounded-3xl bg-bg-card border border-teal-accent/40 shadow-2xl p-6 sm:p-8 space-y-6 max-h-[88vh] overflow-y-auto relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-3xl rounded-3xl bg-white border border-ofBorder shadow-2xl p-6 sm:p-8 space-y-6 max-h-[88vh] overflow-y-auto relative">
             <button
               onClick={() => setSelectedProblem(null)}
-              className="absolute top-5 right-5 p-2 text-brand-muted hover:text-brand-white transition-colors"
+              className="absolute top-5 right-5 p-2 text-ofSlate hover:text-ofNavy transition-colors font-bold text-lg"
             >
               ✕
             </button>
 
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs font-mono">
-                <span className="px-2.5 py-0.5 rounded bg-teal-accent/10 border border-teal-accent/30 text-teal-accent font-bold">
-                  {selectedProblem.num}
+                <span className="px-2.5 py-0.5 rounded bg-ieeeBlue/10 border border-ieeeBlue/30 text-ieeeBlue font-bold">
+                  {selectedProblem.code}
                 </span>
-                <span className="text-brand-muted">{selectedProblem.society}</span>
-                <span className="text-electric-violet">· {selectedProblem.difficulty}</span>
+                <span className="text-ofSlate font-medium">{selectedProblem.society}</span>
+                <span className="text-embsPurple font-semibold">· {selectedProblem.difficulty}</span>
               </div>
-              <h2 className="font-display font-bold text-2xl text-brand-white">
+              <h2 className="font-display font-bold text-2xl text-ofNavy">
                 {selectedProblem.title}
               </h2>
-              <div className="text-xs font-mono text-teal-accent">{selectedProblem.technique}</div>
+              <div className="text-xs font-mono text-ieeeBlue font-semibold">{selectedProblem.technique}</div>
             </div>
 
             {/* Section 1: Real-world Context */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 1. Real-World Context
               </h4>
-              <p className="text-xs text-brand-muted leading-relaxed">{selectedProblem.context}</p>
+              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.context}</p>
             </div>
 
             {/* Section 2: Core Challenge */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 2. Core Optimization Challenge
               </h4>
-              <p className="text-xs text-brand-muted leading-relaxed">{selectedProblem.coreChallenge}</p>
+              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.coreChallenge}</p>
             </div>
 
             {/* Section 3: Hard Constraints */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 3. Hard Constraints (Must Satisfy)
               </h4>
-              <ul className="space-y-1.5 text-xs text-brand-muted">
+              <ul className="space-y-1.5 text-xs text-ofSlate">
                 {selectedProblem.hardConstraints.map((c: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-red-400 font-bold">•</span>
+                    <span className="text-ofMedRed font-bold">•</span>
                     <span>{c}</span>
                   </li>
                 ))}
@@ -943,13 +1030,13 @@ export default function LandingPage() {
 
             {/* Section 4: Optimization Objectives */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 4. Optimization Objectives
               </h4>
-              <ul className="space-y-1.5 text-xs text-brand-muted">
+              <ul className="space-y-1.5 text-xs text-ofSlate">
                 {selectedProblem.optimizationObjectives.map((obj: string, i: number) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span className="text-teal-accent font-bold">•</span>
+                    <span className="text-ieeeBlue font-bold">•</span>
                     <span>{obj}</span>
                   </li>
                 ))}
@@ -958,10 +1045,10 @@ export default function LandingPage() {
 
             {/* Section 5: Evaluation Methodology */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 5. Evaluation Methodology & Metrics
               </h4>
-              <p className="text-xs text-brand-muted leading-relaxed">
+              <p className="text-xs text-ofSlate leading-relaxed">
                 Evaluated against synthetic multi-scenario benchmarks measuring solution quality, computational
                 runtime efficiency, AST design quality, and stability under dynamic perturbations.
               </p>
@@ -969,18 +1056,18 @@ export default function LandingPage() {
 
             {/* Section 6: Attempt Progression */}
             <div className="space-y-2">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-teal-accent font-semibold">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ieeeBlue font-bold">
                 6. Attempt Progression Overview
               </h4>
-              <p className="text-xs text-brand-muted leading-relaxed">{selectedProblem.attemptProgression}</p>
+              <p className="text-xs text-ofSlate leading-relaxed">{selectedProblem.attemptProgression}</p>
             </div>
 
             {/* Section 7: Expected Team Output Checklist */}
-            <div className="space-y-2 p-4 rounded-xl bg-bg-secondary/70 border border-navy-border">
-              <h4 className="font-mono text-xs uppercase tracking-wider text-brand-white font-semibold">
+            <div className="space-y-2 p-4 rounded-xl bg-ofSoftBlue border border-ofBorder">
+              <h4 className="font-mono text-xs uppercase tracking-wider text-ofNavy font-bold">
                 7. Expected Team Output Checklist (Standardized)
               </h4>
-              <ul className="space-y-1.5 text-xs text-brand-muted pt-1">
+              <ul className="space-y-1.5 text-xs text-ofSlate pt-1">
                 {[
                   "Algorithm implementation (submitted Python script or notebook)",
                   "Parameter configuration used, clearly stated in code comments or notes",
@@ -990,24 +1077,24 @@ export default function LandingPage() {
                   "A mandatory one-line 'what changed and why' note with every attempt after the first",
                 ].map((chk, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <CheckSquare className="w-3.5 h-3.5 text-teal-accent shrink-0 mt-0.5" />
+                    <CheckSquare className="w-3.5 h-3.5 text-ieeeBlue shrink-0 mt-0.5" />
                     <span>{chk}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="pt-4 border-t border-navy-border flex items-center justify-between">
+            <div className="pt-4 border-t border-ofBorder flex items-center justify-between">
               <button
                 onClick={() => setSelectedProblem(null)}
-                className="px-4 py-2 rounded-xl text-xs text-brand-muted hover:text-brand-white transition-colors"
+                className="px-4 py-2 rounded-xl text-xs text-ofSlate hover:text-ofNavy transition-colors font-medium"
               >
                 Close Spec
               </button>
               <a
                 href={selectedProblem.starterFile}
                 download
-                className="px-5 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-semibold text-xs shadow-glow hover:brightness-110 transition-all flex items-center gap-2"
+                className="px-5 py-2.5 rounded-xl bg-gradient-signature text-white font-semibold text-xs shadow-bright hover:brightness-110 transition-all flex items-center gap-2"
               >
                 <Download className="w-4 h-4" />
                 <span>Download Official Starter Script (.py)</span>

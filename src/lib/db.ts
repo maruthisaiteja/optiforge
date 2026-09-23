@@ -277,12 +277,19 @@ async function ensureDb(): Promise<DatabaseSchema> {
   }
 }
 
+let _dbQueue = Promise.resolve();
+export async function withDbLock<T>(action: () => Promise<T>): Promise<T> {
+  const next = _dbQueue.then(action, action);
+  _dbQueue = next.then(() => {}, () => {});
+  return next;
+}
+
 async function saveDb(data: DatabaseSchema): Promise<void> {
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-    const tempFile = `${DB_FILE}.${Date.now()}.tmp`;
+    const tempFile = `${DB_FILE}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`;
     fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), "utf8");
     fs.renameSync(tempFile, DB_FILE);
   } catch (err) {
@@ -298,6 +305,14 @@ async function saveDb(data: DatabaseSchema): Promise<void> {
             id TEXT PRIMARY KEY,
             data JSONB NOT NULL,
             updated_at TIMESTAMPTZ DEFAULT NOW()
+          );
+        `;
+        await sql`
+          CREATE TABLE IF NOT EXISTS optiforge_submissions (
+            id TEXT PRIMARY KEY,
+            team_id TEXT NOT NULL,
+            data JSONB NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT NOW()
           );
         `;
         _hasTableChecked = true;
@@ -601,34 +616,51 @@ export const db = {
     }: {
       data: Omit<SubmissionRecord, "id" | "submittedAt"> & { id?: string };
     }) => {
-      const data = await ensureDb();
-      const sub: SubmissionRecord = {
-        id: subData.id || crypto.randomUUID(),
-        teamId: subData.teamId,
-        attemptNumber: subData.attemptNumber,
-        filename: subData.filename,
-        codeContent: subData.codeContent,
-        approachNotes: subData.approachNotes || null,
-        whatChangedNotes: subData.whatChangedNotes || null,
-        isLivePatch: subData.isLivePatch || false,
-        status: subData.status || "SCORED",
-        runtimeMs: subData.runtimeMs || 0,
-        solutionQuality: subData.solutionQuality || 0,
-        efficiencyScore: subData.efficiencyScore || 0,
-        designQuality: subData.designQuality || 0,
-        consistencyScore: subData.consistencyScore || 0,
-        autoScore: subData.autoScore || 0,
-        isAiAssisted: subData.isAiAssisted ?? true,
-        aiExplanation: subData.aiExplanation || null,
-        executionLogs: subData.executionLogs || null,
-        similarityScore: subData.similarityScore || 0,
-        similarityFlag: subData.similarityFlag || false,
-        ipAddress: subData.ipAddress || null,
-        submittedAt: new Date().toISOString(),
-      };
-      data.submissions.push(sub);
-      await saveDb(data);
-      return sub;
+      return withDbLock(async () => {
+        const data = await ensureDb();
+        const sub: SubmissionRecord = {
+          id: subData.id || crypto.randomUUID(),
+          teamId: subData.teamId,
+          attemptNumber: subData.attemptNumber,
+          filename: subData.filename,
+          codeContent: subData.codeContent,
+          approachNotes: subData.approachNotes || null,
+          whatChangedNotes: subData.whatChangedNotes || null,
+          isLivePatch: subData.isLivePatch || false,
+          status: subData.status || "SCORED",
+          runtimeMs: subData.runtimeMs || 0,
+          solutionQuality: subData.solutionQuality || 0,
+          efficiencyScore: subData.efficiencyScore || 0,
+          designQuality: subData.designQuality || 0,
+          consistencyScore: subData.consistencyScore || 0,
+          autoScore: subData.autoScore || 0,
+          isAiAssisted: subData.isAiAssisted ?? true,
+          aiExplanation: subData.aiExplanation || null,
+          executionLogs: subData.executionLogs || null,
+          similarityScore: subData.similarityScore || 0,
+          similarityFlag: subData.similarityFlag || false,
+          ipAddress: subData.ipAddress || null,
+          submittedAt: new Date().toISOString(),
+        };
+        data.submissions.push(sub);
+        await saveDb(data);
+
+        // Atomic row-level insert to optiforge_submissions in Postgres
+        const sql = getPostgresClient();
+        if (sql) {
+          try {
+            await sql`
+              INSERT INTO optiforge_submissions (id, team_id, data, created_at)
+              VALUES (${sub.id}, ${sub.teamId}, ${JSON.stringify(sub)}, NOW())
+              ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data;
+            `;
+          } catch (err) {
+            console.warn("[OptiForge DB] Postgres granular submission insert error:", err);
+          }
+        }
+
+        return sub;
+      });
     },
     update: async ({ where, data: updates }: { where: { id: string }; data: Partial<SubmissionRecord> }) => {
       const data = await ensureDb();

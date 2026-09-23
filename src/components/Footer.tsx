@@ -39,8 +39,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-xs">
               <li>
-                <Link href="/#tracks" className="hover:text-teal-accent transition-colors">
-                  Problem Tracks (4 CI Domains)
+                <Link href="/#themes" className="hover:text-teal-accent transition-colors">
+                  Innovation Themes (9 Tracks)
                 </Link>
               </li>
               <li>
@@ -80,7 +80,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-electric-violet shrink-0" />
-                <span>Date: 25th September 2026 (9:00 AM - 4:00 PM)</span>
+                <span>Date: 30th September 2026 (10:00 AM - 4:00 PM)</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-teal-accent shrink-0" />

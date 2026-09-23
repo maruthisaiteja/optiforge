@@ -43,7 +43,7 @@ function PaymentContent() {
   const upiId = process.env.NEXT_PUBLIC_UPI_ID || "9490298994@axl";
   const upiPhone = process.env.NEXT_PUBLIC_UPI_PHONE || "9490298994";
   const upiName = process.env.NEXT_PUBLIC_UPI_NAME || "Pilli Maruthi Sai Teja";
-  const amount = team?.paymentAmount || 150;
+  const amount = team?.paymentAmount || 200;
   const transactionNote = `OptiForge ${teamCode || "Team"}`;
   const upiUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${amount}&cu=INR&tn=${encodeURIComponent(transactionNote)}`;
 

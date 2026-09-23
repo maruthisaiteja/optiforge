@@ -21,7 +21,7 @@ export default function CertificateTemplate({
   trackName,
   rank,
   certificateType = "PARTICIPATION",
-  issueDate = "25th September 2026",
+  issueDate = "30th September 2026",
   verificationCode = "OPT26-VCE-CERT-AUTH",
 }: CertificateProps) {
   const certRef = useRef<HTMLDivElement | null>(null);
