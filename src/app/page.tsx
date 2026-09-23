@@ -11,30 +11,20 @@ import {
   Clock,
   MapPin,
   ArrowRight,
-  Shield,
   Layers,
   Sparkles,
-  ChevronDown,
-  Terminal,
-  FileCode,
-  Award,
-  Users,
-  Binary,
-  ShieldAlert,
   Download,
   Eye,
   CheckSquare,
-  HelpCircle,
   Radio,
-  Flame,
-  Activity,
-  HeartPulse,
   Brain,
   Scan,
   ActivitySquare,
-  Wifi,
   Bot,
   ExternalLink,
+  ShieldAlert,
+  FileCode,
+  Users,
 } from "lucide-react";
 import CoverageMapVisualization from "@/components/CoverageMapVisualization";
 
@@ -57,8 +47,8 @@ const $ = {
 };
 
 export default function LandingPage() {
-  // Countdown to 30th September 2026 10:00 AM IST
-  const targetTime = new Date("2026-09-30T10:00:00+05:30").getTime();
+  // Countdown to 30th September 2026 09:00 AM IST (Exact start time from live website)
+  const targetTime = new Date("2026-09-30T09:00:00+05:30").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -107,23 +97,20 @@ export default function LandingPage() {
   // Selected Problem Modal state
   const [selectedProblem, setSelectedProblem] = useState<any | null>(null);
 
-  // Accordion FAQ state
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
   // Official 4-Phase Schedule (J7 from live site)
   const officialSchedule = [
     {
       num: "01",
-      time: "10:00–12:30",
-      title: "1st Round (1st Development)",
-      desc: "Problem briefing, track selection, core algorithm design, and automated AI benchmark evaluation.",
+      time: "09:00–12:30",
+      title: "1st Round",
+      desc: "AI evaluation",
       tag: "Round 1",
       highlight: true,
     },
     {
       num: "02",
       time: "12:30–13:15",
-      title: "Lunch Break & Networking",
+      title: "Lunch Break",
       desc: "Networking and lunch break. Teams regroup, analyze leaderboard metrics, and adjust strategy for afternoon rounds.",
       tag: "Break",
       highlight: false,
@@ -131,8 +118,8 @@ export default function LandingPage() {
     {
       num: "03",
       time: "13:15–15:00",
-      title: "2nd Round (2nd Development)",
-      desc: "Dynamic scenario shift injection, real-time code adaptation, and the 20-minute Live Patch Round (Strictly Zero AI).",
+      title: "2nd Round",
+      desc: "AI evaluation",
       tag: "Round 2",
       highlight: true,
     },
@@ -146,12 +133,12 @@ export default function LandingPage() {
     },
   ];
 
-  // 9 Official Innovation Themes (Z7 from live site & official spec)
+  // 6 Official Innovation Themes (Z7 from live site)
   const innovationThemes = [
     {
       id: "theme-1-biomedical-ai",
       num: "01",
-      code: "T1",
+      code: "01",
       title: "Biomedical Artificial Intelligence",
       tag: "EMBS Domain",
       desc: "Develop AI and machine-learning solutions for healthcare, including disease prediction, clinical decision support, and personalized medicine.",
@@ -159,15 +146,15 @@ export default function LandingPage() {
       bg: "#F4F1FF",
       icon: <Brain className="w-6 h-6" />,
       difficulty: "Advanced",
-      technique: "Genetic Algorithm + Fuzzy Clinical Risk Modeling",
-      society: "IEEE EMBS",
+      technique: "Evolutionary Neural Architecture Search & Hybrid GA-ML",
+      society: "IEEE EMBS × IEEE CIS",
       starterFile: "/starter/starter_p1_scheduling.py",
       context:
-        "Modern clinical workflows generate continuous multidimensional telemetry. Predictive models must accurately evaluate patient outcomes, survival risk, and treatment responsiveness under clinical uncertainty.",
+        "Modern clinical workflows generate continuous multidimensional telemetry, patient records, and biomarker streams. Predictive models must accurately evaluate patient outcomes, survival risk, and treatment responsiveness under clinical uncertainty.",
       coreChallenge:
         "Engineer an interpretable diagnostic optimization pipeline combining evolutionary feature selection with fuzzy risk stratification to minimize misdiagnosis and maximize early triage accuracy.",
       hardConstraints: [
-        "Patient outcome predictions must meet clinical safety and interpretability standards",
+        "Patient outcome predictions must meet clinical safety and interpretability standards (>98% life-critical recall)",
         "Imbalanced cohort distributions must not induce class collapse or blind majority voting",
         "Feature selection bounds must prevent demographic and institutional over-parameterization",
         "Real-time inference execution budget strictly bounded for bedside deployment",
@@ -178,108 +165,46 @@ export default function LandingPage() {
         "Minimize feature space redundancy and sensor acquisition complexity",
         "Maximize stability under noisy or missing bedside telemetry streams",
       ],
-      attemptProgression: "Attempt 1: Baseline predictive classifier → Attempt 2: Shift (Missing physiological features) → Attempt 3: Shift (Severe demographic prevalence drift)",
+      attemptProgression:
+        "Round 1: Baseline predictive classifier → Round 2: Perturbation shift (missing markers) → Final: Jury panel defense",
     },
     {
-      id: "theme-2-edtech",
+      id: "theme-2-signals",
       num: "02",
-      code: "T2",
-      title: "EdTech & Intelligent Learning Systems",
-      tag: "CIS Domain",
-      desc: "Formulate adaptive learning platforms and curriculum optimization algorithms that dynamically personalize student mastery pathways.",
-      accent: $.ieeeBlue,
-      bg: $.softBlue,
-      icon: <Cpu className="w-6 h-6" />,
-      difficulty: "Intermediate–Advanced",
-      technique: "Multi-Objective Heuristics + Fuzzy Student Modeling",
-      society: "IEEE CIS",
-      starterFile: "/starter/starter_p2_drone.py",
-      context:
-        "Intelligent tutoring platforms must guide diverse cohorts through complex STEM curricula. Each learner has varying cognitive load thresholds, mastery trajectories, attention spans, and pacing preferences.",
-      coreChallenge:
-        "Formulate a dynamic curriculum optimization algorithm that constructs personalized adaptive learning pathways, minimizing cognitive fatigue while maximizing concept retention and completion rates.",
-      hardConstraints: [
-        "Prerequisite concept dependencies must be strictly respected in all generated paths",
-        "Daily cognitive load bounds must not exceed maximum learner fatigue ceilings",
-        "Curriculum coverage standards must remain comprehensive across all core competencies",
-        "Recommendation latency must support responsive, real-time client interaction",
-      ],
-      optimizationObjectives: [
-        "Maximize long-term concept retention probability and mastery velocity",
-        "Minimize learner drop-off risk, disengagement, and cognitive overload penalties",
-        "Minimize path variance across heterogeneous cohorts without sacrificing individualization",
-        "Maximize engagement balance across instructional media and practice modalities",
-      ],
-      attemptProgression: "Attempt 1: Linear mastery optimization → Attempt 2: Shift (Sudden drop in learner study time) → Attempt 3: Shift (Bimodal student mastery divergence)",
-    },
-    {
-      id: "theme-3-digital-health",
-      num: "03",
-      code: "T3",
-      title: "Digital Health & Telemedicine",
+      code: "02",
+      title: "Biomedical Signals & Intelligent Systems",
       tag: "EMBS Domain",
-      desc: "Design dynamic dispatch and queue prioritization engines that match patient urgency with remote specialist availability under network fluctuations.",
-      accent: $.embsPurple,
-      bg: $.softPurple,
-      icon: <HeartPulse className="w-6 h-6" />,
+      desc: "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
+      accent: $.medRed,
+      bg: "#FFF2F4",
+      icon: <ActivitySquare className="w-6 h-6" />,
       difficulty: "Advanced",
-      technique: "Adaptive Fuzzy Triage & Queue Dispatch",
+      technique: "Fuzzy Signal Classifier + Particle Swarm Optimizer",
       society: "IEEE EMBS",
-      starterFile: "/starter/starter_p3_hospital.py",
+      starterFile: "/starter/starter_p6_triage.py",
       context:
-        "Decentralized telemedicine networks connect rural clinics to specialized tertiary medical centers. Network bandwidth fluctuates dynamically while acute patient consultations arrive intermittently.",
+        "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
       coreChallenge:
-        "Design a dynamic dispatch and queue prioritization engine that matches patient urgency with specialist availability under fluctuating network bandwidth and strict escalation deadlines.",
+        "Formulate a fuzzy-evolutionary signal processing pipeline that adaptively suppresses artifacts, extracts morphological fiducial points, and flags fatal cardiac arrhythmias in real time.",
       hardConstraints: [
-        "Acute emergency consults must be dispatched within non-negotiable critical windows",
-        "Specialist contractual working hours and clinical load limits cannot be exceeded",
-        "Tele-consultation session bandwidth requirements must match available channel capacity",
-        "Patient data privacy and sovereign encryption protocols must be strictly maintained",
+        "Lethal arrhythmias (ventricular fibrillation, tachycardia) must trigger alerts within 3 seconds",
+        "False alarm suppression must never suppress legitimate acute cardiac distress events",
+        "Digital filters must preserve QRS complex amplitudes and ST-segment elevations",
+        "Memory footprint must operate within low-power wearable telemetry hardware constraints",
       ],
       optimizationObjectives: [
-        "Minimize patient waiting time to certified specialist consultation",
-        "Maximize specialist utilization efficiency while preventing physician burnout",
-        "Minimize emergency escalation delays for critical cardiovascular and stroke consults",
-        "Maximize throughput of scheduled routine consultations across rural clusters",
+        "Maximize sensitivity and specificity across held-out PhysioNet arrhythmia databases",
+        "Minimize false alarm fatigue index in continuous bedside telemetry monitoring",
+        "Minimize R-peak detection timing jitter under severe baseline wander",
+        "Maximize execution efficiency and signal-to-noise ratio improvement",
       ],
-      attemptProgression: "Attempt 1: Deterministic queue dispatch → Attempt 2: Shift (50% bandwidth constriction & rural surge) → Attempt 3: Shift (Specialist emergency leave spike)",
+      attemptProgression:
+        "Round 1: Clean rhythm classification → Round 2: Perturbation shift (severe EMG burst) → Final: Jury panel defense",
     },
     {
-      id: "theme-4-neurotech",
-      num: "04",
-      code: "T4",
-      title: "Neurotechnology & Rehabilitation",
-      tag: "EMBS × CIS",
-      desc: "Develop adaptive neuro-decoding algorithms using swarm intelligence to optimize spatial filtering weights and intent classification for BCI prosthetics.",
-      accent: $.cyan,
-      bg: "#EFFBFD",
-      icon: <Sparkles className="w-6 h-6" />,
-      difficulty: "Advanced",
-      technique: "Swarm Neuro-Decoding & Adaptive Filtering",
-      society: "IEEE EMBS × CIS",
-      starterFile: "/starter/starter_p4_grid.py",
-      context:
-        "Brain-Computer Interfaces (BCIs) and neuro-prosthetic limb controllers capture non-stationary multi-channel electroencephalogram (EEG) signals that degrade rapidly due to electrode impedance drift.",
-      coreChallenge:
-        "Develop an adaptive neuro-decoding algorithm using swarm intelligence to optimize spatial filtering weights and spectral feature boundaries for low-latency intent classification.",
-      hardConstraints: [
-        "End-to-end motor intention classification latency must strictly remain < 50 milliseconds",
-        "Filter coefficients must remain bounded within stable numerical poles",
-        "Classification output cannot trigger spurious prosthetic activations during rest states",
-        "System must recalibrate autonomously without requiring complete user re-training",
-      ],
-      optimizationObjectives: [
-        "Maximize motor imagery classification accuracy across multi-class limb commands",
-        "Minimize classification error rate under electrode signal impedance drift",
-        "Minimize computational complexity for embedded prosthetic microcontrollers",
-        "Maximize user comfort and adaptation velocity during continuous rehabilitation cycles",
-      ],
-      attemptProgression: "Attempt 1: Stationary EEG spatial decoding → Attempt 2: Shift (Electrode impedance degradation +20% noise) → Attempt 3: Shift (Fast motor task switching)",
-    },
-    {
-      id: "theme-5-medical-imaging",
-      num: "05",
-      code: "T5",
+      id: "theme-3-imaging",
+      num: "03",
+      code: "03",
       title: "Medical Imaging & Computer Vision",
       tag: "EMBS Domain",
       desc: "Develop intelligent systems for MRI, CT, ultrasound, and histopathological image analysis, segmentation, and automated interpretation.",
@@ -306,111 +231,82 @@ export default function LandingPage() {
         "Minimize false positive artifact segmentations in low-dose CT / low-field MRI",
         "Maximize generalization stability across diverse hospital imaging protocols",
       ],
-      attemptProgression: "Attempt 1: High-contrast benchmark slice segmentation → Attempt 2: Shift (Motion blur & low-dose quantum noise) → Attempt 3: Shift (Micro-lesion boundary ambiguity)",
+      attemptProgression:
+        "Round 1: High-contrast benchmark slice segmentation → Round 2: Perturbation shift (motion blur & quantum noise) → Final: Jury panel defense",
     },
     {
-      id: "theme-6-biomedical-signals",
-      num: "06",
-      code: "T6",
-      title: "Biomedical Signals & Intelligent Systems",
-      tag: "EMBS Domain",
-      desc: "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
-      accent: $.medRed,
-      bg: "#FFF2F4",
-      icon: <ActivitySquare className="w-6 h-6" />,
-      difficulty: "Advanced",
-      technique: "Fuzzy Signal Classifier + Particle Swarm Optimizer",
-      society: "IEEE EMBS × CIS",
-      starterFile: "/starter/starter_p6_triage.py",
-      context:
-        "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
-      coreChallenge:
-        "Formulate a fuzzy-evolutionary signal processing pipeline that adaptively suppresses artifacts, extracts morphological fiducial points, and flags fatal cardiac arrhythmias in real time.",
-      hardConstraints: [
-        "Lethal arrhythmias (ventricular fibrillation, tachycardia) must trigger alerts within 3 seconds",
-        "False alarm suppression must never suppress legitimate acute cardiac distress events",
-        "Digital filters must preserve QRS complex amplitudes and ST-segment elevations",
-        "Memory footprint must operate within low-power wearable telemetry hardware constraints",
-      ],
-      optimizationObjectives: [
-        "Maximize sensitivity and specificity across held-out PhysioNet arrhythmia databases",
-        "Minimize false alarm fatigue index in continuous bedside telemetry monitoring",
-        "Minimize R-peak detection timing jitter under severe baseline wander",
-        "Maximize execution efficiency and signal-to-noise ratio improvement",
-      ],
-      attemptProgression: "Attempt 1: Clean rhythm classification → Attempt 2: Shift (Severe muscular EMG artifact burst) → Attempt 3: Shift (Polymorphic premature ventricular beats)",
-    },
-    {
-      id: "theme-7-smart-healthcare-iot",
-      num: "07",
-      code: "T7",
-      title: "Smart Healthcare & Medical IoT",
+      id: "theme-4-ml-ai",
+      num: "04",
+      code: "04",
+      title: "Machine Learning & Artificial Intelligence",
       tag: "CIS Domain",
-      desc: "Design energy-aware swarm routing heuristics balancing transmission energy, telemetry priority, and sensor battery lifespan across wearable mesh nodes.",
+      desc: "Explore machine learning, deep learning, generative AI, and intelligent algorithms for solving complex real-world problems.",
       accent: $.ieeeBlue,
       bg: $.softBlue,
-      icon: <Wifi className="w-6 h-6" />,
+      icon: <Cpu className="w-6 h-6" />,
       difficulty: "Intermediate–Advanced",
-      technique: "Constrained Energy-Routing Heuristics",
+      technique: "Multi-Objective Heuristics + Deep Evolutionary Networks",
       society: "IEEE CIS",
-      starterFile: "/starter/starter_p1_scheduling.py",
+      starterFile: "/starter/starter_p2_drone.py",
       context:
-        "Wearable biosensor networks and hospital IoT beacons operate on minute battery budgets. Sensor telemetry must traverse wireless mesh gateways to hospital servers without loss.",
+        "Intelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.",
       coreChallenge:
-        "Design a multi-objective swarm routing heuristic that balances node energy consumption, transmission latency, packet collision probability, and battery lifetime across the mesh.",
+        "Design a high-performance machine learning optimization model combining automated hyperparameter search with robust loss regularization to generalize across non-stationary distributions.",
       hardConstraints: [
-        "Emergency telemetry packets must be guaranteed delivery within strict latency deadlines",
-        "Individual sensor node battery depletion cannot prematurely partition the sensor network",
-        "Wireless channel duty cycle regulations must be strictly satisfied",
-        "Dynamic node joins and departures must be accommodated without network reboot",
+        "Generalization bounds must hold across out-of-distribution validation sets",
+        "Optimization trajectory must converge deterministically without gradient explosion",
+        "Model parameter efficiency must adhere to runtime deployment budgets",
+        "Decision outputs must satisfy fair calibration across heterogeneous sub-populations",
       ],
       optimizationObjectives: [
-        "Maximize cumulative operational lifespan of all battery-powered sensor nodes",
-        "Minimize end-to-end telemetry transmission delay for critical physiological packets",
-        "Minimize packet delivery loss and wireless contention re-transmission overhead",
-        "Maximize energy expenditure uniformity across all forwarding gateway nodes",
+        "Maximize multi-metric validation accuracy and generalized predictive capability",
+        "Minimize loss variance and over-fitting penalty across unseen held-out splits",
+        "Minimize inference latency and computational overhead",
+        "Maximize explainability and architectural stability",
       ],
-      attemptProgression: "Attempt 1: Static topology routing → Attempt 2: Shift (Gateway node battery exhaustion) → Attempt 3: Shift (High-frequency telemetry surge from ICU)",
+      attemptProgression:
+        "Round 1: Benchmark distribution optimization → Round 2: Perturbation shift (non-stationary dataset drift) → Final: Jury panel defense",
     },
     {
-      id: "theme-8-healthcare-robotics",
-      num: "08",
-      code: "T8",
-      title: "Healthcare Robotics & Automation",
-      tag: "EMBS × CIS",
-      desc: "Develop autonomous, adaptive, and multi-agent systems for robotic surgery assistance, hospital corridor navigation, and contactless logistics.",
-      accent: $.warning,
-      bg: "#FFF9EB",
+      id: "theme-5-autonomous",
+      num: "05",
+      code: "05",
+      title: "Intelligent Systems & Autonomous Computing",
+      tag: "CIS Domain",
+      desc: "Develop autonomous, adaptive, and multi-agent systems capable of intelligent decision-making, learning, and real-time operation.",
+      accent: $.ieeeBlue,
+      bg: $.softBlue,
       icon: <Bot className="w-6 h-6" />,
       difficulty: "Advanced",
-      technique: "Multi-Agent Swarm Motion Planning & Obstacle Avoidance",
-      society: "IEEE EMBS × CIS",
-      starterFile: "/starter/starter_p5_swarm.py",
+      technique: "Swarm Intelligence + Adaptive Multi-Agent Heuristics",
+      society: "IEEE CIS",
+      starterFile: "/starter/starter_p4_grid.py",
       context:
-        "Autonomous mobile service robots and assistive robotic arms operate in congested hospital corridors, sterile surgical theaters, and pharmaceutical distribution cleanrooms.",
+        "Decentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.",
       coreChallenge:
-        "Formulate a swarm robotics trajectory planner that optimizes delivery paths, avoids dynamic obstacles (gurneys, clinicians), and guarantees smooth, jerk-free kinematics.",
+        "Engineer a multi-agent autonomous decision-making engine that coordinates agent trajectories, resolves resource contention, and dynamically plans pathing under real-time environmental perturbations.",
       hardConstraints: [
-        "Robots must maintain strict safety clearance corridors around all human occupants",
-        "Kinematic acceleration and jerk limits must be enforced to prevent supply spills",
-        "Emergency corridors must be cleared immediately when emergency code alarms trigger",
-        "Robotic battery recharge schedules must ensure 24/7 continuous facility coverage",
+        "Agents must guarantee collision-free trajectories and safe operational margins",
+        "Decision latency per simulation tick must stay strictly within real-time budget",
+        "Coordination protocol must operate without centralized single-point-of-failure bottlenecks",
+        "Dynamic environment changes must trigger sub-second trajectory recalibration",
       ],
       optimizationObjectives: [
-        "Minimize total delivery mission time for pharmaceuticals and emergency supplies",
-        "Minimize trajectory length and cumulative mechanical energy expenditure",
-        "Minimize hallway bottleneck congestion and dead-end agent lockouts",
-        "Maximize obstacle clearance smoothness and safety margins in crowded wards",
+        "Maximize collective swarm task throughput and coverage velocity",
+        "Minimize cumulative collision risk and coordination deadlocks",
+        "Minimize energy consumption and path trajectory length",
+        "Maximize resilience against individual agent failures or communication dropouts",
       ],
-      attemptProgression: "Attempt 1: Static corridor pathfinding → Attempt 2: Shift (Corridor closure & gurney traffic jam) → Attempt 3: Shift (Simultaneous emergency multi-ward supply dispatch)",
+      attemptProgression:
+        "Round 1: Known topology path planning → Round 2: Perturbation shift (dynamic obstacles & network drop) → Final: Jury panel defense",
     },
     {
-      id: "theme-9-open-innovation",
-      num: "09",
-      code: "T9",
-      title: "Open Innovation on (CIS and EMBS only)",
+      id: "theme-6-open-innovation",
+      num: "06",
+      code: "06",
+      title: "Open Innovation: CIS × EMBS",
       tag: "Flagship Domain",
-      desc: "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
+      desc: "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges. Encourages innovative applications of AI, optimization, intelligent systems, vision, signals, and robotics to real-world biomedical problems.",
       accent: $.cyan,
       bg: "#EFFBFD",
       icon: <Sparkles className="w-6 h-6" />,
@@ -418,7 +314,7 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Hybrid Evolutionary-Fuzzy Frameworks",
       society: "IEEE CIS & IEEE EMBS Only",
-      starterFile: "/starter/starter_p2_drone.py",
+      starterFile: "/starter/starter_p3_hospital.py",
       context:
         "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
       coreChallenge:
@@ -435,7 +331,8 @@ export default function LandingPage() {
         "Maximize clinical applicability and translational potential in healthcare settings",
         "Maximize computational execution efficiency and parameter sensitivity robustness",
       ],
-      attemptProgression: "Attempt 1: Novel hybrid architecture → Attempt 2: Shift (Adversarial stress testing & edge cases) → Attempt 3: Shift (Multi-objective trade-off sensitivity test)",
+      attemptProgression:
+        "Round 1: Novel hybrid architecture → Round 2: Perturbation shift (adversarial stress testing) → Final: Jury panel defense",
     },
   ];
 
@@ -446,11 +343,11 @@ export default function LandingPage() {
     },
     {
       q: "What is the registration fee?",
-      a: "₹100 per team member (₹200 for 2 members, ₹300 for 3 members, ₹400 for 4 members), payable securely online via direct UPI / QR gateway or on 30 September 2026.",
+      a: "₹100 per team member, payable at the venue on the day of the event.",
     },
     {
       q: "How is scoring done?",
-      a: "Multi-metric scoring: automated solution quality (fitness score), runtime efficiency, AST structure analysis, and AI evaluation feedback combined with final jury viva defense.",
+      a: "Multi-metric scoring: automated solution quality (fitness score), runtime efficiency, AST structure analysis, and AI evaluation feedback.",
     },
     {
       q: "Do we need to build a web frontend or deploy an API?",
@@ -547,7 +444,7 @@ export default function LandingPage() {
               className="text-sm sm:text-base uppercase tracking-widest font-semibold"
               style={{ color: $.slate, fontFamily: "Inter, sans-serif" }}
             >
-              Computational Intelligence Challenge · Hackathon Algorithm Design
+              Computational Intelligence Challenge
             </p>
 
             {/* Description */}
@@ -556,7 +453,7 @@ export default function LandingPage() {
               style={{ color: $.slate }}
             >
               Engineer high-performance evolutionary heuristics, machine learning models, and intelligent
-              systems. Compete across 9 innovation themes with live development rounds, AI evaluation,
+              systems. Compete across 6 innovation themes with live development rounds, AI evaluation,
               scenario shifts, and expert panel defense.
             </p>
 
@@ -577,7 +474,7 @@ export default function LandingPage() {
                 style={{ color: $.navy }}
               >
                 <Clock className="w-3.5 h-3.5" style={{ color: $.embsPurple }} />
-                <span>10:00 AM – 4:00 PM IST</span>
+                <span>9:00 AM – 4:00 PM IST</span>
               </div>
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
@@ -585,6 +482,27 @@ export default function LandingPage() {
               >
                 <MapPin className="w-3.5 h-3.5" style={{ color: $.medRed }} />
                 <span>Vardhaman College of Engineering</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <Zap className="w-3.5 h-3.5" style={{ color: $.cyan }} />
+                <span>₹100/member (At venue)</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <Users className="w-3.5 h-3.5" style={{ color: $.embsPurple }} />
+                <span>2–4 Members</span>
+              </div>
+              <div
+                className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
+                style={{ color: $.navy }}
+              >
+                <Trophy className="w-3.5 h-3.5" style={{ color: $.warning }} />
+                <span>04 Dynamic Rounds</span>
               </div>
             </div>
 
@@ -688,13 +606,28 @@ export default function LandingPage() {
                 style={{ color: $.embsPurple }}
               >
                 <FileCode className="w-4 h-4" />
-                <span>9 Innovation Themes</span>
+                <span>6 Innovation Themes</span>
               </a>
+            </div>
+
+            {/* Official Event Flyer Container matching live website */}
+            <div
+              className="mt-16 sm:mt-20 max-w-4xl mx-auto rounded-3xl overflow-hidden relative group transition-transform duration-700 ease-out hover:shadow-2xl p-2 glass-card"
+              style={{
+                transform: `translate(${mousePos.nX * 5}px, ${mousePos.nY * 5}px)`,
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
+              <img
+                src="/assets/optiforge-flyer.png"
+                alt="OptiForge 2026 Event Flyer"
+                className="w-full h-auto block rounded-2xl shadow-sm"
+              />
             </div>
           </div>
         </section>
 
-        {/* 2. PROBLEM DOMAINS: 9 INNOVATION THEMES (MATCHING Z7 CARDS) */}
+        {/* 2. PROBLEM DOMAINS: 6 INNOVATION THEMES (MATCHING Z7 CARDS) */}
         <section id="themes" className="py-12 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-12">
           <div className="text-center space-y-4">
             <div
@@ -702,7 +635,7 @@ export default function LandingPage() {
               style={{ color: $.cyan }}
             >
               <Layers className="w-3.5 h-3.5" />
-              <span>9 Innovation Themes</span>
+              <span>6 Innovation Themes</span>
             </div>
             <h2
               className="text-3xl sm:text-5xl font-black"
@@ -711,13 +644,13 @@ export default function LandingPage() {
               Problem Domains
             </h2>
             <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{ color: $.slate }}>
-              Explore our 9 problem domains engineered for computational intelligence, algorithm design,
+              Explore our 6 problem domains engineered for computational intelligence, algorithm design,
               and interdisciplinary healthcare innovation.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {innovationThemes.map((item, idx) => (
+            {innovationThemes.map((item) => (
               <div
                 key={item.id}
                 className="group relative rounded-3xl p-8 space-y-4 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl overflow-hidden glass-card flex flex-col justify-between"
@@ -817,7 +750,7 @@ export default function LandingPage() {
               style={{ color: $.embsPurple }}
             >
               <Clock className="w-3.5 h-3.5" />
-              <span>Timeline · 30 September 2026</span>
+              <span>Timeline</span>
             </div>
             <h2
               className="text-3xl sm:text-5xl font-black"
@@ -973,7 +906,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 5. INTERACTIVE ARENA: HEALTHCARE ROBOTICS SWARM SIMULATION */}
+        {/* 5. INTERACTIVE ARENA: SWARM MOTION SIMULATION */}
         <section className="py-6 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-6">
           <div className="text-center space-y-2">
             <div
@@ -1044,7 +977,7 @@ export default function LandingPage() {
             Ready to Compete?
           </h2>
           <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
-            Register your team of 2–4 members. ₹100 per member, payable on 30 September 2026.
+            Register your team of 2–4 members. ₹100 per member, payable at the venue on 30 September 2026.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5">
@@ -1071,7 +1004,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 8. MODAL: FULL 7-SECTION SPECIFICATION VIEWER */}
+        {/* 8. MODAL: FULL SPECIFICATION VIEWER */}
         {selectedProblem && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
             <div className="w-full max-w-3xl rounded-3xl bg-white border border-ofBorder shadow-2xl p-6 sm:p-8 space-y-6 max-h-[88vh] overflow-y-auto relative">

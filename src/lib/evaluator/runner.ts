@@ -44,6 +44,26 @@ const TRACK_META: Record<
     name: "Biomedical Artificial Intelligence",
     terms: ["model", "predict", "clinical", "patient", "diagnosis", "accuracy", "feature", "gradient", "loss", "biomedical"],
   },
+  "theme-2-signals": {
+    name: "Biomedical Signals & Intelligent Systems",
+    terms: ["signal", "ecg", "emg", "sampling", "frequency", "fourier", "wavelet", "peak", "r-peak", "spectral", "arrhythmia"],
+  },
+  "theme-3-imaging": {
+    name: "Medical Imaging & Computer Vision",
+    terms: ["image", "mri", "ct", "segmentation", "dicom", "filter", "contrast", "contour", "resolution", "pixel", "lesion"],
+  },
+  "theme-4-ml-ai": {
+    name: "Machine Learning & Artificial Intelligence",
+    terms: ["model", "learning", "deep", "neural", "classification", "loss", "gradient", "regularization", "hyperparameter", "generalization"],
+  },
+  "theme-5-autonomous": {
+    name: "Intelligent Systems & Autonomous Computing",
+    terms: ["autonomous", "agent", "swarm", "navigation", "trajectory", "obstacle", "decision", "multi-agent", "robotics", "coordination"],
+  },
+  "theme-6-open-innovation": {
+    name: "Open Innovation: CIS × EMBS",
+    terms: ["innovation", "hybrid", "fuzzy", "evolutionary", "fitness", "heuristic", "optimization", "computational", "biomedical", "multiobjective"],
+  },
   "theme-2-edtech": {
     name: "EdTech & Intelligent Systems",
     terms: ["student", "adaptive", "learning", "curriculum", "feedback", "assessment", "knowledge", "skill", "proficiency"],

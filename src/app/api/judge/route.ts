@@ -25,6 +25,36 @@ const VIVA_QUESTIONS: Record<string, string[]> = {
     "How does your algorithm adapt when critical patient physiological telemetry contains missing sensor values?",
     "How do you mathematically guard against demographic or hospital-specific bias in your model predictions?",
   ],
+  "theme-2-signals": [
+    "Explain how your wavelet or filter bank isolates subtle ECG arrhythmic beats from baseline wander.",
+    "How does your fuzzy classifier handle overlapping boundaries between benign and pathological signal morphologies?",
+    "What is your mathematical threshold for triggering high-priority physiological alarms?",
+    "How does your pipeline ensure deterministic real-time throughput on streaming multi-channel biosensors?",
+  ],
+  "theme-3-imaging": [
+    "How do your segmentation contours preserve minute lesion boundaries under low-contrast radiological scans?",
+    "What fitness metric did you choose to evaluate segmentation quality against clinical ground truth masks?",
+    "How does your feature optimizer prevent overfitting to a single scanner vendor or patient cohort?",
+    "What computational trade-offs were made to ensure rapid inference runtime on clinical workstations?",
+  ],
+  "theme-4-ml-ai": [
+    "How does your machine learning architecture maintain generalization across non-stationary data drift?",
+    "What hyperparameter search and regularization strategy did you apply to prevent overfitting?",
+    "How do you ensure deterministic convergence of your optimization trajectory under strict time constraints?",
+    "What mathematical validation confirms that your model outputs are fairly calibrated across sub-cohorts?",
+  ],
+  "theme-5-autonomous": [
+    "How does your multi-agent autonomous decision engine coordinate collision-free trajectories under latency bounds?",
+    "When an obstacle or communication dropout occurs, how rapidly does your planner recalibrate paths?",
+    "What objective weighting prevents swarm deadlocks and hallway bottleneck lockouts in crowded environments?",
+    "How does your distributed coordination protocol operate without centralized single-point bottlenecks?",
+  ],
+  "theme-6-open-innovation": [
+    "What novel computational intelligence paradigm did your team formulate to bridge EMBS and CIS domains?",
+    "How do you mathematically validate that your hybrid approach outperforms classical baseline heuristics?",
+    "How does your multi-objective formulation navigate competing trade-offs between accuracy, runtime, and complexity?",
+    "What real-world clinical or technological bottleneck does your solution solve most effectively?",
+  ],
   "theme-2-edtech": [
     "How does your student knowledge state model update dynamically as a learner attempts multiple exercises?",
     "How do you mathematically balance personalization depth versus comprehensive curriculum coverage?",

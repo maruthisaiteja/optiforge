@@ -236,7 +236,7 @@ export default function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full py-2.5 px-4 rounded-lg bg-gradient-signature text-bg-primary text-center font-semibold text-sm shadow-glow"
                 >
-                  Register Team (₹50/member)
+                  Register Team (₹100/member)
                 </Link>
               </>
             )}

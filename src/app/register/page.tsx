@@ -46,105 +46,72 @@ export default function RegisterPage() {
   const [pendingTeam, setPendingTeam] = useState<any>(null);
   const [isClientLoaded, setIsClientLoaded] = useState(false);
 
-  // 9 Official Innovation Themes
+  // 6 Official Innovation Themes from https://ieee-embs-vce.vercel.app/optiforge
   const problemStatements = [
     {
       id: "theme-1-biomedical-ai",
-      code: "T1",
+      code: "01",
       tag: "EMBS Domain",
       title: "Biomedical Artificial Intelligence",
       technique: "Evolutionary Neural Architecture Search & Hybrid GA-ML",
       society: "IEEE EMBS × IEEE CIS",
-      focus: "High-dimensional feature space search, hybrid clinical decision boundaries & rare pathology risk stratification",
+      focus: "Develop AI and machine-learning solutions for healthcare, including disease prediction, clinical decision support, and personalized medicine.",
       accent: "#7657D9",
       bg: "#F4F1FF",
     },
     {
-      id: "theme-2-edtech",
-      code: "T2",
-      tag: "CIS Domain",
-      title: "EdTech & Intelligent Systems",
-      technique: "Genetic Algorithms + Dynamic Knowledge Space Optimization",
-      society: "IEEE CIS × IEEE EMBS",
-      focus: "Personalized learning trajectories, prerequisite mastery chains & spaced-repetition cognitive load balancing",
-      accent: "#00629B",
-      bg: "#F0F7FB",
-    },
-    {
-      id: "theme-3-digital-health",
-      code: "T3",
-      tag: "EMBS Domain",
-      title: "Digital Health & Telemedicine",
-      technique: "Particle Swarm Optimization + Fuzzy Dynamic Priority Routing",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Dynamic remote consultation routing, decentralized specialist allocation & bandwidth-constrained triage",
-      accent: "#12A8C4",
-      bg: "#EFFBFD",
-    },
-    {
-      id: "theme-4-neurotech",
-      code: "T4",
-      tag: "EMBS Domain",
-      title: "Neurotechnology & Rehabilitation",
-      technique: "Swarm Intelligence + Fuzzy Adaptive Neural Decoding",
-      society: "IEEE EMBS",
-      focus: "Non-stationary neural intent decoding, EMG artifact filtering & jerk-free robotic rehabilitation trajectories",
-      accent: "#772583",
-      bg: "#F6F1F8",
-    },
-    {
-      id: "theme-5-medical-imaging",
-      code: "T5",
-      tag: "EMBS Domain",
-      title: "Medical Imaging & Computer Vision",
-      technique: "Genetic Algorithms + Heuristic Feature Space Search",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Deformable contour optimization, 3D scan reconstruction & micro-lesion segmentation under severe noise",
-      accent: "#12A8C4",
-      bg: "#EFFBFD",
-    },
-    {
-      id: "theme-6-biomedical-signals",
-      code: "T6",
+      id: "theme-2-signals",
+      code: "02",
       tag: "EMBS Domain",
       title: "Biomedical Signals & Intelligent Systems",
       technique: "Fuzzy Inference Systems + Evolutionary Signal Decomposition",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Continuous multi-channel ECG/EEG/PPG telemetry, morphological feature extraction & acute arrhythmia detection",
+      society: "IEEE EMBS",
+      focus: "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
       accent: "#D84A5A",
       bg: "#FFF2F4",
     },
     {
-      id: "theme-7-smart-healthcare-iot",
-      code: "T7",
+      id: "theme-3-imaging",
+      code: "03",
       tag: "EMBS Domain",
-      title: "Smart Healthcare & Medical IoT",
-      technique: "Ant Colony Optimization + Energy-Aware Swarm Routing",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Ultra-low power medical sensor mesh routing, vital data packet priority & hospital network lifetime extension",
-      accent: "#238B68",
-      bg: "#F0FAF5",
+      title: "Medical Imaging & Computer Vision",
+      technique: "Genetic Algorithms + Heuristic Feature Space Search",
+      society: "IEEE EMBS",
+      focus: "Develop intelligent systems for MRI, CT, ultrasound, and histopathological image analysis, segmentation, and automated interpretation.",
+      accent: "#12A8C4",
+      bg: "#EFFBFD",
     },
     {
-      id: "theme-8-healthcare-robotics",
-      code: "T8",
+      id: "theme-4-ml-ai",
+      code: "04",
       tag: "CIS Domain",
-      title: "Healthcare Robotics & Automation",
-      technique: "Distributed Swarm Intelligence + Multi-Objective GA Pathing",
-      society: "IEEE EMBS × IEEE CIS",
-      focus: "Multi-robot hospital corridor logistics, sterile disinfection navigation & collision-free emergency dispatch",
-      accent: "#D58A19",
-      bg: "#FFFDF2",
+      title: "Machine Learning & Artificial Intelligence",
+      technique: "Multi-Objective Heuristics + Deep Evolutionary Networks",
+      society: "IEEE CIS",
+      focus: "Explore machine learning, deep learning, generative AI, and intelligent algorithms for solving complex real-world problems.",
+      accent: "#00629B",
+      bg: "#F0F7FB",
     },
     {
-      id: "theme-9-open-innovation",
-      code: "T9",
+      id: "theme-5-autonomous",
+      code: "05",
+      tag: "CIS Domain",
+      title: "Intelligent Systems & Autonomous Computing",
+      technique: "Swarm Intelligence + Adaptive Multi-Agent Heuristics",
+      society: "IEEE CIS",
+      focus: "Develop autonomous, adaptive, and multi-agent systems capable of intelligent decision-making, learning, and real-time operation.",
+      accent: "#00629B",
+      bg: "#F0F7FB",
+    },
+    {
+      id: "theme-6-open-innovation",
+      code: "06",
       tag: "Flagship Domain",
       flagship: true,
-      title: "Open Innovation on (CIS and EMBS only)",
+      title: "Open Innovation: CIS × EMBS",
       technique: "Hybrid Computational Intelligence & Novel Metaheuristics",
       society: "IEEE CIS & IEEE EMBS Only",
-      focus: "Interdisciplinary breakthrough combining computational intelligence with transformative healthcare & biomedical paradigms",
+      focus: "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
       accent: "#12A8C4",
       bg: "#EFFBFD",
     },
@@ -651,7 +618,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Section 3: Innovation Theme Selection (1 of 9) */}
+        {/* Section 3: Innovation Theme Selection (1 of 6) */}
         <div className="rounded-2xl bg-bg-card border border-navy-border/80 p-6 sm:p-8 space-y-6 shadow-xl">
           <div className="flex items-center gap-3 border-b border-navy-border/60 pb-4">
             <div className="w-9 h-9 rounded-xl bg-navy-deep flex items-center justify-center text-teal-accent">
@@ -662,7 +629,7 @@ export default function RegisterPage() {
                 Choose Innovation Theme
               </h3>
               <p className="text-xs text-brand-muted">
-                Select 1 of the 9 official innovation themes your team will solve during the competition.
+                Select 1 of the 6 official innovation themes your team will solve during the competition.
               </p>
             </div>
           </div>
