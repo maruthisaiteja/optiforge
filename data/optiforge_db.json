@@ -1,84 +1,104 @@
 {
   "users": [
     {
-      "id": "12b12ab3-a63c-4ee3-8869-ac9c613bf0a0",
+      "id": "28835d9e-8eed-4262-a1e7-00f52c9f005c",
       "username": "admin",
-      "password": "$2b$10$7.6/Y1w6Q0b6ZbGgtzer3uQyYbcSMiqQNu/Krcx2UwNa3SQ7W63Mi",
+      "password": "$2b$10$ygMjC5f570SGbuavyCBbLuwcGzcACeHZDXeXcgxSMOX/Vf8yQ4btK",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "aea26d92-5db8-46cd-adec-d7ada6953fc5",
+      "id": "a48a11ad-c2e5-4bf2-b647-7067423fac81",
       "username": "judge_t1",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Dr. K. Srinivas (Biomedical AI & Neural Opt Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-1-biomedical-ai",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "7a87cf89-effc-451c-9f6e-cfc72132d25c",
+      "id": "c1e1a024-30f0-43d5-8656-1df96d142f5b",
       "username": "judge_t2",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Prof. S. Reddy (Biomedical Signals & ECG/EEG Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-2-signals",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "ef298296-0471-4bcc-8929-9be91d774f2c",
+      "id": "6d9d02bf-4db5-418e-9966-bdbf0e926b04",
       "username": "judge_t3",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Dr. A. Sharma (Medical Imaging & Computer Vision Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-3-imaging",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "7786fd97-788c-4e60-8b8e-22425a20c0c0",
+      "id": "b36b5064-a30b-48fa-8ade-f7f7896f8f62",
       "username": "judge_t4",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Prof. M. Anitha (Machine Learning & AI Theory Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-4-ml-ai",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "afa6c1ba-ca17-4332-9318-8f24a1cd3f4c",
+      "id": "dbc7c310-5d82-4f54-9ade-281b58137281",
       "username": "judge_t5",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Dr. T. Patel (Intelligent Systems & Autonomous Computing Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-5-autonomous",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "6e20e219-3f75-4eb3-9140-762c90a3a8fc",
+      "id": "c9636c27-79f9-471f-aca9-656f2ae1c184",
       "username": "judge_t6",
-      "password": "$2b$10$tFqdMp2QcNVt/biet6kv0OqXmffcVMSeSWB67EbyCQpDcj7GQhBO6",
+      "password": "$2b$10$myPaSRTNQ061q5vzVMY85uvlXkd..O0fzEQq89n31RQkues0dMT5K",
       "name": "Dr. N. Gupta (CIS & EMBS Open Innovation Jury Chair)",
       "role": "JUDGE",
       "assignedDomainId": "theme-6-open-innovation",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "teams": [
+    {
+      "id": "98422411-03e4-4ce0-842e-4ec73077014c",
+      "teamCode": "OPT-26-2402",
+      "teamName": "jiva jhanavi tirupati",
+      "leaderEmail": "hvhv@gvj.djb",
+      "leaderPhone": "9876543218",
+      "password": "$2b$10$IJniXLjr/tT9pt7vsKnouO1iHH9DAYYRy/yPoQnhzN2nlLVqrFyU6",
+      "domainId": "theme-6-open-innovation",
+      "skillLevel": "Standard",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 300,
+      "razorpayPaymentId": "987653234567",
+      "razorpayOrderId": "order_upi_987653234567",
+      "razorpaySignature": "UPI_DIRECT_SETTLEMENT",
+      "attemptsUsed": 2,
+      "bestScore": 66.55,
+      "isDisqualified": false,
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
+    },
     {
       "id": "team-id-1904",
       "teamCode": "OPT-26-1904",
       "teamName": "Team 1904",
       "leaderEmail": "chair.embs@vce.ac.in",
       "leaderPhone": "9490298994",
-      "password": "$2b$10$MWZejK9ObIVI4ZNYoxx35uh72AtZbV9cj1Bbv4egHFKbGZTd85Ofy",
+      "password": "$2b$10$6VRz4ND2DWAlGbvS6pzxhOnYNCOisSYJD2.9OcNKyweP4zxfWu7Yq",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "CONFIRMED",
@@ -89,8 +109,48 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "46e71909-db45-428a-8717-0f1aa94bab89",
+      "teamCode": "OPT-26-3340",
+      "teamName": "I'm Game",
+      "leaderEmail": "msteja@gmail.com",
+      "leaderPhone": "9633428107",
+      "password": "$2b$10$5W4j/hlTbYw41/7EMOaMcu/qNiyfFzzpjRqTN62IhRooy8hWCwNJW",
+      "domainId": "theme-2-signals",
+      "skillLevel": "Standard",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 100,
+      "razorpayPaymentId": "786622855890",
+      "razorpayOrderId": "order_upi_786622855890",
+      "razorpaySignature": "UPI_DIRECT_SETTLEMENT",
+      "attemptsUsed": 0,
+      "bestScore": 0,
+      "isDisqualified": false,
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "5e139fb9-3cbe-40d9-941a-0c3eef3819c0",
+      "teamCode": "OPT-26-7902",
+      "teamName": "test",
+      "leaderEmail": "dfgf@gtf.jub",
+      "leaderPhone": "9234567890",
+      "password": "$2b$10$WfFiFQ/2kP7gh5EuwZqvWOJO5RoEpvVRdGEOuvbHY1wbZqOLU133a",
+      "domainId": "theme-1-biomedical-ai",
+      "skillLevel": "Standard",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 100,
+      "razorpayPaymentId": "123456766666",
+      "razorpayOrderId": "order_upi_123456766666",
+      "razorpaySignature": "UPI_DIRECT_SETTLEMENT",
+      "attemptsUsed": 0,
+      "bestScore": 0,
+      "isDisqualified": false,
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "team-id-7151",
@@ -98,7 +158,7 @@
       "teamName": "Team 7151",
       "leaderEmail": "team7151@vce.ac.in",
       "leaderPhone": "9490298994",
-      "password": "$2b$10$.aHsr/m/toe/kxRW2TA9A.dnNMEzQ9f.mEBiGrQlEkjCHLBnBjs7i",
+      "password": "$2b$10$CUVaBO.ahM33eMTOxYOaoOiTpGWLzn1X5loMkLrsz2fQb6nQV8XMC",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
@@ -109,8 +169,8 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "team-id-1112",
@@ -118,7 +178,7 @@
       "teamName": "Team 1112",
       "leaderEmail": "team1112@vce.ac.in",
       "leaderPhone": "9490298994",
-      "password": "$2b$10$x3ZJ.PiZjzctW.vqupdm2.d23WXHejkBKRqZA4SJszx.6znzYCSNu",
+      "password": "$2b$10$HHOQAMYE.xJdSvR.7jCsfO.bq1OYnvwbk0TqwCmpBmriyVgel02jK",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
@@ -129,13 +189,104 @@
       "attemptsUsed": 0,
       "bestScore": 0,
       "isDisqualified": false,
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "teamMembers": [
     {
-      "id": "3cbc4e13-b4b7-4abf-baf4-140e726e3b3d",
+      "id": "841d360a-a597-4af0-bede-1091fe62712d",
+      "teamId": "98422411-03e4-4ce0-842e-4ec73077014c",
+      "name": "Jiva Jhanavi Tirupati",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0521",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "hvhv@gvj.djb",
+      "phone": "9876543218",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "a4482262-be64-4492-8c5b-ffe35e10ee38",
+      "teamId": "98422411-03e4-4ce0-842e-4ec73077014c",
+      "name": "Member 2",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0522",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "member2_2402@vce.ac.in",
+      "phone": "9876543219",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "067dbf9b-0164-41d3-b19b-f75914b91bd2",
+      "teamId": "98422411-03e4-4ce0-842e-4ec73077014c",
+      "name": "Member 3",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0523",
+      "branch": "ECE",
+      "year": "3rd Year",
+      "email": "member3_2402@vce.ac.in",
+      "phone": "9876543220",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "7c5ed231-d682-47c7-a8e4-35d2b2c39087",
+      "teamId": "46e71909-db45-428a-8717-0f1aa94bab89",
+      "name": "M. Sai Teja",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0531",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "msteja@gmail.com",
+      "phone": "9633428107",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "dcaa69b9-ceb0-4487-b7b5-9b6fd4be0a3b",
+      "teamId": "46e71909-db45-428a-8717-0f1aa94bab89",
+      "name": "Member 2",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0532",
+      "branch": "ECE",
+      "year": "3rd Year",
+      "email": "member2_3340@vce.ac.in",
+      "phone": "9633428108",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "6f05b4b2-acf2-4db2-895f-429706e3dbad",
+      "teamId": "5e139fb9-3cbe-40d9-941a-0c3eef3819c0",
+      "name": "Test Leader",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0541",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "dfgf@gtf.jub",
+      "phone": "9234567890",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "985d439e-bf17-42f3-a13c-73c071659b4e",
+      "teamId": "5e139fb9-3cbe-40d9-941a-0c3eef3819c0",
+      "name": "Member 2",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "22881A0542",
+      "branch": "IT",
+      "year": "3rd Year",
+      "email": "member2_7902@vce.ac.in",
+      "phone": "9234567891",
+      "tshirtSize": null,
+      "createdAt": "2026-09-26T06:55:35.675Z"
+    },
+    {
+      "id": "8c1db44e-0cd9-4d07-a4a2-ffbf0df95ec8",
       "teamId": "team-id-1904",
       "name": "Maruthi Sai Teja",
       "collegeName": "Vardhaman College of Engineering",
@@ -145,10 +296,10 @@
       "email": "chair.embs@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "5089b13c-9f89-4c76-b487-429856f5d5e1",
+      "id": "8edcfd2b-41e8-403c-a9ef-823c2ebd3022",
       "teamId": "team-id-1904",
       "name": "Sai Teja",
       "collegeName": "Vardhaman College of Engineering",
@@ -158,10 +309,10 @@
       "email": "saiteja.dev@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "0d7442ce-e0cd-49b8-9fac-235475303e4e",
+      "id": "7f2cb690-184b-48e6-9f34-57d15a073b77",
       "teamId": "team-id-1904",
       "name": "K. Rithvik",
       "collegeName": "Vardhaman College of Engineering",
@@ -171,10 +322,10 @@
       "email": "rithvik.k@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "89722b27-3b6e-4741-b100-d2d9715c562e",
+      "id": "a9d1018a-2e03-42c4-a272-dce6b0352d4e",
       "teamId": "team-id-7151",
       "name": "Team Leader",
       "collegeName": "Vardhaman College of Engineering",
@@ -184,10 +335,10 @@
       "email": "team7151@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "875558ea-8d7d-4e97-a176-9bfe6723eb58",
+      "id": "63405fa0-0d88-40f3-acb2-af2bbac567f8",
       "teamId": "team-id-7151",
       "name": "Member 2",
       "collegeName": "Vardhaman College of Engineering",
@@ -197,10 +348,10 @@
       "email": "member2_7151@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "bc5773af-fa23-493d-bc18-15b4c97dc95c",
+      "id": "9f20a307-3d20-4ae3-90f1-89800a34b78a",
       "teamId": "team-id-7151",
       "name": "Member 3",
       "collegeName": "Vardhaman College of Engineering",
@@ -210,10 +361,10 @@
       "email": "member3_7151@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "dc4638b7-665b-4165-8386-17e1882a191e",
+      "id": "7a4fc3f8-9eb8-463e-b86b-0284c996aaae",
       "teamId": "team-id-1112",
       "name": "Team Leader",
       "collegeName": "Vardhaman College of Engineering",
@@ -223,10 +374,10 @@
       "email": "team1112@vce.ac.in",
       "phone": "9490298994",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "63f5567f-4b9c-4195-a9f6-13fa870fc53c",
+      "id": "e857647a-494c-43c0-8526-261d4d408543",
       "teamId": "team-id-1112",
       "name": "Member 2",
       "collegeName": "Vardhaman College of Engineering",
@@ -236,10 +387,10 @@
       "email": "member2_1112@vce.ac.in",
       "phone": "9490298995",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "ef201dea-e756-4b3d-a574-d1b93f100b4b",
+      "id": "652324ac-354d-4664-9974-553dbb93e59a",
       "teamId": "team-id-1112",
       "name": "Member 3",
       "collegeName": "Vardhaman College of Engineering",
@@ -249,7 +400,7 @@
       "email": "member3_1112@vce.ac.in",
       "phone": "9490298996",
       "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "problemTracks": [
@@ -291,8 +442,8 @@
       "hiddenShiftAttempt2": "Demographic perturbation: Patient age and comorbid distributions shifted by 35% with missing laboratory markers.",
       "hiddenShiftAttempt3": "Adversarial clinical noise: 20% of continuous ICU vitals perturbed with Gaussian sensor drift.",
       "livePatchSurprise": "One urgent biomarker feature is rendered unavailable; algorithm must dynamically re-evaluate confidence without retraining from scratch.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "theme-2-signals",
@@ -332,8 +483,8 @@
       "hiddenShiftAttempt2": "Motion artifact injection: High-amplitude respiratory baseline wander superimposed on Lead II.",
       "hiddenShiftAttempt3": "Ectopic beat clustering: Premature ventricular contractions (PVCs) occurring in rapid trigeminy bursts.",
       "livePatchSurprise": "One lead disconnects entirely; system must reconstruct cardiac rhythm from single remaining PPG sensor.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "theme-3-imaging",
@@ -373,8 +524,8 @@
       "hiddenShiftAttempt2": "Low-dose scan noise: SNR reduced by 50% with metallic dental implant streak artifacts.",
       "hiddenShiftAttempt3": "Micro-lesion challenge: Target pathology diameter reduced to sub-voxel resolution (<3mm).",
       "livePatchSurprise": "Slice thickness increased by 4x; algorithm must infer 3D contours without volumetric slice re-interpolation.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "theme-4-ml-ai",
@@ -413,8 +564,8 @@
       "hiddenShiftAttempt2": "Non-stationary distribution shift: 35% covariate drift injected into held-out evaluation splits.",
       "hiddenShiftAttempt3": "Adversarial noise injection: Feature space perturbed with high-frequency noise bursts.",
       "livePatchSurprise": "Regularization penalty doubled; model must maintain generalization without retraining from scratch.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "theme-5-autonomous",
@@ -453,8 +604,8 @@
       "hiddenShiftAttempt2": "Network drop: 30% of multi-agent communication links intermittently disrupted.",
       "hiddenShiftAttempt3": "Corridor blockade: Primary throughput corridors obstructed by dynamic hazard objects.",
       "livePatchSurprise": "Agent battery speed clamped to 50%; swarm must recalibrate rendezvous points within 15 minutes.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "id": "theme-6-open-innovation",
@@ -493,8 +644,8 @@
       "hiddenShiftAttempt2": "Constraint stress test: Penalty multiplier for constraint violations doubled in evaluation harness.",
       "hiddenShiftAttempt3": "Generalization challenge: Objective function tested against unseen higher-dimensional parameter space.",
       "livePatchSurprise": "Defend and modify algorithmic fitness function live before judges under 15-minute countdown.",
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z",
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "submissions": [],
@@ -506,7 +657,7 @@
       "message": "Registrations are actively underway across Telangana and Andhra Pradesh. Prepare your teams for the live Hackathon Algorithm Design on 30-09-2026 (10:00 AM - 4:00 PM IST).",
       "type": "INFO",
       "isActive": true,
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "systemSettings": [
@@ -514,85 +665,85 @@
       "key": "active_stage",
       "value": "PRE_EVENT",
       "description": "Current tournament stage",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "leaderboard_frozen",
       "value": "false",
       "description": "Freeze leaderboard updates",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "leaderboard_visible",
-      "value": "true",
+      "value": "false",
       "description": "Public visibility of leaderboard",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "live_patch_duration_mins",
       "value": "20",
       "description": "Duration of live patch round in minutes",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "live_patch_deadline",
       "value": "",
       "description": "Active countdown deadline for Stage 7 live patch",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "weight_auto",
       "value": "60",
       "description": "Confidential: Percentage weight of auto-score",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "weight_judge",
       "value": "40",
       "description": "Confidential: Percentage weight of manual judge score",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "registration_open",
       "value": "true",
       "description": "Allow team registrations",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "event_date",
       "value": "30-09-2026",
       "description": "Official event date",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "event_time",
       "value": "9:00 AM – 4:00 PM IST",
       "description": "Official event timing",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     },
     {
       "key": "organizer_entity",
       "value": "IEEE Vardhaman Student Branch",
       "description": "Organizing student branch",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-26T06:55:35.675Z"
     }
   ],
   "auditLogs": [
     {
-      "id": "6c711419-d42a-40e6-b9a4-75527011b26f",
+      "id": "9214fd88-4353-4ffa-be4c-fec6231aa83c",
       "action": "PAYMENT_CONFIRMED",
       "performedBy": "chair.embs@vce.ac.in",
       "details": "Direct UPI Payment of ₹150 verified for Team 1904 (OPT-26-1904). 12-digit UTR: 512165830063. Payee: Maruthi Sai Teja (9490298994@axl)",
       "reason": "Direct UPI Transfer (Verified)",
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     },
     {
-      "id": "8549cff3-64bb-40f9-b74f-393a2821c50f",
+      "id": "8a9043ac-c25a-4d59-9e55-41ae5a6e17a6",
       "action": "DATABASE_INITIALIZED",
       "performedBy": "system",
       "details": "OptiForge 2026 initialized with 9 official innovation themes and 9 expert domain judges",
       "reason": "Official Hackathon Algorithm Design release",
-      "createdAt": "2026-09-23T16:08:26.523Z"
+      "createdAt": "2026-09-26T06:55:35.675Z"
     }
   ]
 }

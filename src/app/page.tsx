@@ -609,21 +609,6 @@ export default function LandingPage() {
                 <span>6 Innovation Themes</span>
               </a>
             </div>
-
-            {/* Official Event Flyer Container matching live website */}
-            <div
-              className="mt-16 sm:mt-20 max-w-4xl mx-auto rounded-3xl overflow-hidden relative group transition-transform duration-700 ease-out hover:shadow-2xl p-2 glass-card"
-              style={{
-                transform: `translate(${mousePos.nX * 5}px, ${mousePos.nY * 5}px)`,
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] pointer-events-none" />
-              <img
-                src="/assets/optiforge-flyer.png"
-                alt="OptiForge 2026 Event Flyer"
-                className="w-full h-auto block rounded-2xl shadow-sm"
-              />
-            </div>
           </div>
         </section>
 
