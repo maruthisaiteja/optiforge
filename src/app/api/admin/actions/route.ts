@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getServerSession } from "@/lib/auth";
+import { getServerSession, hashPassword, signToken } from "@/lib/auth";
 import { evaluateSubmission } from "@/lib/evaluator/runner";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +19,59 @@ export async function POST(req: Request) {
     }
 
     switch (action) {
+      // ==============================================================
+      // NEW: APPROVE_AND_GENERATE_CREDENTIALS
+      // Admin verifies payment and triggers credential generation.
+      // This is the ONLY way a team gets their login credentials.
+      // ==============================================================
+      case "APPROVE_AND_GENERATE_CREDENTIALS": {
+        const { teamCode, verifiedTransactionId, adminNote } = payload;
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        if (team.paymentStatus !== "CONFIRMED") {
+          return NextResponse.json(
+            { error: "Team has not submitted payment yet. Cannot approve." },
+            { status: 400 }
+          );
+        }
+
+        // Generate the official credentials now
+        const lastFour = teamCode.split("-")[2] || "0000";
+        const rawPassword = `Forge#${lastFour}`;
+        const hashedPassword = await hashPassword(rawPassword);
+
+        // Update team: mark as admin-verified, store real hashed password
+        await db.team.update({
+          where: { teamCode },
+          data: {
+            password: hashedPassword,
+            razorpayPaymentId: verifiedTransactionId || team.razorpayPaymentId || "",
+            razorpaySignature: "ADMIN_VERIFIED_APPROVED",
+          },
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "CREDENTIALS_GENERATED_BY_ADMIN",
+            performedBy: session.name,
+            details: `Admin ${session.name} verified payment and generated credentials for team ${team.teamName} (${teamCode}). Login: TeamCode=${teamCode}, Password=Forge#${lastFour}. Email should be sent to: ${team.leaderEmail}`,
+            reason: adminNote || "Payment verified — credentials generated and ready to send",
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          teamCode,
+          teamName: team.teamName,
+          leaderEmail: team.leaderEmail,
+          leaderPhone: team.leaderPhone,
+          loginUsername: teamCode,
+          loginPassword: rawPassword,
+          message: `Credentials generated for ${teamCode}. Please send these to ${team.leaderEmail}: Username: ${teamCode} / Password: ${rawPassword}`,
+        });
+      }
+
       case "MARK_PAID": {
         const { teamCode, transactionId, reason } = payload;
         const team = await db.team.findUnique({ where: { teamCode } });

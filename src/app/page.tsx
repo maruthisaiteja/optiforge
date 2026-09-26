@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -921,6 +921,248 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* 6. PRIZES, GOODIES & CERTIFICATES — Interactive Section */}
+        <section id="prizes" className="py-16 max-w-[1280px] mx-auto px-4 sm:px-8 space-y-12">
+          <div className="text-center space-y-4">
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider glass-card-subtle"
+              style={{ color: $.ieeeBlue }}
+            >
+              <Trophy className="w-3.5 h-3.5" />
+              <span>Rewards & Recognition</span>
+            </div>
+            <h2
+              className="text-3xl sm:text-5xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Prizes, Goodies &amp; Certificates
+            </h2>
+            <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{ color: $.slate }}>
+              Compete for cash awards, exclusive goodies, and IEEE-authenticated certificates. Every registered
+              participant receives a certificate of participation.
+            </p>
+          </div>
+
+          {/* Prize Podium Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-end">
+            {/* 2nd Place */}
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 transition-all hover:-translate-y-2 hover:shadow-2xl shadow-lg"
+              style={{
+                background: `linear-gradient(135deg, #F0F7FB 0%, ${$.white} 100%)`,
+                border: `2px solid ${$.border}`,
+              }}
+            >
+              <div className="text-5xl">🥈</div>
+              <div>
+                <div className="text-[11px] font-mono uppercase tracking-widest font-semibold" style={{ color: $.slate }}>
+                  2nd Place
+                </div>
+                <div className="text-4xl font-black mt-2" style={{ fontFamily: "Sora, sans-serif", color: $.ieeeBlue }}>
+                  ₹5,000
+                </div>
+              </div>
+              <div className="space-y-2 text-xs text-left" style={{ color: $.slate }}>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Cash Prize ₹5,000</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Tech Goodies Package</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>IEEE Winner Certificate</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Trophy</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 1st Place — Tallest */}
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 transition-all hover:-translate-y-2 hover:shadow-2xl shadow-2xl relative overflow-hidden"
+              style={{
+                background: `linear-gradient(135deg, ${$.ieeeBlue} 0%, #004A75 100%)`,
+                border: `2px solid ${$.ieeeBlue}`,
+                transform: "translateY(-16px)",
+              }}
+            >
+              <div className="absolute top-4 right-4">
+                <span
+                  className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                  style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "#FFFFFF" }}
+                >
+                  Champion
+                </span>
+              </div>
+              <div className="text-5xl">🥇</div>
+              <div>
+                <div className="text-[11px] font-mono uppercase tracking-widest font-semibold text-white/70">
+                  1st Place
+                </div>
+                <div className="text-5xl font-black mt-2 text-white" style={{ fontFamily: "Sora, sans-serif" }}>
+                  ₹10,000
+                </div>
+              </div>
+              <div className="space-y-2 text-xs text-left text-white/80">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
+                  <span>Cash Prize ₹10,000</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
+                  <span>Premium Tech Goodies</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
+                  <span>IEEE Champion Certificate</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
+                  <span>Champions Trophy + Medal</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 3rd Place */}
+            <div
+              className="rounded-3xl p-8 text-center space-y-4 transition-all hover:-translate-y-2 hover:shadow-2xl shadow-lg"
+              style={{
+                background: `linear-gradient(135deg, #FFF8F0 0%, ${$.white} 100%)`,
+                border: `2px solid #F0C878`,
+              }}
+            >
+              <div className="text-5xl">🥉</div>
+              <div>
+                <div className="text-[11px] font-mono uppercase tracking-widest font-semibold" style={{ color: $.slate }}>
+                  3rd Place
+                </div>
+                <div className="text-4xl font-black mt-2" style={{ fontFamily: "Sora, sans-serif", color: $.warning }}>
+                  ₹2,500
+                </div>
+              </div>
+              <div className="space-y-2 text-xs text-left" style={{ color: $.slate }}>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Cash Prize ₹2,500</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Goodies Package</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>IEEE Merit Certificate</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                  <span>Trophy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Total Prize Pool Banner */}
+          <div
+            className="rounded-3xl p-8 sm:p-12 text-center space-y-4 relative overflow-hidden shadow-xl"
+            style={{
+              background: `linear-gradient(135deg, ${$.embsPurple}15 0%, ${$.softBlue} 100%)`,
+              border: `1px solid ${$.embsPurple}30`,
+            }}
+          >
+            <div className="text-sm font-mono uppercase tracking-widest font-semibold" style={{ color: $.embsPurple }}>
+              Total Prize Pool
+            </div>
+            <div className="text-6xl sm:text-7xl font-black" style={{ fontFamily: "Sora, sans-serif", color: $.navy }}>
+              ₹17,500+
+            </div>
+            <p className="text-sm max-w-xl mx-auto" style={{ color: $.slate }}>
+              Cash awards across all podium positions, plus exclusive tech goodies and IEEE-authenticated certificates for every participant.
+            </p>
+          </div>
+
+          {/* Goodies & Certificates Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {/* Goodies Card */}
+            <div
+              className="rounded-3xl p-8 space-y-5 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1"
+              style={{ backgroundColor: $.white, border: `1px solid ${$.border}` }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+                  style={{ backgroundColor: `${$.aiPurple}15` }}
+                >
+                  🎁
+                </div>
+                <div>
+                  <h3 className="font-black text-xl" style={{ fontFamily: "Sora, sans-serif", color: $.navy }}>
+                    Tech Goodies
+                  </h3>
+                  <p className="text-xs" style={{ color: $.slate }}>For podium teams</p>
+                </div>
+              </div>
+              <div className="space-y-3 text-sm" style={{ color: $.slate }}>
+                {[
+                  "IEEE EMBS × IEEE CIS branded merchandise",
+                  "Premium tech accessories and gadgets",
+                  "Exclusive OptiForge 2026 commemorative kit",
+                  "Goodies bag with stationery and tech items",
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <Sparkles className="w-4 h-4 shrink-0" style={{ color: $.aiPurple }} />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Certificates Card */}
+            <div
+              className="rounded-3xl p-8 space-y-5 shadow-sm hover:shadow-xl transition-all hover:-translate-y-1"
+              style={{ backgroundColor: $.white, border: `1px solid ${$.border}` }}
+            >
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
+                  style={{ backgroundColor: `${$.success}15` }}
+                >
+                  📜
+                </div>
+                <div>
+                  <h3 className="font-black text-xl" style={{ fontFamily: "Sora, sans-serif", color: $.navy }}>
+                    IEEE Certificates
+                  </h3>
+                  <p className="text-xs" style={{ color: $.slate }}>For ALL verified participants</p>
+                </div>
+              </div>
+              <div className="space-y-3 text-sm" style={{ color: $.slate }}>
+                {[
+                  "E-Certificate of Participation for every registered member",
+                  "Jointly issued by IEEE EMBS & IEEE CIS Chapters",
+                  "Verifiable digital certificate with unique ID",
+                  "Winner & Merit certificates for podium teams",
+                  "Downloadable from the OptiForge portal post-event",
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center gap-3">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: $.success }} />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div
+                className="p-3 rounded-xl text-xs font-semibold"
+                style={{ backgroundColor: `${$.success}10`, color: $.success, border: `1px solid ${$.success}30` }}
+              >
+                Every verified participant receives a certificate — regardless of final rank!
+              </div>
+            </div>
+          </div>
+        </section>
         {/* 6. RULES & FAQ (EXACT LIVE SITE SECTION) */}
         <section className="py-12 max-w-3xl mx-auto px-4 sm:px-8 space-y-8">
           <div className="text-center space-y-3">

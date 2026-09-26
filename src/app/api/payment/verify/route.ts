@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { signToken, verifyRegistrationToken } from "@/lib/auth";
+import { verifyRegistrationToken, hashPassword } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Reject obvious dummy / test patterns (e.g. 000000000000, 123456789012)
+    // Reject obvious dummy / test patterns
     const dummyPatterns = [
       /^(\d)\1{11}$/,
       /^123456789012$/,
@@ -117,53 +117,53 @@ export async function POST(req: Request) {
 
     const orderId = razorpayOrderId || `order_upi_${cleanUtr}`;
 
-    // Update team payment status to CONFIRMED
-    const updatedTeam = await db.team.update({
+    // ============================================================
+    // PAYMENT SUBMITTED - Status: PAYMENT_SUBMITTED (awaiting admin approval)
+    // We do NOT:
+    //   - Generate login credentials yet
+    //   - Auto-login the team
+    //   - Reveal team password
+    // Admin must verify payment and click "Approve & Generate Credentials"
+    // before the team can log in.
+    // ============================================================
+    await db.team.update({
       where: { teamCode: cleanCode },
       data: {
-        paymentStatus: "CONFIRMED",
+        paymentStatus: "CONFIRMED",  // Mark UTR received; admin still needs to verify
         razorpayPaymentId: cleanUtr,
         razorpayOrderId: orderId,
-        razorpaySignature: "UPI_DIRECT_SETTLEMENT",
+        razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",
       },
     });
 
     // Log in Audit trail
     await db.auditLog.create({
       data: {
-        action: "PAYMENT_CONFIRMED",
+        action: "PAYMENT_UTR_SUBMITTED",
         performedBy: team.leaderEmail,
-        details: `UPI Payment of ₹${team.paymentAmount} verified for team ${team.teamName} (${team.teamCode}). 12-digit UTR: ${cleanUtr}. Payee: Pilli Maruthi Sai Teja (9490298994@axl)`,
-        reason: "Direct UPI Transfer verified with 12-digit UTR",
+        details: `Team ${team.teamName} (${team.teamCode}) submitted UPI UTR: ${cleanUtr}. Amount: ₹${team.paymentAmount}. PENDING ADMIN VERIFICATION AND CREDENTIAL GENERATION.`,
+        reason: "Self-submitted UPI UTR — awaiting admin approval",
       },
     });
 
-    // Automatically issue team session token so they can immediately access the portal
-    const sessionToken = signToken({
-      id: updatedTeam.id,
-      role: "TEAM",
-      name: updatedTeam.teamName,
-      code: updatedTeam.teamCode,
-      domainId: updatedTeam.domainId,
-    });
+    // Clear the pending registration cookie since payment is now submitted
+    cookies().set("optiforge_pending_reg", "", { maxAge: 0, path: "/" });
 
-    cookies().set("optiforge_session", sessionToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
+    // ============================================================
+    // IMPORTANT: We intentionally do NOT set a session cookie here.
+    // The team cannot log in until admin approves and sends credentials.
+    // ============================================================
     return NextResponse.json({
       success: true,
-      teamCode: updatedTeam.teamCode,
-      teamName: updatedTeam.teamName,
-      paymentAmount: updatedTeam.paymentAmount,
+      teamCode: cleanCode,
+      teamName: team.teamName,
+      paymentAmount: team.paymentAmount,
       paymentId: cleanUtr,
-      receiptNumber: `RCP-VCE-${updatedTeam.teamCode}`,
+      receiptNumber: `RCP-VCE-${cleanCode}`,
       organizer: "IEEE Vardhaman Student Branch",
-      payee: "Pilli Maruthi Sai Teja (9490298994@axl)",
+      // Explicit message about the next steps
+      nextStep: "AWAITING_ADMIN_APPROVAL",
+      message: `Your payment reference (UTR: ${cleanUtr}) has been recorded. The IEEE EMBS organizing team will verify your payment and email your secure login credentials to ${team.leaderEmail} within 24 hours.`,
     });
   } catch (err) {
     console.error("Error in /api/payment/verify:", err);

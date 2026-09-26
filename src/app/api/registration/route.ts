@@ -73,7 +73,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if leader email or member email already exists
+    // Check if leader email already exists
     const leaderEmail = members[0].email.trim().toLowerCase();
     const leaderPhone = members[0].phone.trim();
 
@@ -90,15 +90,30 @@ export async function POST(req: Request) {
       teamCode = generateTeamCode();
     }
 
-    // Auto-generate secure password for team
-    const rawPassword = `Forge#${teamCode.split("-")[2]}`;
-    const hashedPassword = await hashPassword(rawPassword);
+    // ============================================================
+    // SECURITY: Password is NOT generated yet at registration time.
+    // Credentials are generated only AFTER admin verifies payment.
+    // We store a placeholder hash that is unusable until approved.
+    // ============================================================
+    const placeholderPassword = await hashPassword(`PENDING_APPROVAL_${teamCode}_${Date.now()}`);
 
     // Dynamic fee: ₹100 per member (as per official event spec)
     const paymentAmount = members.length * 100;
 
-    // Assigned innovation theme (single chosen theme, with fallback to prefTracks or default)
-    const assignedDomain = selectedProblem || chosenProblem || (prefTracks && prefTracks.length > 0 ? prefTracks[0] : "theme-1-biomedical-ai");
+    // Assigned innovation theme (single chosen theme, with fallback)
+    const assignedDomain =
+      selectedProblem || chosenProblem || (prefTracks && prefTracks.length > 0 ? prefTracks[0] : "theme-1-biomedical-ai");
+
+    const membersList = members.map((m: any) => ({
+      name: m.name.trim(),
+      collegeName: m.collegeName ? m.collegeName.trim() : null,
+      rollNumber: m.rollNumber.trim().toUpperCase(),
+      branch: m.branch?.trim() || "CSE",
+      year: m.year?.trim() || "3rd Year",
+      email: m.email.trim().toLowerCase(),
+      phone: m.phone.trim(),
+      tshirtSize: null,
+    }));
 
     const newTeam = await db.team.create({
       data: {
@@ -106,7 +121,7 @@ export async function POST(req: Request) {
         teamName: teamName.trim(),
         leaderEmail,
         leaderPhone,
-        password: hashedPassword,
+        password: placeholderPassword,
         domainId: assignedDomain,
         prefTrack1: assignedDomain,
         prefTrack2: null,
@@ -119,38 +134,21 @@ export async function POST(req: Request) {
         bestScore: 0,
         isDisqualified: false,
         members: {
-          create: members.map((m: any) => ({
-            name: m.name.trim(),
-            collegeName: m.collegeName ? m.collegeName.trim() : null,
-            rollNumber: m.rollNumber.trim().toUpperCase(),
-            branch: m.branch?.trim() || "CSE",
-            year: m.year?.trim() || "3rd Year",
-            email: m.email.trim().toLowerCase(),
-            phone: m.phone.trim(),
-            tshirtSize: null,
-          })),
+          create: membersList,
         },
       },
     });
 
+    // Store a registration token (for cross-container recovery during payment page)
     const registrationPayload = {
       teamCode: newTeam.teamCode,
       teamName: newTeam.teamName,
       leaderEmail,
       leaderPhone,
-      password: hashedPassword,
+      password: placeholderPassword,
       domainId: assignedDomain,
       paymentAmount: newTeam.paymentAmount,
-      members: members.map((m: any) => ({
-        name: m.name.trim(),
-        collegeName: m.collegeName ? m.collegeName.trim() : null,
-        rollNumber: m.rollNumber.trim().toUpperCase(),
-        branch: m.branch?.trim() || "CSE",
-        year: m.year?.trim() || "3rd Year",
-        email: m.email.trim().toLowerCase(),
-        phone: m.phone.trim(),
-        tshirtSize: null,
-      })),
+      members: membersList,
     };
 
     const registrationToken = signRegistrationToken(registrationPayload);
@@ -163,6 +161,21 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 24 * 2, // 48 hours
     });
 
+    // Log in audit trail (no credentials exposed)
+    await db.auditLog.create({
+      data: {
+        action: "TEAM_REGISTERED",
+        performedBy: leaderEmail,
+        details: `New team registered: ${newTeam.teamName} (${newTeam.teamCode}) | ${members.length} members | Domain: ${assignedDomain} | Fee: ₹${paymentAmount}. Awaiting payment submission and admin approval before credentials are issued.`,
+        reason: "Team self-registration via registration portal",
+      },
+    });
+
+    // ============================================================
+    // IMPORTANT: We do NOT return the password to the client.
+    // The team will receive their login credentials only after the
+    // admin verifies their payment and approves their registration.
+    // ============================================================
     return NextResponse.json({
       success: true,
       teamId: newTeam.id,
@@ -171,8 +184,10 @@ export async function POST(req: Request) {
       paymentAmount: newTeam.paymentAmount,
       memberCount: members.length,
       assignedDomain,
-      temporaryPassword: rawPassword,
+      leaderEmail,
       registrationToken,
+      // NOTE: temporaryPassword is intentionally NOT included in response
+      // Credentials will be emailed by admin after payment verification
     });
   } catch (err) {
     return NextResponse.json(

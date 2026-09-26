@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -439,105 +439,92 @@ function PaymentContent() {
           </div>
         </div>
       ) : (
-        /* SUCCESS CONFIRMATION & CREDENTIALS RECEIPT */
+        /* SUCCESS — PAYMENT SUBMITTED, AWAITING ADMIN VERIFICATION */
         <div className="rounded-3xl bg-bg-card border border-status-green/40 p-6 sm:p-10 space-y-8 shadow-2xl animate-fade-in relative overflow-hidden">
-          <div className="text-center space-y-2">
-            <div className="w-14 h-14 rounded-2xl bg-status-green/20 border border-status-green/40 flex items-center justify-center text-status-green mx-auto shadow-glow">
-              <CheckCircle2 className="w-8 h-8" />
+          <div className="text-center space-y-3">
+            <div className="w-16 h-16 rounded-2xl bg-status-green/20 border border-status-green/40 flex items-center justify-center text-status-green mx-auto shadow-glow">
+              <CheckCircle2 className="w-9 h-9" />
             </div>
             <h1 className="font-display font-black text-2xl sm:text-3xl text-brand-white">
-              Registration Confirmed!
+              Registration Submitted!
             </h1>
             <p className="text-xs text-brand-muted font-mono">
-              Receipt No: <span className="text-teal-accent">{receiptData?.receiptNumber}</span>
+              Reference: <span className="text-teal-accent">{receiptData?.receiptNumber || `RCP-VCE-${teamCode}`}</span>
             </p>
           </div>
 
-          {/* Credentials Card */}
-          <div className="p-6 rounded-2xl bg-bg-secondary border border-teal-accent/30 space-y-4">
-            <div className="flex items-center justify-between border-b border-navy-border/60 pb-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal-accent">
-                <Terminal className="w-4 h-4" />
-                <span>Your Official Team Credentials</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={copyTeamCode}
-                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
-                >
-                  {copiedCode ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-status-green" />
-                      <span className="text-status-green">Copied Code</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy Team ID</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={copyDefaultPass}
-                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
-                >
-                  {copiedPass ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-status-green" />
-                      <span className="text-status-green">Copied Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy Password</span>
-                    </>
-                  )}
-                </button>
-              </div>
+          {/* Receipt Summary */}
+          <div className="p-5 rounded-2xl bg-bg-secondary border border-navy-border/60 space-y-4 text-xs font-mono">
+            <div className="flex items-center gap-2 text-teal-accent font-semibold border-b border-navy-border/40 pb-3">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Payment Receipt Summary</span>
             </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
+            <div className="grid grid-cols-2 gap-3">
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Team ID</span>
-                <span className="text-sm font-bold text-brand-white">{receiptData?.teamCode || teamCode}</span>
+                <span className="text-brand-dim text-[10px] block uppercase">Team Code</span>
+                <span className="font-bold text-brand-white">{receiptData?.teamCode || teamCode}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Team Name</span>
-                <span className="text-sm font-bold text-teal-accent">{receiptData?.teamName || team?.teamName}</span>
+                <span className="font-bold text-teal-accent truncate block">{receiptData?.teamName || team?.teamName}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Default Password</span>
-                <span className="text-sm font-bold text-brand-white">Forge#{(receiptData?.teamCode || teamCode).split("-")[2] || "2026"}</span>
+                <span className="text-brand-dim text-[10px] block uppercase">Amount Paid</span>
+                <span className="font-bold text-status-green">Rs.{receiptData?.paymentAmount || team?.paymentAmount}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">UPI Reference / UTR</span>
-                <span className="text-xs text-status-green font-mono truncate block">
-                  {receiptData?.paymentId || utrNumber || "512165830063"}
-                </span>
+                <span className="text-brand-dim text-[10px] block uppercase">UTR Reference</span>
+                <span className="text-status-green font-bold">{receiptData?.paymentId || utrNumber}</span>
               </div>
             </div>
-
-            <p className="text-[11px] text-brand-muted leading-relaxed">
-              Your registration has been officially confirmed and activated by{" "}
-              <span className="text-brand-white font-semibold">IEEE Vardhaman Student Branch</span>. Keep your
-              Team ID and Password safe to access your team dashboard and starter materials.
-            </p>
           </div>
 
-          {/* Navigation CTA */}
+          {/* Pending Verification Notice */}
+          <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/40 space-y-3">
+            <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
+              <ShieldCheck className="w-5 h-5 shrink-0" />
+              <span>Awaiting Admin Payment Verification</span>
+            </div>
+            <p className="text-xs text-amber-200/80 leading-relaxed">
+              Your UPI transaction reference has been recorded. The{" "}
+              <strong className="text-amber-300">IEEE EMBS organizing team</strong> will verify your payment and{" "}
+              <strong className="text-amber-300">email your official login credentials</strong> to your registered email within{" "}
+              <strong className="text-amber-300">24 hours</strong>.
+            </p>
+            <div className="pt-2 border-t border-amber-500/30 space-y-1.5 text-[11px] text-amber-200/70">
+              <p>Credentials emailed to: <strong className="text-amber-300">{team?.leaderEmail || "your registered email"}</strong></p>
+              <p>Your login credentials are generated ONLY after admin verifies your payment — keeping your account secure and preventing unauthorized access.</p>
+              <p>For urgent queries contact: 9490298994 (WhatsApp)</p>
+            </div>
+          </div>
+
+          {/* What happens next */}
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-mono text-brand-muted uppercase tracking-wider">What Happens Next</h3>
+            <div className="space-y-2">
+              {[
+                { step: "1", text: "Admin verifies your UPI transaction (UTR) against bank records", done: true },
+                { step: "2", text: "Your secure login credentials (Team Code + Password) are generated", done: false },
+                { step: "3", text: "Credentials emailed to your registered leader email address", done: false },
+                { step: "4", text: "Log in to the OptiForge portal on 30 September 2026 at the venue", done: false },
+              ].map((item) => (
+                <div key={item.step} className="flex items-start gap-3 text-xs">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${item.done ? "bg-status-green text-bg-primary" : "bg-bg-secondary border border-navy-border text-brand-muted"}`}>
+                    {item.done ? "v" : item.step}
+                  </div>
+                  <span className={item.done ? "text-status-green" : "text-brand-muted"}>{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Link
-              href="/dashboard"
-              className="w-full py-3.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-sm shadow-glow text-center hover:brightness-110 transition-all flex items-center justify-center gap-2"
-            >
-              <span>Go to Team Dashboard</span>
+            <Link href="/" className="w-full py-3.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-sm shadow-glow text-center hover:brightness-110 transition-all flex items-center justify-center gap-2">
+              <span>Return to OptiForge 2026</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link
-              href="/leaderboard"
-              className="w-full py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono text-center transition-colors"
-            >
-              View Standings
+            <Link href="/leaderboard" className="w-full py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono text-center transition-colors">
+              View Public Leaderboard
             </Link>
           </div>
         </div>

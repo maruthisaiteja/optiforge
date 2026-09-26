@@ -23,12 +23,22 @@ export async function GET() {
       .reduce((sum, t) => sum + (t.paymentAmount || 0), 0);
     const pendingCount = teams.filter((t) => t.paymentStatus === "PENDING_PAYMENT").length;
     const confirmedCount = teams.filter((t) => t.paymentStatus === "CONFIRMED").length;
-    const totalParticipants = teams.reduce((sum, t) => sum + (t.members?.length || 0), 0);
+
+    // Count ALL team members across all teams
+    const totalParticipants = teams.reduce((sum, t) => sum + ((t as any).members?.length || 0), 0);
+
+    // Pending admin approval (payment submitted but not manually verified yet)
+    const pendingApprovalCount = teams.filter(
+      (t) =>
+        t.paymentStatus === "CONFIRMED" &&
+        (t as any).razorpaySignature === "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL"
+    ).length;
 
     const stats = {
       totalTeams: teams.length,
       confirmedTeams: confirmedCount,
       pendingTeams: pendingCount,
+      pendingApprovalCount,
       totalParticipants,
       totalCollected,
       totalSubmissions: submissions.length,
@@ -43,7 +53,7 @@ export async function GET() {
       submissions,
       announcements,
       settings,
-      auditLogs: auditLogs.slice(0, 50),
+      auditLogs: auditLogs.slice(0, 100),
       judges,
     });
   } catch (err) {
