@@ -425,6 +425,12 @@ export default function RegisterPage() {
           </span>
         </div>
 
+        {/* Note on Credentials */}
+        <div className="p-4 mt-6 rounded-2xl bg-orange-accent/10 border border-orange-accent/30 text-xs text-orange-accent text-left sm:text-center font-semibold">
+          IMPORTANT: Please take note of your TEAM ID and PASSWORD from the success screen after registering. 
+          We will also send you a confirmation email containing your Team ID and Password from <span className="text-white font-mono bg-navy-deep px-1 py-0.5 rounded">vuggidisaivarshith@gmail.com</span>.
+        </div>
+
         {/* Dynamic Total Fee Callout */}
         <div className="p-4 rounded-2xl bg-teal-accent/10 border border-teal-accent/30 inline-block text-xs font-mono">
           <span className="text-brand-muted font-sans font-medium mr-2">

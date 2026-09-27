@@ -508,6 +508,16 @@ function PaymentContent() {
               </div>
             </div>
 
+            <div className="mt-4 p-4 rounded-xl border border-orange-accent/40 bg-orange-accent/10">
+              <h4 className="text-orange-accent font-bold text-sm mb-1">⚠️ IMPORTANT: SAVE YOUR CREDENTIALS</h4>
+              <p className="text-xs text-orange-accent/90 mb-2">
+                Please take note of your TEAM ID. Your initial login password is: <span className="font-mono bg-navy-deep px-1.5 py-0.5 rounded text-white">Forge#{(receiptData?.teamCode || teamCode)?.split("-").pop()}</span>
+              </p>
+              <p className="text-[11px] text-orange-accent/80">
+                We will also send you an email containing your Team ID and Password from <span className="font-mono bg-navy-deep px-1 py-0.5 rounded text-white">vuggidisaivarshith@gmail.com</span>.
+              </p>
+            </div>
+
             <p className="text-[11px] text-brand-muted leading-relaxed text-center pt-2">
               Your OptiForge 2026 registration has been successfully confirmed.
             </p>
