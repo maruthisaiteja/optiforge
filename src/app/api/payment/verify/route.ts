@@ -19,7 +19,12 @@ export async function POST(req: Request) {
 
     // Cross-Container Resilience: Reconstruct team if not present in this container
     if (!team) {
-      const regToken = token || cookies().get("optiforge_pending_reg")?.value;
+      let regToken = token || "";
+      try {
+        regToken = regToken || cookies().get("optiforge_pending_reg")?.value || "";
+      } catch {
+        // cookies() may not be available in all contexts
+      }
       if (regToken) {
         const payload = verifyRegistrationToken(regToken);
         if (payload && payload.teamCode === cleanCode) {
@@ -99,55 +104,69 @@ export async function POST(req: Request) {
     }
 
     // Anti-Fraud Safeguard: Check if this UTR has already been submitted by another team
-    const allTeams = await db.team.findMany();
-    const isDuplicate = allTeams.some(
-      (t) =>
-        t.teamCode !== cleanCode &&
-        t.paymentStatus === "CONFIRMED" &&
-        t.razorpayPaymentId &&
-        t.razorpayPaymentId.toLowerCase() === cleanUtr.toLowerCase()
-    );
-
-    if (isDuplicate) {
-      return NextResponse.json(
-        { error: "This UPI Reference (UTR) has already been submitted by another registered team. Please check your transaction details." },
-        { status: 400 }
+    try {
+      const allTeams = await db.team.findMany();
+      const isDuplicate = allTeams.some(
+        (t: any) =>
+          t.teamCode !== cleanCode &&
+          t.paymentStatus === "CONFIRMED" &&
+          t.razorpayPaymentId &&
+          t.razorpayPaymentId.toLowerCase() === cleanUtr.toLowerCase()
       );
+
+      if (isDuplicate) {
+        return NextResponse.json(
+          { error: "This UPI Reference (UTR) has already been submitted by another registered team. Please check your transaction details." },
+          { status: 400 }
+        );
+      }
+    } catch (dupErr) {
+      console.warn("[verify] Duplicate check failed (non-fatal):", dupErr);
     }
 
     const orderId = razorpayOrderId || `order_upi_${cleanUtr}`;
 
     // ============================================================
-    // PAYMENT SUBMITTED - Status: PAYMENT_SUBMITTED (awaiting admin approval)
-    // We do NOT:
-    //   - Generate login credentials yet
-    //   - Auto-login the team
-    //   - Reveal team password
-    // Admin must verify payment and click "Approve & Generate Credentials"
-    // before the team can log in.
+    // PAYMENT SUBMITTED - UTR recorded, awaiting admin approval
     // ============================================================
-    await db.team.update({
-      where: { teamCode: cleanCode },
-      data: {
-        paymentStatus: "PENDING_PAYMENT",  // Mark UTR received; admin still needs to verify
-        razorpayPaymentId: cleanUtr,
-        razorpayOrderId: orderId,
-        razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",
-      },
-    });
+    try {
+      await db.team.update({
+        where: { teamCode: cleanCode },
+        data: {
+          paymentStatus: "PENDING_PAYMENT",
+          razorpayPaymentId: cleanUtr,
+          razorpayOrderId: orderId,
+          razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",
+        },
+      });
+    } catch (updateErr) {
+      console.error("[verify] db.team.update failed:", updateErr);
+      return NextResponse.json(
+        { error: "Failed to record payment. Please try again. Detail: " + (updateErr instanceof Error ? updateErr.message : String(updateErr)) },
+        { status: 500 }
+      );
+    }
 
-    // Log in Audit trail
-    await db.auditLog.create({
-      data: {
-        action: "PAYMENT_UTR_SUBMITTED",
-        performedBy: team.leaderEmail,
-        details: `Team ${team.teamName} (${team.teamCode}) submitted UPI UTR: ${cleanUtr}. Amount: ₹${team.paymentAmount}. PENDING ADMIN VERIFICATION AND CREDENTIAL GENERATION.`,
-        reason: "Self-submitted UPI UTR — awaiting admin approval",
-      },
-    });
+    // Log in Audit trail (non-fatal if this fails)
+    try {
+      await db.auditLog.create({
+        data: {
+          action: "PAYMENT_UTR_SUBMITTED",
+          performedBy: team.leaderEmail,
+          details: `Team ${team.teamName} (${team.teamCode}) submitted UPI UTR: ${cleanUtr}. Amount: ${team.paymentAmount}. PENDING ADMIN VERIFICATION.`,
+          reason: "Self-submitted UPI UTR - awaiting admin approval",
+        },
+      });
+    } catch (logErr) {
+      console.warn("[verify] Audit log failed (non-fatal):", logErr);
+    }
 
-    // Clear the pending registration cookie since payment is now submitted
-    cookies().set("optiforge_pending_reg", "", { maxAge: 0, path: "/" });
+    // Clear the pending registration cookie (non-fatal if this fails)
+    try {
+      cookies().set("optiforge_pending_reg", "", { maxAge: 0, path: "/" });
+    } catch (cookieErr) {
+      console.warn("[verify] Cookie clear failed (non-fatal):", cookieErr);
+    }
 
     // ============================================================
     // IMPORTANT: We intentionally do NOT set a session cookie here.
@@ -161,12 +180,12 @@ export async function POST(req: Request) {
       paymentId: cleanUtr,
       receiptNumber: `RCP-VCE-${cleanCode}`,
       organizer: "IEEE Vardhaman Student Branch",
-      // Explicit message about the next steps
       nextStep: "AWAITING_ADMIN_APPROVAL",
       message: `Your payment reference (UTR: ${cleanUtr}) has been recorded. The IEEE EMBS organizing team will verify your payment and email your secure login credentials to ${team.leaderEmail} within 24 hours.`,
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error in /api/payment/verify:", err);
-    return NextResponse.json({ error: "Internal error processing payment verification: " + (err.message || String(err)) }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: "Internal error processing payment verification: " + message }, { status: 500 });
   }
 }
