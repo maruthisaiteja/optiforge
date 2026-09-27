@@ -167,6 +167,6 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("Error in /api/payment/verify:", err);
-    return NextResponse.json({ error: "Internal error processing payment verification." }, { status: 500 });
+    return NextResponse.json({ error: "Internal error processing payment verification: " + (err.message || String(err)) }, { status: 500 });
   }
 }
