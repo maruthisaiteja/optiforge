@@ -3,72 +3,72 @@
     {
       "id": "12b12ab3-a63c-4ee3-8869-ac9c613bf0a0",
       "username": "admin",
-      "password": "$2b$10$Y2/rd.UUQ/18oXU5siWnzOTiRY90ZTSXf0Q.oaD/NrvZ8Do08ltBu",
+      "password": "$2b$10$3JxC3McKpR56/A6KnNtOs.NlYbsRFLxlZ0cFdcIfmlPpIG8xdYGU6",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.249Z"
+      "updatedAt": "2026-09-27T08:57:16.175Z"
     },
     {
       "id": "aea26d92-5db8-46cd-adec-d7ada6953fc5",
       "username": "judge_t1",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Dr. K. Srinivas (Biomedical AI & Neural Opt Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-1-biomedical-ai",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.255Z"
+      "updatedAt": "2026-09-27T08:57:16.178Z"
     },
     {
       "id": "7a87cf89-effc-451c-9f6e-cfc72132d25c",
       "username": "judge_t2",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Prof. S. Reddy (Biomedical Signals & ECG/EEG Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-2-signals",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.258Z"
+      "updatedAt": "2026-09-27T08:57:16.180Z"
     },
     {
       "id": "ef298296-0471-4bcc-8929-9be91d774f2c",
       "username": "judge_t3",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Dr. A. Sharma (Medical Imaging & Computer Vision Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-3-imaging",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.262Z"
+      "updatedAt": "2026-09-27T08:57:16.182Z"
     },
     {
       "id": "7786fd97-788c-4e60-8b8e-22425a20c0c0",
       "username": "judge_t4",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Prof. M. Anitha (Machine Learning & AI Theory Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-4-ml-ai",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.264Z"
+      "updatedAt": "2026-09-27T08:57:16.184Z"
     },
     {
       "id": "afa6c1ba-ca17-4332-9318-8f24a1cd3f4c",
       "username": "judge_t5",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Dr. T. Patel (Intelligent Systems & Autonomous Computing Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-5-autonomous",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.267Z"
+      "updatedAt": "2026-09-27T08:57:16.186Z"
     },
     {
       "id": "6e20e219-3f75-4eb3-9140-762c90a3a8fc",
       "username": "judge_t6",
-      "password": "$2b$10$HBcbxtucMWobqLyxVK40HO0Cv4FbL6acs9p.jfUSv7.eeKPREJQZW",
+      "password": "$2b$10$HogrHDyfTkW9hmOksGcHZeEFr4mL7w.6QmEd.aIbeQN53QzTsNiFC",
       "name": "Dr. N. Gupta (CIS & EMBS Open Innovation Jury Chair)",
       "role": "JUDGE",
       "assignedDomainId": "theme-6-open-innovation",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T07:11:58.269Z"
+      "updatedAt": "2026-09-27T08:57:16.188Z"
     }
   ],
   "teams": [
@@ -196,11 +196,11 @@
   "problemTracks": [
     {
       "id": "theme-1-biomedical-ai",
-      "name": "Biomedical Artificial Intelligence",
-      "shortName": "01: Biomedical AI",
+      "name": "P1: Hospital Staff Scheduling",
+      "shortName": "P1: Hospital Staff",
       "society": "IEEE EMBS × IEEE CIS",
       "difficulty": "Advanced",
-      "technique": "Evolutionary Neural Architecture Search & Hybrid GA-ML",
+      "technique": "Genetic Algorithm + Fuzzy Fatigue Model",
       "context": "Clinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.",
       "coreChallenge": "Design an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.",
       "hardConstraints": [
@@ -226,22 +226,22 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "Develop AI and machine-learning solutions for healthcare, including disease prediction, clinical decision support, and personalized medicine.",
-      "statementMarkdown": "### Theme 1 — Biomedical Artificial Intelligence\n\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Evolutionary Neural Architecture Search & Hybrid GA-ML\n\n#### Context\nClinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.\n\n#### Core Challenge\nDesign an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.",
+      "statementMarkdown": "### P1: Hospital Staff Scheduling\n\n**Technique:** Genetic Algorithm + Fuzzy Fatigue Model\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p1_scheduling.py",
       "benchmarkType": "BIOMEDICAL_AI_EVOLUTIONARY",
-      "hiddenShiftAttempt2": "Demographic perturbation: Patient age and comorbid distributions shifted by 35% with missing laboratory markers.",
-      "hiddenShiftAttempt3": "Adversarial clinical noise: 20% of continuous ICU vitals perturbed with Gaussian sensor drift.",
-      "livePatchSurprise": "One urgent biomarker feature is rendered unavailable; algorithm must dynamically re-evaluate confidence without retraining from scratch.",
+      "hiddenShiftAttempt2": "Staff reduction: Emergency leave removes ~20% of nursing staff in Intensive Care and Emergency.",
+      "hiddenShiftAttempt3": "Demand spike: Pediatric and Critical Care departments declare a 35% increase in minimum shift coverage.",
+      "livePatchSurprise": "One additional department declares an emergency minimum-staffing requirement, effective immediately.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },
     {
       "id": "theme-2-signals",
-      "name": "Biomedical Signals & Intelligent Systems",
-      "shortName": "02: Biomedical Signals",
+      "name": "P2: Drone Medical Delivery",
+      "shortName": "P2: Drone Delivery",
       "society": "IEEE EMBS",
       "difficulty": "Advanced",
-      "technique": "Fuzzy Inference Systems + Evolutionary Signal Decomposition",
+      "technique": "Ant Colony Optimization + Genetic Algorithm",
       "context": "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
       "coreChallenge": "Formulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.",
       "hardConstraints": [
@@ -267,22 +267,22 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
-      "statementMarkdown": "### Theme 2 — Biomedical Signals & Intelligent Systems\n\n**Society:** IEEE EMBS | **Track:** Advanced | **Technique:** Fuzzy Inference Systems + Evolutionary Signal Decomposition\n\n#### Context\nContinuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.\n\n#### Core Challenge\nFormulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.",
+      "statementMarkdown": "### P2: Drone Medical Delivery\n\n**Technique:** Ant Colony Optimization + Genetic Algorithm\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p6_triage.py",
       "benchmarkType": "BIOMEDICAL_SIGNALS_EVOLUTIONARY_FUZZY",
-      "hiddenShiftAttempt2": "Motion artifact injection: High-amplitude respiratory baseline wander superimposed on Lead II.",
-      "hiddenShiftAttempt3": "Ectopic beat clustering: Premature ventricular contractions (PVCs) occurring in rapid trigeminy bursts.",
-      "livePatchSurprise": "One lead disconnects entirely; system must reconstruct cardiac rhythm from single remaining PPG sensor.",
+      "hiddenShiftAttempt2": "Adverse atmospheric conditions: Headwinds increase drone flight energy consumption by 25%.",
+      "hiddenShiftAttempt3": "Request surge: Remote clinic orders double with narrowed 30-minute delivery deadlines.",
+      "livePatchSurprise": "One drone in the fleet suffers mechanical failure and is grounded — all its assigned deliveries must be re-routed live.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },
     {
       "id": "theme-3-imaging",
-      "name": "Medical Imaging & Computer Vision",
-      "shortName": "03: Medical Imaging",
+      "name": "P3: Hospital Destination Selection",
+      "shortName": "P3: Hospital Destination",
       "society": "IEEE EMBS",
       "difficulty": "Advanced",
-      "technique": "Genetic Algorithms + Heuristic Feature Space Search",
+      "technique": "Fuzzy Logic + Particle Swarm Optimization",
       "context": "Clinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.",
       "coreChallenge": "Engineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.",
       "hardConstraints": [
@@ -308,22 +308,22 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "Develop intelligent systems for MRI, CT, ultrasound, and histopathological image analysis, segmentation, and automated interpretation.",
-      "statementMarkdown": "### Theme 3 — Medical Imaging & Computer Vision\n\n**Society:** IEEE EMBS | **Track:** Advanced | **Technique:** Genetic Algorithms + Heuristic Feature Space Search\n\n#### Context\nClinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.\n\n#### Core Challenge\nEngineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.",
+      "statementMarkdown": "### P3: Hospital Destination Selection\n\n**Technique:** Fuzzy Logic + Particle Swarm Optimization\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p5_swarm.py",
       "benchmarkType": "MEDICAL_IMAGING_HEURISTIC_SEARCH",
-      "hiddenShiftAttempt2": "Low-dose scan noise: SNR reduced by 50% with metallic dental implant streak artifacts.",
-      "hiddenShiftAttempt3": "Micro-lesion challenge: Target pathology diameter reduced to sub-voxel resolution (<3mm).",
-      "livePatchSurprise": "Slice thickness increased by 4x; algorithm must infer 3D contours without volumetric slice re-interpolation.",
+      "hiddenShiftAttempt2": "Sudden regional incident: The nearest Tier-1 trauma center experiences extreme ER queue congestion.",
+      "hiddenShiftAttempt3": "Specialist unavailability: On-call neurosurgeon and cardiac catheterization teams become unavailable at two candidate centers.",
+      "livePatchSurprise": "The current top-ranked hospital destination just went to 100% full ICU capacity.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },
     {
       "id": "theme-4-ml-ai",
-      "name": "Machine Learning & Artificial Intelligence",
-      "shortName": "04: ML & Artificial Intelligence",
+      "name": "P4: Blood Inventory Allocation",
+      "shortName": "P4: Blood Allocation",
       "society": "IEEE CIS",
       "difficulty": "Intermediate–Advanced",
-      "technique": "Multi-Objective Heuristics + Deep Evolutionary Networks",
+      "technique": "Genetic Algorithm / Particle Swarm Optimization",
       "context": "Intelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.",
       "coreChallenge": "Design a high-performance machine learning optimization model combining automated hyperparameter search with robust loss regularization to generalize across non-stationary distributions.",
       "hardConstraints": [
@@ -348,22 +348,22 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "Explore machine learning, deep learning, generative AI, and intelligent algorithms for solving complex real-world problems.",
-      "statementMarkdown": "### Theme 4 — Machine Learning & Artificial Intelligence\n\n**Society:** IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Multi-Objective Heuristics + Deep Evolutionary Networks\n\n#### Context\nIntelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.\n\n#### Core Challenge\nDesign a high-performance machine learning optimization model combining automated hyperparameter search with robust loss regularization to generalize across non-stationary distributions.",
+      "statementMarkdown": "### P4: Blood Inventory Allocation\n\n**Technique:** Genetic Algorithm / Particle Swarm Optimization\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p2_drone.py",
       "benchmarkType": "EDTECH_KNOWLEDGE_SPACE_GA",
-      "hiddenShiftAttempt2": "Non-stationary distribution shift: 35% covariate drift injected into held-out evaluation splits.",
-      "hiddenShiftAttempt3": "Adversarial noise injection: Feature space perturbed with high-frequency noise bursts.",
-      "livePatchSurprise": "Regularization penalty doubled; model must maintain generalization without retraining from scratch.",
+      "hiddenShiftAttempt2": "Multiple emergency trauma arrivals trigger sudden surge in O-negative and B-positive demand.",
+      "hiddenShiftAttempt3": "Supply chain disruption: Blood bank delivery van delayed by 48 hours.",
+      "livePatchSurprise": "A critical blood-group shortage is declared for O-negative with an incoming mass-casualty transport.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },
     {
       "id": "theme-5-autonomous",
-      "name": "Intelligent Systems & Autonomous Computing",
-      "shortName": "05: Autonomous Systems",
+      "name": "P5: Multi-Robot Search & Rescue",
+      "shortName": "P5: Search & Rescue",
       "society": "IEEE CIS",
       "difficulty": "Advanced",
-      "technique": "Swarm Intelligence + Adaptive Multi-Agent Heuristics",
+      "technique": "PSO / ACO / Multi-Agent Genetic Algorithm",
       "context": "Decentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.",
       "coreChallenge": "Engineer a multi-agent autonomous decision-making engine that coordinates agent trajectories, resolves resource contention, and dynamically plans pathing under real-time environmental perturbations.",
       "hardConstraints": [
@@ -388,22 +388,22 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "Develop autonomous, adaptive, and multi-agent systems capable of intelligent decision-making, learning, and real-time operation.",
-      "statementMarkdown": "### Theme 5 — Intelligent Systems & Autonomous Computing\n\n**Society:** IEEE CIS | **Track:** Advanced | **Technique:** Swarm Intelligence + Adaptive Multi-Agent Heuristics\n\n#### Context\nDecentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.\n\n#### Core Challenge\nEngineer a multi-agent autonomous decision-making engine that coordinates agent trajectories, resolves resource contention, and dynamically plans pathing under real-time environmental perturbations.",
+      "statementMarkdown": "### P5: Multi-Robot Search & Rescue\n\n**Technique:** PSO / ACO / Multi-Agent Genetic Algorithm\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p4_grid.py",
       "benchmarkType": "HEALTHCARE_ROBOTICS_SWARM",
-      "hiddenShiftAttempt2": "Network drop: 30% of multi-agent communication links intermittently disrupted.",
-      "hiddenShiftAttempt3": "Corridor blockade: Primary throughput corridors obstructed by dynamic hazard objects.",
-      "livePatchSurprise": "Agent battery speed clamped to 50%; swarm must recalibrate rendezvous points within 15 minutes.",
+      "hiddenShiftAttempt2": "Debris collapse: 3 new obstacle zones spawn dynamically, cutting off direct corridors.",
+      "hiddenShiftAttempt3": "Secondary search zone: High survivor probability shifts unexpectedly to previously low-prior sector.",
+      "livePatchSurprise": "One robot experiences communication transmitter failure — swarm coordination logic must adapt with remaining mesh nodes.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },
     {
       "id": "theme-6-open-innovation",
-      "name": "Open Innovation: CIS × EMBS",
-      "shortName": "06: Open Innovation",
+      "name": "P6: Fuzzy ER Triage",
+      "shortName": "P6: Fuzzy ER Triage",
       "society": "EMBS Only, CIS Only, or Combination of Both",
       "difficulty": "Advanced",
-      "technique": "Hybrid Computational Intelligence & Novel Metaheuristics",
+      "technique": "Fuzzy Logic + Genetic Algorithm",
       "context": "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
       "coreChallenge": "Architect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
       "hardConstraints": [
@@ -428,12 +428,12 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
-      "statementMarkdown": "### Theme 6 — Open Innovation: CIS × EMBS\n\n**Society:** EMBS Only, CIS Only, or Combination of Both | **Track:** Advanced | **Technique:** Hybrid Computational Intelligence & Novel Metaheuristics\n\n#### Context\nThe frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.\n\n#### Core Challenge\nArchitect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
+      "statementMarkdown": "### P6: Fuzzy ER Triage\n\n**Technique:** Fuzzy Logic + Genetic Algorithm\n\n#### Context\n*Problem details to be announced during the event.*",
       "starterNotebookUrl": "/starter/starter_p3_hospital.py",
       "benchmarkType": "OPEN_INNOVATION_CIS_EMBS",
-      "hiddenShiftAttempt2": "Constraint stress test: Penalty multiplier for constraint violations doubled in evaluation harness.",
-      "hiddenShiftAttempt3": "Generalization challenge: Objective function tested against unseen higher-dimensional parameter space.",
-      "livePatchSurprise": "Defend and modify algorithmic fitness function live before judges under 15-minute countdown.",
+      "hiddenShiftAttempt2": "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
+      "hiddenShiftAttempt3": "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
+      "livePatchSurprise": "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     }
@@ -453,7 +453,7 @@
   "systemSettings": [
     {
       "key": "active_stage",
-      "value": "PRE_EVENT",
+      "value": "STAGE_0_PRE_EVENT",
       "description": "Current tournament stage",
       "updatedAt": "2026-09-23T16:08:26.523Z"
     },

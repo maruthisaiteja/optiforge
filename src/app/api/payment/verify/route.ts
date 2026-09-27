@@ -129,7 +129,7 @@ export async function POST(req: Request) {
     await db.team.update({
       where: { teamCode: cleanCode },
       data: {
-        paymentStatus: "CONFIRMED",  // Mark UTR received; admin still needs to verify
+        paymentStatus: "PENDING_PAYMENT",  // Mark UTR received; admin still needs to verify
         razorpayPaymentId: cleanUtr,
         razorpayOrderId: orderId,
         razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",

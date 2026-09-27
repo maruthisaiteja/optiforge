@@ -927,7 +927,7 @@ export default function LandingPage() {
               className="text-3xl sm:text-5xl font-black"
               style={{ fontFamily: 'Sora, sans-serif', color: $.navy }}
             >
-              Certificates
+              Exciting Prizes & Certificates
             </h2>
             <p className="text-sm sm:text-base max-w-2xl mx-auto" style={{ color: $.slate }}>
               Every registered participant receives an IEEE-authenticated certificate of participation.

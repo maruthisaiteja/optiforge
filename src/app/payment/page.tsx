@@ -479,10 +479,7 @@ function PaymentContent() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
-              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Team ID</span>
-                <span className="text-sm font-bold text-teal-accent">{receiptData?.teamCode || teamCode}</span>
-              </div>
+              
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Team Name</span>
                 <span className="text-sm font-bold text-brand-white">{receiptData?.teamName || team?.teamName}</span>
@@ -497,9 +494,9 @@ function PaymentContent() {
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Payment Status</span>
-                <span className="text-xs text-status-green font-bold flex items-center gap-1 mt-0.5">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>✓ Paid Online via UPI</span>
+                <span className="text-xs text-orange-accent font-bold flex items-center gap-1 mt-0.5">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>Pending Admin Verification</span>
                 </span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
@@ -511,7 +508,7 @@ function PaymentContent() {
             
 
             <p className="text-[11px] text-brand-muted leading-relaxed text-center pt-2">
-              Your OptiForge 2026 registration has been successfully confirmed.
+              Your OptiForge 2026 registration and payment are pending admin verification. Once verified, your Team ID and credentials will be sent via email.
             </p>
           </div>
 
