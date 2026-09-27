@@ -696,7 +696,7 @@ export default function RegisterPage() {
                     <div className="grid grid-cols-2 gap-2">
                       <select
                   value={m.branch}
-                  onChange={(e) => updateMember(m.id, "branch", e.target.value)}
+                  onChange={(e) => updateMember(idx, "branch", e.target.value)}
                   className="w-full bg-bg-primary/50 border border-navy-border rounded-xl px-4 py-3 text-brand-white focus:outline-none focus:border-teal-accent transition-colors text-sm"
                   required
                 >
@@ -719,7 +719,7 @@ export default function RegisterPage() {
                 </select>
                       <select
                   value={m.year}
-                  onChange={(e) => updateMember(m.id, "year", e.target.value)}
+                  onChange={(e) => updateMember(idx, "year", e.target.value)}
                   className="w-full bg-bg-primary/50 border border-navy-border rounded-xl px-4 py-3 text-brand-white focus:outline-none focus:border-teal-accent transition-colors text-sm"
                   required
                 >

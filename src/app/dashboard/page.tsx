@@ -155,7 +155,7 @@ export default function TeamDashboard() {
 
   const members = team?.members || [];
   const leader = members.length > 0 ? members[0] : null;
-  const defaultPass = team?.defaultPassword || \`Forge#\${team?.teamCode?.split("-")[2] || "2026"}\`;
+  const defaultPass = team?.defaultPassword || `Forge#${team?.teamCode?.split("-")[2] || "2026"}`;
   const totalScore = (team?.highestScore || 0) + (team?.vivaScore || 0);
 
   return (
