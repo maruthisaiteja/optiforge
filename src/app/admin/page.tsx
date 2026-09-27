@@ -64,6 +64,7 @@ export default function AdminPortal() {
   const [paymentModal, setPaymentModal] = useState<any>(null);
   const [paymentTxId, setPaymentTxId] = useState("");
   const [paymentReason, setPaymentReason] = useState("");
+  const [approvedCredentials, setApprovedCredentials] = useState<{ teamCode: string; password: string; email: string } | null>(null);
 
   const fetchAdminData = async () => {
     try {
@@ -134,8 +135,29 @@ export default function AdminPortal() {
   const executePaymentOverride = async () => {
     await handleAdminAction("MARK_PAID", {
       teamCode: paymentModal.teamCode,
-      transactionId: paymentTxId || `manual_upi_${Date.now()}`,
+      transactionId: paymentTxId || paymentModal.razorpayPaymentId || `manual_upi_${Date.now()}`,
       reason: paymentReason || "Admin manual verification",
+    });
+    // Show generated credentials to admin so they can email them
+    const codeNum = paymentModal.teamCode.split("-")[2] || "2026";
+    setApprovedCredentials({
+      teamCode: paymentModal.teamCode,
+      password: `Forge#${codeNum}`,
+      email: paymentModal.leaderEmail,
+    });
+    setPaymentModal(null);
+  };
+
+  const markPaymentFailed = async () => {
+    await handleAdminAction("MARK_PAID", {
+      teamCode: paymentModal.teamCode,
+      transactionId: "PAYMENT_FAILED",
+      reason: paymentReason || "Payment verification failed",
+    });
+    // Actually mark as FAILED via a direct call
+    await handleAdminAction("TOGGLE_DISQUALIFY", {
+      teamCode: paymentModal.teamCode,
+      reason: "Payment failed - auto-disqualified",
     });
     setPaymentModal(null);
   };
@@ -1084,11 +1106,30 @@ export default function AdminPortal() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-2xl bg-bg-card border border-navy-border p-6 space-y-4">
             <h4 className="font-display font-bold text-brand-white text-base">
-              Confirm Payment for Team: {paymentModal.teamName}
+              Verify Payment: {paymentModal.teamName}
             </h4>
             <p className="text-xs text-brand-muted">
               Amount: ₹{paymentModal.paymentAmount} · Team ID: {paymentModal.teamCode}
             </p>
+
+            {/* Show submitted UTR if available */}
+            {paymentModal.razorpayPaymentId && paymentModal.razorpayPaymentId !== "PAYMENT_FAILED" && (
+              <div className="p-3 rounded-xl bg-teal-accent/10 border border-teal-accent/30">
+                <span className="text-[10px] uppercase text-teal-accent font-semibold block">Submitted UTR</span>
+                <span className="text-sm font-mono font-bold text-teal-accent">{paymentModal.razorpayPaymentId}</span>
+              </div>
+            )}
+
+            <div className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/40 text-xs text-brand-muted">
+              <p className="font-semibold text-brand-white mb-1">Leader Email:</p>
+              <p className="font-mono text-teal-accent">{paymentModal.leaderEmail}</p>
+              {paymentModal.leaderPhone && (
+                <>
+                  <p className="font-semibold text-brand-white mt-2 mb-1">Leader Phone:</p>
+                  <p className="font-mono text-brand-white">{paymentModal.leaderPhone}</p>
+                </>
+              )}
+            </div>
 
             <div className="space-y-3 text-xs">
               <div>
@@ -1097,7 +1138,7 @@ export default function AdminPortal() {
                   type="text"
                   value={paymentTxId}
                   onChange={(e) => setPaymentTxId(e.target.value)}
-                  placeholder="e.g. UPI-REF-984512"
+                  placeholder={paymentModal.razorpayPaymentId || "e.g. UPI-REF-984512"}
                   className="w-full px-3 py-2 rounded-lg bg-bg-secondary border border-navy-border text-brand-white"
                 />
               </div>
@@ -1114,18 +1155,73 @@ export default function AdminPortal() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex justify-between pt-2">
               <button
-                onClick={() => setPaymentModal(null)}
-                className="px-3 py-1.5 text-xs text-brand-muted"
+                onClick={markPaymentFailed}
+                className="px-3 py-1.5 text-xs rounded-lg bg-status-red/15 text-status-red border border-status-red/30 hover:bg-status-red/25 font-bold"
               >
-                Cancel
+                ✕ Mark Failed
               </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPaymentModal(null)}
+                  className="px-3 py-1.5 text-xs text-brand-muted"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={executePaymentOverride}
+                  className="px-4 py-2 rounded-lg bg-status-green text-bg-primary font-bold text-xs"
+                >
+                  ✓ Approve & Generate Credentials
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: APPROVED CREDENTIALS (shown after payment confirmation) */}
+      {approvedCredentials && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-2xl bg-bg-card border border-teal-accent/40 p-6 space-y-4">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 rounded-full bg-status-green/15 text-status-green flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <h4 className="font-display font-bold text-status-green text-base">
+                Payment Approved — Credentials Generated
+              </h4>
+              <p className="text-xs text-brand-muted">
+                Send these credentials to the team leader via email.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-black border border-navy-border space-y-3 font-mono text-sm">
+              <div>
+                <span className="text-[10px] uppercase text-brand-dim block">Team ID (Login Username)</span>
+                <span className="text-lg font-bold text-teal-accent">{approvedCredentials.teamCode}</span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase text-brand-dim block">Default Password</span>
+                <span className="text-lg font-bold text-orange-accent">{approvedCredentials.password}</span>
+              </div>
+              <div>
+                <span className="text-[10px] uppercase text-brand-dim block">Send Credentials To</span>
+                <span className="text-sm font-bold text-brand-white">{approvedCredentials.email}</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-orange-accent/10 border border-orange-accent/30 text-xs text-orange-accent">
+              <strong>Action Required:</strong> Email the above Team ID and Password to {approvedCredentials.email}. The team can now log in at the Login page.
+            </div>
+
+            <div className="flex justify-center pt-2">
               <button
-                onClick={executePaymentOverride}
-                className="px-4 py-2 rounded-lg bg-status-green text-bg-primary font-bold text-xs"
+                onClick={() => { setApprovedCredentials(null); fetchAdminData(); }}
+                className="px-6 py-2 rounded-lg bg-teal-accent text-bg-primary font-bold text-xs"
               >
-                Confirm Payment
+                Done — Close
               </button>
             </div>
           </div>
