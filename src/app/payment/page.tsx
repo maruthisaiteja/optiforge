@@ -439,91 +439,268 @@ function PaymentContent() {
           </div>
         </div>
       ) : (
-        /* SUCCESS — PAYMENT SUBMITTED, AWAITING ADMIN VERIFICATION */
-        <div className="rounded-3xl bg-bg-card border border-status-green/40 p-6 sm:p-10 space-y-8 shadow-2xl animate-fade-in relative overflow-hidden">
-          <div className="text-center space-y-3">
-            <div className="w-16 h-16 rounded-2xl bg-status-green/20 border border-status-green/40 flex items-center justify-center text-status-green mx-auto shadow-glow">
-              <CheckCircle2 className="w-9 h-9" />
+        /* ═══════════════════════════════════════════════════════
+           SUCCESS — PAYMENT SUBMITTED, AWAITING ADMIN VERIFICATION
+           Full inline styles for guaranteed visibility on dark bg
+        ═══════════════════════════════════════════════════════ */
+        <div
+          className="rounded-3xl p-6 sm:p-10 space-y-6 shadow-2xl animate-fade-in relative overflow-hidden"
+          style={{
+            background: "linear-gradient(135deg, #0F1E35 0%, #0B1629 100%)",
+            border: "1px solid #2FE6D680",
+          }}
+        >
+          {/* Decorative glowing orbs */}
+          <div
+            className="absolute -top-20 -right-20 w-72 h-72 rounded-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, #2FE6D620 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+          <div
+            className="absolute -bottom-20 -left-20 w-72 h-72 rounded-full pointer-events-none"
+            style={{
+              background: "radial-gradient(circle, #7B5CFA20 0%, transparent 70%)",
+              filter: "blur(40px)",
+            }}
+          />
+
+          {/* ── Header ── */}
+          <div className="relative text-center space-y-3">
+            <div
+              className="w-20 h-20 rounded-2xl mx-auto flex items-center justify-center shadow-2xl"
+              style={{
+                background: "linear-gradient(135deg, #3ED598 0%, #2FE6D6 100%)",
+                boxShadow: "0 0 40px #3ED59840",
+              }}
+            >
+              <CheckCircle2 className="w-10 h-10" style={{ color: "#0B1629" }} />
             </div>
-            <h1 className="font-display font-black text-2xl sm:text-3xl text-brand-white">
+            <h1
+              className="font-black text-2xl sm:text-3xl"
+              style={{ fontFamily: "Sora, sans-serif", color: "#FFFFFF" }}
+            >
               Registration Submitted!
             </h1>
-            <p className="text-xs text-brand-muted font-mono">
-              Reference: <span className="text-teal-accent">{receiptData?.receiptNumber || `RCP-VCE-${teamCode}`}</span>
-            </p>
+            <div
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono"
+              style={{ backgroundColor: "#2FE6D615", border: "1px solid #2FE6D640", color: "#2FE6D6" }}
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Ref: {receiptData?.receiptNumber || `RCP-VCE-${teamCode}`}</span>
+            </div>
           </div>
 
-          {/* Receipt Summary */}
-          <div className="p-5 rounded-2xl bg-bg-secondary border border-navy-border/60 space-y-4 text-xs font-mono">
-            <div className="flex items-center gap-2 text-teal-accent font-semibold border-b border-navy-border/40 pb-3">
+          {/* ── Receipt Summary Grid ── */}
+          <div
+            className="relative rounded-2xl p-5 space-y-4"
+            style={{ backgroundColor: "#0A1525", border: "1px solid #1E3A5F" }}
+          >
+            <div
+              className="flex items-center gap-2 text-sm font-semibold pb-3"
+              style={{ color: "#2FE6D6", borderBottom: "1px solid #1E3A5F" }}
+            >
               <ShieldCheck className="w-4 h-4" />
               <span>Payment Receipt Summary</span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Team Code</span>
-                <span className="font-bold text-brand-white">{receiptData?.teamCode || teamCode}</span>
-              </div>
-              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Team Name</span>
-                <span className="font-bold text-teal-accent truncate block">{receiptData?.teamName || team?.teamName}</span>
-              </div>
-              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Amount Paid</span>
-                <span className="font-bold text-status-green">Rs.{receiptData?.paymentAmount || team?.paymentAmount}</span>
-              </div>
-              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">UTR Reference</span>
-                <span className="text-status-green font-bold">{receiptData?.paymentId || utrNumber}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Pending Verification Notice */}
-          <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/40 space-y-3">
-            <div className="flex items-center gap-2 text-amber-300 font-bold text-sm">
-              <ShieldCheck className="w-5 h-5 shrink-0" />
-              <span>Awaiting Admin Payment Verification</span>
-            </div>
-            <p className="text-xs text-amber-200/80 leading-relaxed">
-              Your UPI transaction reference has been recorded. The{" "}
-              <strong className="text-amber-300">IEEE EMBS organizing team</strong> will verify your payment and{" "}
-              <strong className="text-amber-300">email your official login credentials</strong> to your registered email within{" "}
-              <strong className="text-amber-300">24 hours</strong>.
-            </p>
-            <div className="pt-2 border-t border-amber-500/30 space-y-1.5 text-[11px] text-amber-200/70">
-              <p>Credentials emailed to: <strong className="text-amber-300">{team?.leaderEmail || "your registered email"}</strong></p>
-              <p>Your login credentials are generated ONLY after admin verifies your payment — keeping your account secure and preventing unauthorized access.</p>
-              <p>For urgent queries contact: 9490298994 (WhatsApp)</p>
-            </div>
-          </div>
-
-          {/* What happens next */}
-          <div className="space-y-3">
-            <h3 className="text-[10px] font-mono text-brand-muted uppercase tracking-wider">What Happens Next</h3>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-3 text-xs font-mono">
               {[
-                { step: "1", text: "Admin verifies your UPI transaction (UTR) against bank records", done: true },
-                { step: "2", text: "Your secure login credentials (Team Code + Password) are generated", done: false },
-                { step: "3", text: "Credentials emailed to your registered leader email address", done: false },
-                { step: "4", text: "Log in to the OptiForge portal on 30 September 2026 at the venue", done: false },
-              ].map((item) => (
-                <div key={item.step} className="flex items-start gap-3 text-xs">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${item.done ? "bg-status-green text-bg-primary" : "bg-bg-secondary border border-navy-border text-brand-muted"}`}>
-                    {item.done ? "v" : item.step}
-                  </div>
-                  <span className={item.done ? "text-status-green" : "text-brand-muted"}>{item.text}</span>
+                { label: "TEAM CODE", value: receiptData?.teamCode || teamCode, color: "#E8F4FD" },
+                { label: "TEAM NAME", value: receiptData?.teamName || team?.teamName, color: "#2FE6D6" },
+                { label: "AMOUNT PAID", value: `\u20B9${receiptData?.paymentAmount || team?.paymentAmount}`, color: "#3ED598" },
+                { label: "UTR REFERENCE", value: receiptData?.paymentId || utrNumber, color: "#3ED598" },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="p-3 rounded-xl"
+                  style={{ backgroundColor: "#0F1E35", border: "1px solid #1E3A5F" }}
+                >
+                  <span className="block text-[10px] uppercase tracking-wider mb-1" style={{ color: "#5B7FA3" }}>
+                    {item.label}
+                  </span>
+                  <span className="font-bold text-sm truncate block" style={{ color: item.color }}>
+                    {item.value}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Link href="/" className="w-full py-3.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-sm shadow-glow text-center hover:brightness-110 transition-all flex items-center justify-center gap-2">
+          {/* ── Awaiting Verification Banner ── */}
+          <div
+            className="relative rounded-2xl p-5 space-y-4 overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, #F59E0B20 0%, #D9770620 100%)",
+              border: "1.5px solid #F59E0B60",
+            }}
+          >
+            {/* Animated pulse ring */}
+            <div className="flex items-start gap-4">
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 relative"
+                style={{ backgroundColor: "#F59E0B30", border: "2px solid #F59E0B" }}
+              >
+                <div
+                  className="absolute inset-0 rounded-full animate-ping"
+                  style={{ backgroundColor: "#F59E0B30" }}
+                />
+                <ShieldCheck className="w-5 h-5 relative z-10" style={{ color: "#F59E0B" }} />
+              </div>
+              <div>
+                <h3 className="font-bold text-base" style={{ color: "#FCD34D" }}>
+                  Awaiting Admin Payment Verification
+                </h3>
+                <p className="text-sm mt-1 leading-relaxed" style={{ color: "#FDE68A" }}>
+                  Your UPI reference has been recorded. The{" "}
+                  <span style={{ color: "#FCD34D", fontWeight: 700 }}>IEEE EMBS team</span> will verify your
+                  payment and{" "}
+                  <span style={{ color: "#FCD34D", fontWeight: 700 }}>email your login credentials</span>{" "}
+                  within <span style={{ color: "#FCD34D", fontWeight: 700 }}>24 hours</span>.
+                </p>
+              </div>
+            </div>
+
+            <div
+              className="rounded-xl p-4 space-y-2.5 text-sm"
+              style={{ backgroundColor: "#00000030", border: "1px solid #F59E0B30" }}
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-lg shrink-0">📧</span>
+                <span style={{ color: "#FDE68A" }}>
+                  Credentials will be sent to:{" "}
+                  <strong style={{ color: "#FCD34D" }}>{team?.leaderEmail || "your registered email"}</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg shrink-0">🔐</span>
+                <span style={{ color: "#FDE68A" }}>
+                  Login credentials are generated <strong style={{ color: "#FCD34D" }}>only after admin verifies</strong> your payment
+                  — your account stays secure.
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg shrink-0">📱</span>
+                <span style={{ color: "#FDE68A" }}>
+                  Urgent? WhatsApp:{" "}
+                  <strong style={{ color: "#FCD34D" }}>9490298994</strong>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ── What Happens Next — Step Tracker ── */}
+          <div className="space-y-4">
+            <h3
+              className="text-xs font-mono uppercase tracking-widest"
+              style={{ color: "#5B7FA3" }}
+            >
+              What Happens Next
+            </h3>
+            <div className="space-y-3">
+              {[
+                {
+                  step: "1",
+                  text: "Admin verifies your UPI transaction (UTR) against bank records",
+                  sub: "Already submitted ✓",
+                  done: true,
+                  color: "#3ED598",
+                },
+                {
+                  step: "2",
+                  text: "Secure login credentials are generated by the organizer",
+                  sub: "Team Code + Password",
+                  done: false,
+                  color: "#5B7FA3",
+                },
+                {
+                  step: "3",
+                  text: "Credentials emailed to your registered leader email",
+                  sub: team?.leaderEmail || "your email",
+                  done: false,
+                  color: "#5B7FA3",
+                },
+                {
+                  step: "4",
+                  text: "Log in to the OptiForge portal on 30 September 2026",
+                  sub: "At the venue — Vardhaman College",
+                  done: false,
+                  color: "#5B7FA3",
+                },
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-4 p-4 rounded-xl transition-all"
+                  style={{
+                    backgroundColor: item.done ? "#3ED59810" : "#0A1525",
+                    border: `1px solid ${item.done ? "#3ED59840" : "#1E3A5F"}`,
+                  }}
+                >
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm shrink-0"
+                    style={{
+                      backgroundColor: item.done ? "#3ED598" : "#1E3A5F",
+                      color: item.done ? "#0B1629" : "#5B7FA3",
+                      boxShadow: item.done ? "0 0 16px #3ED59860" : "none",
+                    }}
+                  >
+                    {item.done ? "✓" : item.step}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm" style={{ color: item.done ? "#3ED598" : "#E8F4FD" }}>
+                      {item.text}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: "#5B7FA3" }}>
+                      {item.sub}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Event Date Reminder ── */}
+          <div
+            className="rounded-2xl p-4 flex items-center gap-4"
+            style={{
+              background: "linear-gradient(135deg, #7B5CFA20 0%, #2FE6D620 100%)",
+              border: "1px solid #7B5CFA40",
+            }}
+          >
+            <div className="text-3xl shrink-0">📅</div>
+            <div>
+              <p className="font-bold text-sm" style={{ color: "#C4B5FD" }}>
+                Event Day: 30 September 2026
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "#A78BFA" }}>
+                Vardhaman College of Engineering · 10:00 AM onwards · Bring your team ID
+              </p>
+            </div>
+          </div>
+
+          {/* ── CTAs ── */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 relative">
+            <Link
+              href="/"
+              className="w-full py-4 rounded-xl font-bold text-sm text-center flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+              style={{
+                background: "linear-gradient(135deg, #2FE6D6 0%, #7B5CFA 100%)",
+                color: "#0B1629",
+                boxShadow: "0 0 24px #2FE6D640",
+              }}
+            >
               <span>Return to OptiForge 2026</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/leaderboard" className="w-full py-3.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono text-center transition-colors">
+            <Link
+              href="/leaderboard"
+              className="w-full py-4 rounded-xl font-semibold text-sm text-center transition-all hover:scale-105 active:scale-95"
+              style={{
+                backgroundColor: "#0A1525",
+                border: "1px solid #1E3A5F",
+                color: "#8EAFD4",
+              }}
+            >
               View Public Leaderboard
             </Link>
           </div>
