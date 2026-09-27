@@ -608,13 +608,7 @@ export default function LandingPage() {
               </a>
             </div>
 
-            {/* Note on Credentials */}
-            <div className="max-w-2xl mx-auto mt-8 p-4 rounded-xl border" style={{ borderColor: `${$.warning}40`, backgroundColor: `${$.warning}10` }}>
-              <p className="text-xs font-semibold text-center" style={{ color: $.navy }}>
-                ⚠️ <strong style={{ color: $.warning }}>IMPORTANT:</strong> Please take note of your <strong style={{ color: $.warning }}>TEAM ID and PASSWORD</strong> shown on the success screen after registering. 
-                We will also send you a confirmation email containing your Team ID and Password from <code className="px-1.5 py-0.5 rounded ml-1 font-mono" style={{ backgroundColor: $.navy, color: $.white }}>vuggidisaivarshith@gmail.com</code>.
-              </p>
-            </div>
+            
           </div>
         </section>
 

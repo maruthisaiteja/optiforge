@@ -72,11 +72,11 @@ export async function POST(req: Request) {
     }
 
     // Otherwise check Users (Admin / Judge)
-    const user = await db.user.findUnique({
+    console.log(\'LOGIN ATTEMPT:\', { cleanId, role }); const user = await db.user.findUnique({
       where: { username: cleanId },
     });
 
-    if (!user) {
+    console.log(\'USER FOUND?:\', !!user); if (!user) {
       return NextResponse.json({ error: "Invalid username or credentials." }, { status: 401 });
     }
 

@@ -368,7 +368,7 @@ export const db = {
   user: {
     findUnique: async ({ where }: { where: { username?: string; id?: string } }) => {
       const data = await ensureDb();
-      return data.users.find((u) => (where.username && u.username === where.username) || (where.id && u.id === where.id)) || null;
+      return data.users.find((u) => (where.username && u.username.toLowerCase() === where.username.toLowerCase()) || (where.id && u.id === where.id)) || null;
     },
     findMany: async (filter?: { where?: Partial<UserRecord> }) => {
       const data = await ensureDb();
