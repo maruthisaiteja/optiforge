@@ -401,7 +401,7 @@
       "id": "theme-6-open-innovation",
       "name": "Open Innovation: CIS × EMBS",
       "shortName": "06: Open Innovation",
-      "society": "IEEE CIS & IEEE EMBS Only",
+      "society": "EMBS Only, CIS Only, or Combination of Both",
       "difficulty": "Advanced",
       "technique": "Hybrid Computational Intelligence & Novel Metaheuristics",
       "context": "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
@@ -428,7 +428,7 @@
         "A one-line 'what changed and why' note with every attempt after the first"
       ],
       "description": "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
-      "statementMarkdown": "### Theme 6 — Open Innovation: CIS × EMBS\n\n**Society:** IEEE CIS & IEEE EMBS Only | **Track:** Advanced | **Technique:** Hybrid Computational Intelligence & Novel Metaheuristics\n\n#### Context\nThe frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.\n\n#### Core Challenge\nArchitect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
+      "statementMarkdown": "### Theme 6 — Open Innovation: CIS × EMBS\n\n**Society:** EMBS Only, CIS Only, or Combination of Both | **Track:** Advanced | **Technique:** Hybrid Computational Intelligence & Novel Metaheuristics\n\n#### Context\nThe frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.\n\n#### Core Challenge\nArchitect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
       "starterNotebookUrl": "/starter/starter_p3_hospital.py",
       "benchmarkType": "OPEN_INNOVATION_CIS_EMBS",
       "hiddenShiftAttempt2": "Constraint stress test: Penalty multiplier for constraint violations doubled in evaluation harness.",
