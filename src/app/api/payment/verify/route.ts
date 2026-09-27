@@ -128,23 +128,42 @@ export async function POST(req: Request) {
 
     // ============================================================
     // PAYMENT SUBMITTED - UTR recorded, awaiting admin approval
+    // Use upsert to handle Vercel serverless race conditions where
+    // ensureDb() may return stale data from seed file.
     // ============================================================
+    const paymentData = {
+      paymentStatus: "PENDING_PAYMENT" as const,
+      razorpayPaymentId: cleanUtr,
+      razorpayOrderId: orderId,
+      razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",
+    };
+
     try {
+      // Try update first
       await db.team.update({
-        where: { teamCode: cleanCode },
-        data: {
-          paymentStatus: "PENDING_PAYMENT",
-          razorpayPaymentId: cleanUtr,
-          razorpayOrderId: orderId,
-          razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",
-        },
+        where: { id: team.id },
+        data: paymentData,
       });
     } catch (updateErr) {
-      console.error("[verify] db.team.update failed:", updateErr);
-      return NextResponse.json(
-        { error: "Failed to record payment. Please try again. Detail: " + (updateErr instanceof Error ? updateErr.message : String(updateErr)) },
-        { status: 500 }
-      );
+      console.warn("[verify] First update attempt failed, retrying with upsert:", updateErr);
+      try {
+        // Retry with upsert (handles case where ensureDb returns stale data)
+        await db.team.upsert({
+          where: { teamCode: cleanCode },
+          update: paymentData,
+          create: {
+            ...team,
+            ...paymentData,
+            members: { create: team.members || [] },
+          },
+        });
+      } catch (upsertErr) {
+        console.error("[verify] Upsert also failed:", upsertErr);
+        return NextResponse.json(
+          { error: "Failed to record payment. Please try again in a moment." },
+          { status: 500 }
+        );
+      }
     }
 
     // Log in Audit trail (non-fatal if this fails)
