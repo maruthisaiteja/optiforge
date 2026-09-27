@@ -1,7 +1,14 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { neon } from "@neondatabase/serverless";
+import { neon, neonConfig } from "@neondatabase/serverless";
+
+// CRITICAL: Disable Next.js fetch caching for Neon to prevent stale DB reads
+if (typeof neonConfig !== "undefined") {
+  (neonConfig as any).fetchOptions = {
+    cache: "no-store",
+  };
+}
 
 const IS_VERCEL = process.env.VERCEL === "1" || (process.env.NODE_ENV === "production" && process.platform === "linux");
 const SEED_FILE = path.join(process.cwd(), "data", "optiforge_db.json");
@@ -201,7 +208,7 @@ function getPostgresClient() {
     return null;
   }
   try {
-    return neon(databaseUrl);
+    return neon(databaseUrl, { fetchOptions: { cache: "no-store" } });
   } catch (err) {
     console.warn("[OptiForge DB] Failed to initialize Postgres client:", err);
     return null;
