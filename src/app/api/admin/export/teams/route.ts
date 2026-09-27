@@ -151,19 +151,18 @@ export async function GET(req: Request) {
     const loginUrl = `${origin}/login`;
 
     const credentialRows = validTeams.map((t: any) => {
-      const codeSuffix = t.teamCode?.split("-")[2] || "2026";
-      const defaultFormulaPass = `Forge#${codeSuffix}`;
+      let passStatus = "AWAITING_ADMIN_APPROVAL";
+      let credentialNote = "Generate credentials via Admin Portal → Teams & Payments tab";
 
-      // Check if password has default formula or stored rawPassword
-      let passDisplay = "Password: NOT RECOVERABLE — RESET REQUIRED";
-      let passStatus = "RESET_REQUIRED";
-
-      if (t.rawPassword) {
-        passDisplay = t.rawPassword;
-        passStatus = "CUSTOM_PASSWORD_SET";
-      } else if (defaultFormulaPass) {
-        passDisplay = defaultFormulaPass;
-        passStatus = "INITIAL_DEFAULT_ACTIVE";
+      if (t.razorpaySignature === "ADMIN_VERIFIED_APPROVED") {
+        passStatus = "CREDENTIALS_GENERATED_AND_SENT";
+        credentialNote = "Credentials were generated and shared with team leader";
+      } else if (t.razorpaySignature === "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL") {
+        passStatus = "UTR_SUBMITTED_AWAITING_VERIFICATION";
+        credentialNote = "Team submitted UTR — verify payment and generate credentials in Admin Portal";
+      } else if (t.paymentStatus === "CONFIRMED") {
+        passStatus = "PAYMENT_CONFIRMED_CREDENTIALS_PENDING";
+        credentialNote = "Payment confirmed by admin — generate credentials in Admin Portal";
       }
 
       return [
@@ -172,7 +171,7 @@ export async function GET(req: Request) {
         esc(t.leaderEmail),
         esc(loginUrl),
         esc(passStatus),
-        esc(passDisplay),
+        esc(credentialNote),
         esc(t.passwordResetAt ? `Reset at ${t.passwordResetAt}` : "Not reset"),
         esc(t.isDisqualified ? "DISQUALIFIED" : "ACTIVE"),
       ].join(",");

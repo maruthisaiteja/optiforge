@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -65,6 +65,11 @@ export default function AdminPortal() {
   const [paymentTxId, setPaymentTxId] = useState("");
   const [paymentReason, setPaymentReason] = useState("");
   const [approvedCredentials, setApprovedCredentials] = useState<{ teamCode: string; password: string; email: string } | null>(null);
+  const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
+  const [credentialModal, setCredentialModal] = useState<any>(null);
+  const [credentialNote, setCredentialNote] = useState("");
+  const [generatingCred, setGeneratingCred] = useState(false);
+  const [generatedCred, setGeneratedCred] = useState<any>(null);
 
   const fetchAdminData = async () => {
     try {

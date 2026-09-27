@@ -132,7 +132,7 @@ export async function POST(req: Request) {
     // ensureDb() may return stale data from seed file.
     // ============================================================
     const paymentData = {
-      paymentStatus: "PENDING_PAYMENT" as const,
+      paymentStatus: "CONFIRMED" as const,
       razorpayPaymentId: cleanUtr,
       razorpayOrderId: orderId,
       razorpaySignature: "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL",

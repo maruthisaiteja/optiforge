@@ -381,6 +381,76 @@ export async function POST(req: Request) {
         });
       }
 
+      case "APPROVE_AND_GENERATE_CREDENTIALS": {
+        const { teamCode, adminNote } = payload;
+        if (!teamCode) {
+          return NextResponse.json({ error: "Team code is required." }, { status: 400 });
+        }
+
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        // Only allow approval for teams that submitted UTR
+        if (team.razorpaySignature !== "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL") {
+          return NextResponse.json({
+            error: `Team ${teamCode} is not in the pending approval state. Current signature: ${team.razorpaySignature || "none"}`,
+          }, { status: 400 });
+        }
+
+        // Generate the official Forge#XXXX password
+        const codeSuffix = teamCode.split("-")[2] || "2026";
+        const rawPassword = `Forge#${codeSuffix}`;
+        const hashedPassword = await hashPassword(rawPassword);
+
+        // Update: store real password hash + mark as approved
+        try {
+          await db.team.update({
+            where: { teamCode },
+            data: {
+              password: hashedPassword,
+              paymentStatus: "CONFIRMED" as const,
+              razorpaySignature: "ADMIN_VERIFIED_APPROVED",
+            },
+          });
+        } catch (updateErr) {
+          // Fallback upsert for Vercel serverless
+          try {
+            await db.team.upsert({
+              where: { teamCode },
+              update: {
+                password: hashedPassword,
+                paymentStatus: "CONFIRMED" as const,
+                razorpaySignature: "ADMIN_VERIFIED_APPROVED",
+              },
+              create: { ...team, password: hashedPassword, paymentStatus: "CONFIRMED" as const, razorpaySignature: "ADMIN_VERIFIED_APPROVED", members: { create: team.members || [] } },
+            });
+          } catch (upsertErr) {
+            return NextResponse.json({ error: "Failed to generate credentials: " + (upsertErr instanceof Error ? upsertErr.message : String(upsertErr)) }, { status: 500 });
+          }
+        }
+
+        // Audit log
+        try {
+          await db.auditLog.create({
+            data: {
+              action: "CREDENTIALS_GENERATED",
+              performedBy: `${session.name} (${session.id})`,
+              details: `Credentials generated for team ${team.teamName} (${teamCode}). UTR: ${team.razorpayPaymentId}. Admin note: ${adminNote || "None"}`,
+              reason: "Admin verified UPI payment and generated team login credentials",
+            },
+          });
+        } catch {}
+
+        return NextResponse.json({
+          success: true,
+          loginUsername: teamCode,
+          loginPassword: rawPassword,
+          leaderEmail: team.leaderEmail,
+          teamName: team.teamName,
+          message: `Credentials generated for ${team.teamName}. Share login via email to ${team.leaderEmail}.`,
+        });
+      }
+
       default:
         return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 });
     }
