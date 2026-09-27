@@ -125,8 +125,8 @@ export default function RegisterPage() {
       name: "",
       collegeName: "",
       rollNumber: "",
-      branch: "CSE",
-      year: "3rd Year",
+      branch: "",
+      year: "",
       email: "",
       phone: "",
     },
@@ -134,8 +134,8 @@ export default function RegisterPage() {
       name: "",
       collegeName: "",
       rollNumber: "",
-      branch: "CSE",
-      year: "3rd Year",
+      branch: "",
+      year: "",
       email: "",
       phone: "",
     },
@@ -231,8 +231,8 @@ export default function RegisterPage() {
           name: "",
           collegeName: "",
           rollNumber: "",
-          branch: "CSE",
-          year: "3rd Year",
+          branch: "",
+          year: "",
           email: "",
           phone: "",
         },
@@ -240,8 +240,8 @@ export default function RegisterPage() {
           name: "",
           collegeName: "",
           rollNumber: "",
-          branch: "CSE",
-          year: "3rd Year",
+          branch: "",
+          year: "",
           email: "",
           phone: "",
         },
@@ -259,8 +259,8 @@ export default function RegisterPage() {
           name: "",
           collegeName: members[0]?.collegeName || "",
           rollNumber: "",
-          branch: "IT",
-          year: "3rd Year",
+          branch: "",
+          year: "",
           email: "",
           phone: "",
         },
@@ -699,27 +699,42 @@ export default function RegisterPage() {
                     <label className="block text-brand-muted mb-1">Branch & Year</label>
                     <div className="grid grid-cols-2 gap-2">
                       <select
-                        value={m.branch}
-                        onChange={(e) => updateMember(idx, "branch", e.target.value)}
-                        className="w-full px-2 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
-                      >
-                        <option value="CSE">CSE</option>
-                        <option value="IT">IT</option>
-                        <option value="AI&ML">AI&ML</option>
-                        <option value="ECE">ECE</option>
-                        <option value="EEE">EEE</option>
-                        <option value="Other">Other</option>
-                      </select>
+                  value={m.branch}
+                  onChange={(e) => updateMember(m.id, "branch", e.target.value)}
+                  className="w-full bg-bg-primary/50 border border-navy-border rounded-xl px-4 py-3 text-brand-white focus:outline-none focus:border-teal-accent transition-colors text-sm"
+                  required
+                >
+                  <option value="" disabled>Select Department</option>
+                  <option value="CSE">Computer Science and Engineering (CSE)</option>
+                  <option value="IT">Information Technology (IT)</option>
+                  <option value="ECE">Electronics and Communication Engineering (ECE)</option>
+                  <option value="EEE">Electrical and Electronics Engineering (EEE)</option>
+                  <option value="MECH">Mechanical Engineering (MECH)</option>
+                  <option value="CIVIL">Civil Engineering (CIVIL)</option>
+                  <option value="AIML">Artificial Intelligence & Machine Learning (AIML)</option>
+                  <option value="AIDS">Artificial Intelligence & Data Science (AIDS)</option>
+                  <option value="CSBS">Computer Science & Business Systems (CSBS)</option>
+                  <option value="CSIT">Computer Science & Information Technology (CSIT)</option>
+                  <option value="IOT">Internet of Things (IoT)</option>
+                  <option value="PHARM">B. Pharmacy</option>
+                  <option value="PHARMD">Pharm.D</option>
+                  <option value="PHARMACOLOGY">Pharmacology</option>
+                  <option value="OTHER">Other</option>
+                </select>
                       <select
-                        value={m.year}
-                        onChange={(e) => updateMember(idx, "year", e.target.value)}
-                        className="w-full px-2 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
-                      >
-                        <option value="1st Year">1st Yr</option>
-                        <option value="2nd Year">2nd Yr</option>
-                        <option value="3rd Year">3rd Yr</option>
-                        <option value="4th Year">4th Yr</option>
-                      </select>
+                  value={m.year}
+                  onChange={(e) => updateMember(m.id, "year", e.target.value)}
+                  className="w-full bg-bg-primary/50 border border-navy-border rounded-xl px-4 py-3 text-brand-white focus:outline-none focus:border-teal-accent transition-colors text-sm"
+                  required
+                >
+                  <option value="" disabled>Select Year</option>
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="4th Year">4th Year</option>
+                  <option value="5th Year">5th Year</option>
+                  <option value="6th Year">6th Year</option>
+                </select>
                     </div>
                   </div>
                 </div>

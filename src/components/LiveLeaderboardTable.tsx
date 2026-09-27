@@ -19,11 +19,20 @@ export interface LeaderboardEntry {
   isCurrentUserTeam?: boolean;
 }
 
-interface LiveLeaderboardTableProps {
+export interface LiveLeaderboardTableProps {
   entries: LeaderboardEntry[];
   isFrozen?: boolean;
   currentTeamCode?: string;
   onRefresh?: () => void;
+  tableContainerRef?: React.RefObject<HTMLDivElement>;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
+  onManualScroll?: () => void;
+  scrollProgress?: number;
+  isBigScreen?: boolean;
+  isAutoScrolling?: boolean;
+  isPaused?: boolean;
+  onTogglePause?: () => void;
 }
 
 export default function LiveLeaderboardTable({
@@ -31,7 +40,18 @@ export default function LiveLeaderboardTable({
   isFrozen = false,
   currentTeamCode,
   onRefresh,
+  tableContainerRef,
+  onMouseEnter,
+  onMouseLeave,
+  onManualScroll,
+  scrollProgress = 0,
+  isBigScreen = false,
+  isAutoScrolling = false,
+  isPaused = false,
+  onTogglePause,
 }: LiveLeaderboardTableProps) {
+  const localContainerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = tableContainerRef || localContainerRef;
   const [selectedTrack, setSelectedTrack] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -112,10 +132,29 @@ export default function LiveLeaderboardTable({
       </div>
 
       {/* Leaderboard Table Container */}
-      <div className="rounded-2xl border border-navy-border/80 bg-bg-card shadow-2xl overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="rounded-2xl border border-navy-border/80 bg-bg-card shadow-2xl overflow-hidden relative">
+        {/* Scroll Progress Bar at the top of the table */}
+        {isAutoScrolling && (
+          <div className="w-full bg-navy-border/40 h-1 relative overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-teal-accent via-cyan-400 to-electric-violet transition-all duration-100 ease-out shadow-glow"
+              style={{ width: `${Math.min(100, Math.max(0, scrollProgress))}%` }}
+            />
+          </div>
+        )}
+
+        <div
+          ref={containerRef}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onScroll={onManualScroll}
+          className={`overflow-x-auto overflow-y-auto ${
+            isBigScreen ? "max-h-[calc(100vh-270px)] sm:max-h-[calc(100vh-300px)]" : "max-h-[580px]"
+          }`}
+          style={{ scrollBehavior: "auto" }}
+        >
           <table className="w-full text-left border-collapse">
-            <thead>
+            <thead className="sticky top-0 z-20 backdrop-blur-md bg-bg-secondary/95 border-b border-navy-border shadow-xs">
               <tr className="border-b border-navy-border bg-bg-secondary/70 text-xs font-mono uppercase tracking-wider text-brand-muted">
                 <th className="py-3.5 px-4 w-16 text-center">Rank</th>
                 <th className="py-3.5 px-4">Team</th>

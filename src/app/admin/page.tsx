@@ -180,7 +180,7 @@ export default function AdminPortal() {
 
   const isFrozen = data?.settings?.find((s: any) => s.key === "leaderboard_frozen")?.value === "true";
   const isVisible = data?.settings?.find((s: any) => s.key === "leaderboard_visible")?.value === "true";
-  const activeStage = data?.settings?.find((s: any) => s.key === "active_stage")?.value || "STAGE_3_ATTEMPT_1";
+  const activeStage = data?.settings?.find((s: any) => s.key === "active_stage")?.value || "STAGE_0_PRE_EVENT";
   const livePatchDeadline = data?.settings?.find((s: any) => s.key === "live_patch_deadline")?.value || "";
 
   const weightAuto = Number(data?.settings?.find((s: any) => s.key === "weight_auto")?.value || 60);
@@ -620,7 +620,7 @@ export default function AdminPortal() {
                     key={stg.key}
                     className={`p-4 rounded-2xl border space-y-3 flex flex-col justify-between transition-all ${
                       isActive
-                        ? "bg-teal-accent/15 border-teal-accent shadow-glow"
+                        ? "bg-gradient-to-r from-[#00629B] to-[#004A75] border-[#00629B] text-white shadow-xl"
                         : "bg-bg-secondary/60 border-navy-border/60"
                     }`}
                   >
