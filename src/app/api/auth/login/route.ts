@@ -38,6 +38,13 @@ export async function POST(req: Request) {
         );
       }
 
+      if (team.razorpaySignature === "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL" || (team.password && team.password.includes("PENDING_ADMIN_VERIFICATION"))) {
+        return NextResponse.json(
+          { error: "Your payment verification is pending admin approval. Your team login credentials will be emailed to your team leader once verified." },
+          { status: 403 }
+        );
+      }
+
       const isValid = await comparePassword(password, team.password);
       if (!isValid) {
         return NextResponse.json({ error: "Invalid password for team." }, { status: 401 });

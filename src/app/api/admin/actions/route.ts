@@ -390,13 +390,6 @@ export async function POST(req: Request) {
         const team = await db.team.findUnique({ where: { teamCode } });
         if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
 
-        // Only allow approval for teams that submitted UTR
-        if (team.razorpaySignature !== "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL") {
-          return NextResponse.json({
-            error: `Team ${teamCode} is not in the pending approval state. Current signature: ${team.razorpaySignature || "none"}`,
-          }, { status: 400 });
-        }
-
         // Generate the official Forge#XXXX password
         const codeSuffix = teamCode.split("-")[2] || "2026";
         const rawPassword = `Forge#${codeSuffix}`;

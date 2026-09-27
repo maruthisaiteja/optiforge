@@ -113,7 +113,8 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
     const rows = validTeams
       .map((t: any) => {
         const leaderName = (t.members && t.members.length > 0 && t.members[0].name) ? t.members[0].name : t.teamName;
-        const password = t.rawPassword || `Forge#${t.teamCode?.split("-")[2] || "2026"}`;
+        const isApproved = t.razorpaySignature === "ADMIN_VERIFIED_APPROVED";
+        const password = isApproved ? (t.rawPassword || `Forge#${t.teamCode?.split("-")[2] || "2026"}`) : "PENDING_ADMIN_APPROVAL";
         return `"${t.teamCode}","${t.teamName.replace(/"/g, '""')}","${leaderName.replace(/"/g, '""')}","${t.leaderEmail}","${password}","${loginUrl}","${t.paymentStatus}"`;
       })
       .join("\n");
@@ -419,7 +420,10 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                     {showCredentialsMode && (
                       <td className="py-3.5 px-4 font-mono" onClick={(e) => e.stopPropagation()}>
                         {(() => {
-                          const passVal = t.rawPassword || `Forge#${t.teamCode?.split("-")[2] || "2026"}`;
+                          const isApproved = t.razorpaySignature === "ADMIN_VERIFIED_APPROVED";
+                          const passVal = isApproved
+                            ? (t.rawPassword || `Forge#${t.teamCode?.split("-")[2] || "2026"}`)
+                            : "PENDING_APPROVAL";
                           const isVisible = !!visiblePasswords[t.id];
                           return (
                             <div className="flex items-center gap-1.5">

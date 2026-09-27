@@ -90,9 +90,10 @@ export async function POST(req: Request) {
       teamCode = generateTeamCode();
     }
 
-    // Auto-generate secure password for team
-    const rawPassword = `Forge#${teamCode.split("-")[2]}`;
-    const hashedPassword = await hashPassword(rawPassword);
+    // Security: Do NOT generate or store usable credentials on registration!
+    // Store an unguessable placeholder hash so team CANNOT log in until admin verifies payment and generates credentials.
+    const placeholderPassword = `PENDING_ADMIN_VERIFICATION_${teamCode}_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+    const hashedPassword = await hashPassword(placeholderPassword);
 
     // Dynamic fee: ₹100 per member (as per official event spec)
     const paymentAmount = members.length * 100;

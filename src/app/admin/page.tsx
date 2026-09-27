@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -28,6 +28,7 @@ import {
   Key,
   ClipboardList,
   UserCog,
+  Copy,
 } from "lucide-react";
 import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
 import TeamManagementTab from "@/components/admin/TeamManagementTab";
@@ -418,9 +419,33 @@ export default function AdminPortal() {
         </button>
       </div>
 
-      {/* TAB 1: TEAMS & PAYMENTS */}
+      {/* TAB 1: TEAMS & PAYMENTS - Full Member Details & Credential Generation */}
       {activeTab === "TEAMS" && (
         <div className="space-y-4">
+          {/* Pending Verification Banner */}
+          {(() => {
+            const pendingCount = (data?.teams || []).filter(
+              (t: any) =>
+                t.razorpaySignature !== "ADMIN_VERIFIED_APPROVED" &&
+                (t.razorpayPaymentId || t.paymentStatus === "CONFIRMED" || t.razorpaySignature === "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL")
+            ).length;
+            if (pendingCount === 0) return null;
+            return (
+              <div className="p-4 rounded-2xl bg-orange-accent/10 border border-orange-accent/40 flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-orange-accent shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <h4 className="font-bold text-sm text-orange-accent">
+                    {pendingCount} Team(s) Awaiting Payment Verification &amp; Credential Generation
+                  </h4>
+                  <p className="text-xs text-orange-accent/80">
+                    Participants cannot log in until you verify their UPI UTR against bank records and generate their credentials. Click &ldquo;Generate Credentials&rdquo; on any team below to generate their login and copy the official credentials email template.
+                  </p>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Search and Filters */}
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-bg-card border border-navy-border/80">
             <div className="flex items-center gap-2 flex-1 max-w-md">
               <Search className="w-4 h-4 text-brand-muted" />
@@ -428,7 +453,7 @@ export default function AdminPortal() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by team name, code, or leader email..."
+                placeholder="Search by team name, code, leader email, or UTR..."
                 className="w-full bg-transparent text-xs text-brand-white placeholder:text-brand-dim focus:outline-none"
               />
             </div>
@@ -447,69 +472,154 @@ export default function AdminPortal() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-bg-card border border-navy-border/80 overflow-hidden shadow-xl">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs font-mono">
-                <thead>
-                  <tr className="border-b border-navy-border/60 text-brand-dim uppercase tracking-wider text-[10px]">
-                    <th className="py-3.5 px-4">Team Code</th>
-                    <th className="py-3.5 px-4">Team Name</th>
-                    <th className="py-3.5 px-4">Leader Contact</th>
-                    <th className="py-3.5 px-4">Domain Track</th>
-                    <th className="py-3.5 px-4">Payment</th>
-                    <th className="py-3.5 px-4">Attempts</th>
-                    <th className="py-3.5 px-4">Score</th>
-                    <th className="py-3.5 px-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-navy-border/40">
-                  {filteredTeams.map((t: any) => (
-                    <tr key={t.id} className="hover:bg-bg-secondary/40 transition-colors">
-                      <td className="py-3.5 px-4 font-bold text-teal-accent">{t.teamCode}</td>
-                      <td className="py-3.5 px-4 font-semibold text-brand-white">{t.teamName}</td>
-                      <td className="py-3.5 px-4 text-brand-muted">
-                        <div>{t.leaderEmail}</div>
-                        <div className="text-[10px] text-brand-dim">{t.leaderPhone}</div>
-                      </td>
-                      <td className="py-3.5 px-4 text-brand-white">
-                        {t.track?.shortName || t.domainId || "Unassigned"}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        {t.paymentStatus === "CONFIRMED" ? (
-                          <div className="space-y-1">
-                            <span className="px-2 py-0.5 rounded text-[10px] bg-status-green/15 text-status-green border border-status-green/30 inline-block font-semibold">
-                              CONFIRMED (₹{t.paymentAmount})
+          {/* Team Cards / List */}
+          <div className="space-y-3">
+            {filteredTeams.length === 0 ? (
+              <div className="p-12 text-center rounded-2xl bg-bg-card border border-navy-border/80 text-brand-muted text-xs font-mono">
+                No teams found matching your query.
+              </div>
+            ) : (
+              filteredTeams.map((t: any) => {
+                const isExpanded = expandedTeam === t.teamCode;
+                const isApproved = t.razorpaySignature === "ADMIN_VERIFIED_APPROVED";
+                const hasUtr = !!t.razorpayPaymentId;
+                const isPendingApproval = !isApproved && (hasUtr || t.paymentStatus === "CONFIRMED" || t.razorpaySignature === "UTR_SUBMITTED_PENDING_ADMIN_APPROVAL");
+
+                return (
+                  <div
+                    key={t.id}
+                    className={`rounded-2xl bg-bg-card border transition-all overflow-hidden ${
+                      isPendingApproval
+                        ? "border-orange-accent/50 shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                        : isApproved
+                        ? "border-status-green/40"
+                        : t.isDisqualified
+                        ? "border-status-red/40"
+                        : "border-navy-border/80"
+                    }`}
+                  >
+                    {/* Header Row */}
+                    <div className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                      {/* Left: Code, Name, Badges */}
+                      <div className="space-y-1.5 min-w-[220px]">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono font-bold text-teal-accent text-sm">
+                            {t.teamCode}
+                          </span>
+                          {isApproved && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-status-green/15 text-status-green border border-status-green/30 flex items-center gap-1">
+                              <CheckCircle2 className="w-3 h-3" />
+                              CREDENTIALS SENT
                             </span>
-                            {t.razorpayPaymentId && (
-                              <div className="text-[10px] text-teal-accent font-mono" title="12-Digit UPI Transaction UTR">
-                                UTR: <span className="font-bold">{t.razorpayPaymentId}</span>
-                              </div>
-                            )}
+                          )}
+                          {isPendingApproval && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-accent/20 text-orange-accent border border-orange-accent/40 animate-pulse flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              UTR AWAITING VERIFICATION
+                            </span>
+                          )}
+                          {!isApproved && !isPendingApproval && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-navy-deep text-brand-dim border border-navy-border">
+                              PAYMENT PENDING
+                            </span>
+                          )}
+                          {t.isDisqualified && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-status-red/20 text-status-red border border-status-red/40">
+                              DISQUALIFIED
+                            </span>
+                          )}
+                        </div>
+                        <div className="font-display font-bold text-base text-brand-white">
+                          {t.teamName}
+                        </div>
+                        <div className="text-xs text-brand-muted font-mono">
+                          Theme: <span className="text-brand-white">{t.track?.shortName || t.domainId || "Unassigned"}</span>
+                        </div>
+                      </div>
+
+                      {/* Middle 1: Leader & Members count */}
+                      <div className="text-xs space-y-1 min-w-[180px]">
+                        <span className="text-[10px] uppercase font-mono text-brand-dim block">Team Leader</span>
+                        <div className="font-medium text-brand-white">{t.members?.[0]?.name || t.leaderEmail}</div>
+                        <div className="text-teal-accent font-mono text-[11px]">{t.leaderEmail}</div>
+                        <div className="text-brand-dim font-mono text-[11px]">{t.leaderPhone}</div>
+                      </div>
+
+                      {/* Middle 2: Payment details */}
+                      <div className="text-xs space-y-1 min-w-[160px] font-mono">
+                        <span className="text-[10px] uppercase text-brand-dim block">Payment</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className={`font-bold ${t.paymentStatus === "CONFIRMED" ? "text-status-green" : "text-orange-accent"}`}>
+                            {t.paymentStatus === "CONFIRMED" ? "CONFIRMED" : "PENDING"} (₹{t.paymentAmount || 100})
+                          </span>
+                        </div>
+                        {t.razorpayPaymentId ? (
+                          <div className="text-[11px] text-teal-accent bg-bg-secondary px-2 py-0.5 rounded border border-navy-border inline-block">
+                            UTR: <span className="font-bold">{t.razorpayPaymentId}</span>
                           </div>
                         ) : (
                           <button
                             onClick={() => setPaymentModal(t)}
-                            className="px-2 py-0.5 rounded text-[10px] bg-orange-accent/15 text-orange-accent border border-orange-accent/30 hover:bg-orange-accent/25 transition-colors"
+                            className="text-[10px] text-orange-accent hover:underline block"
                           >
-                            PENDING (Mark Paid)
+                            + Add Offline Payment
                           </button>
                         )}
-                      </td>
-                      <td className="py-3.5 px-4 text-brand-muted">{t.attemptsUsed} / 3</td>
-                      <td className="py-3.5 px-4 font-bold text-teal-accent">
-                        {t.bestScore > 0 ? t.bestScore.toFixed(1) : "--"}
-                      </td>
-                      <td className="py-3.5 px-4 text-right space-x-2">
+                      </div>
+
+                      {/* Middle 3: Score & Attempts */}
+                      <div className="text-xs text-center min-w-[70px] font-mono">
+                        <span className="text-[10px] uppercase text-brand-dim block">Score</span>
+                        <div className="font-bold text-base text-teal-accent">
+                          {t.bestScore > 0 ? t.bestScore.toFixed(1) : "--"}
+                        </div>
+                        <div className="text-[10px] text-brand-dim">{t.attemptsUsed || 0}/3 tries</div>
+                      </div>
+
+                      {/* Right: Actions */}
+                      <div className="flex flex-wrap items-center gap-2 justify-end">
+                        {/* 1. Generate / View Credentials button */}
+                        <button
+                          onClick={() => {
+                            setCredentialModal(t);
+                            setGeneratedCred(null);
+                            setCredentialNote("");
+                          }}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-md ${
+                            isPendingApproval
+                              ? "bg-gradient-to-r from-teal-accent to-status-green text-bg-primary hover:brightness-110 shadow-[0_0_12px_rgba(47,230,214,0.3)] animate-pulse"
+                              : isApproved
+                              ? "bg-bg-secondary hover:bg-navy-deep border border-status-green/50 text-status-green"
+                              : "bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white"
+                          }`}
+                        >
+                          <Key className="w-3.5 h-3.5" />
+                          <span>{isApproved ? "View Credentials" : "Generate Credentials"}</span>
+                        </button>
+
+                        {/* 2. Expand/Collapse Members button */}
+                        <button
+                          onClick={() => setExpandedTeam(isExpanded ? null : t.teamCode)}
+                          className="px-3 py-2 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono transition-colors flex items-center gap-1.5"
+                        >
+                          <Users className="w-3.5 h-3.5 text-teal-accent" />
+                          <span>{isExpanded ? "Hide Details" : `Members (${t.members?.length || 0})`}</span>
+                        </button>
+
+                        {/* 3. Override score */}
                         <button
                           onClick={() => {
                             setOverrideModal(t);
                             setOverrideScore(t.bestScore || 85);
                             setOverrideReason("");
                           }}
-                          className="px-2.5 py-1 rounded bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-[11px]"
+                          className="px-2.5 py-2 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-muted hover:text-brand-white text-xs transition-colors"
+                          title="Override Score"
                         >
-                          Override Score
+                          Score
                         </button>
+
+                        {/* 4. Disqualify / Reinstate */}
                         <button
                           onClick={() =>
                             handleAdminAction("TOGGLE_DISQUALIFY", {
@@ -517,20 +627,120 @@ export default function AdminPortal() {
                               reason: "Admin manual toggle",
                             })
                           }
-                          className={`px-2.5 py-1 rounded text-[11px] font-bold ${
+                          className={`px-2.5 py-2 rounded-xl text-xs font-bold transition-colors ${
                             t.isDisqualified
-                              ? "bg-red-500 text-white"
-                              : "bg-navy-deep text-brand-muted hover:text-red-400 border border-navy-border"
+                              ? "bg-status-red text-white hover:bg-red-600"
+                              : "bg-bg-secondary text-brand-muted hover:text-status-red border border-navy-border"
                           }`}
+                          title={t.isDisqualified ? "Reinstate Team" : "Disqualify Team"}
                         >
-                          {t.isDisqualified ? "DISQUALIFIED" : "Disqualify"}
+                          {t.isDisqualified ? "Disqualified" : "Disqualify"}
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </div>
+
+                    {/* EXPANDED SECTION: Complete Member Roster & Verification Details */}
+                    {isExpanded && (
+                      <div className="border-t border-navy-border/60 bg-bg-secondary/40 p-5 space-y-4 animate-fade-in">
+                        <div className="flex items-center justify-between pb-2 border-b border-navy-border/40">
+                          <span className="text-xs font-mono uppercase tracking-wider text-teal-accent font-bold flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            Registered Team Members ({t.members?.length || 0})
+                          </span>
+                          <span className="text-xs font-mono text-brand-dim">
+                            Registered: {new Date(t.createdAt).toLocaleString("en-IN")}
+                          </span>
+                        </div>
+
+                        {/* Members Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {(t.members && t.members.length > 0 ? t.members : [
+                            { name: t.teamName, email: t.leaderEmail, phone: t.leaderPhone, collegeName: "N/A", rollNumber: "N/A", branch: "N/A", year: "N/A" }
+                          ]).map((m: any, mIdx: number) => (
+                            <div
+                              key={mIdx}
+                              className="p-4 rounded-xl bg-bg-primary border border-navy-border/80 space-y-2 text-xs"
+                            >
+                              <div className="flex items-center justify-between pb-1.5 border-b border-navy-border/40">
+                                <div className="flex items-center gap-2">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold ${
+                                    mIdx === 0
+                                      ? "bg-teal-accent/20 text-teal-accent border border-teal-accent/30"
+                                      : "bg-navy-deep text-brand-muted border border-navy-border"
+                                  }`}>
+                                    {mIdx === 0 ? "TEAM LEADER" : `MEMBER ${mIdx + 1}`}
+                                  </span>
+                                  <span className="font-bold text-brand-white text-sm">{m.name}</span>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 font-mono text-[11px]">
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">College</span>
+                                  <span className="text-brand-white font-sans">{m.collegeName || "Vardhaman College of Eng."}</span>
+                                </div>
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">Roll Number</span>
+                                  <span className="text-teal-accent font-bold">{m.rollNumber || "N/A"}</span>
+                                </div>
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">Department / Branch</span>
+                                  <span className="text-brand-white">{m.branch || "CSE"}</span>
+                                </div>
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">Academic Year</span>
+                                  <span className="text-brand-white">{m.year || "3rd Year"}</span>
+                                </div>
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">Email</span>
+                                  <span className="text-brand-white break-all">{m.email}</span>
+                                </div>
+                                <div>
+                                  <span className="text-brand-dim block text-[10px] uppercase">Phone</span>
+                                  <span className="text-brand-white">{m.phone}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Payment & Security Audit Box */}
+                        <div className="p-4 rounded-xl bg-bg-primary border border-navy-border/80 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+                          <div className="space-y-1">
+                            <span className="text-brand-dim block text-[10px] uppercase">UTR / Payment Verification Status</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-brand-white font-bold">UTR Reference:</span>
+                              <span className="text-teal-accent font-bold text-sm">{t.razorpayPaymentId || "None"}</span>
+                              <span className="text-brand-dim">|</span>
+                              <span className="text-brand-white">Fee: ₹{t.paymentAmount || 100}</span>
+                              <span className="text-brand-dim">|</span>
+                              <span className="text-brand-white">Status:</span>
+                              <span className={t.paymentStatus === "CONFIRMED" ? "text-status-green font-bold" : "text-orange-accent"}>
+                                {t.paymentStatus}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => {
+                                setCredentialModal(t);
+                                setGeneratedCred(null);
+                                setCredentialNote("");
+                              }}
+                              className="px-4 py-2 rounded-xl bg-teal-accent text-bg-primary font-bold text-xs hover:brightness-110 transition-all flex items-center gap-1.5"
+                            >
+                              <Key className="w-3.5 h-3.5" />
+                              <span>{isApproved ? "Re-open Credentials Email" : "Approve & Generate Credentials"}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       )}
@@ -1288,6 +1498,216 @@ export default function AdminPortal() {
           </div>
         </div>
       )}
+
+      {/* MODAL: CREDENTIAL GENERATION & EMAIL DELIVERY */}
+      {credentialModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg rounded-3xl bg-bg-card border border-teal-accent/40 p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[92vh]">
+            {!generatedCred ? (
+              <>
+                <div className="flex items-center gap-3 pb-4 border-b border-navy-border/60">
+                  <div className="w-12 h-12 rounded-2xl bg-teal-accent/20 border border-teal-accent/40 flex items-center justify-center text-teal-accent shrink-0">
+                    <Key className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-display font-bold text-lg text-brand-white">
+                      Verify Payment &amp; Generate Credentials
+                    </h3>
+                    <p className="text-xs text-brand-muted font-mono">
+                      {credentialModal.teamCode} · {credentialModal.teamName}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Team & Payment Summary to verify */}
+                <div className="p-4 rounded-2xl bg-bg-secondary border border-orange-accent/30 space-y-3 text-xs font-mono">
+                  <div className="flex items-center justify-between text-orange-accent font-bold">
+                    <span>Payment Verification Checklist</span>
+                    <span>Amount: ₹{credentialModal.paymentAmount || 100}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="text-brand-dim block text-[10px]">Leader Email</span>
+                      <span className="text-brand-white font-bold">{credentialModal.leaderEmail}</span>
+                    </div>
+                    <div>
+                      <span className="text-brand-dim block text-[10px]">Leader Phone</span>
+                      <span className="text-brand-white">{credentialModal.leaderPhone}</span>
+                    </div>
+                    <div>
+                      <span className="text-brand-dim block text-[10px]">Submitted UTR</span>
+                      <span className="text-teal-accent font-bold text-sm">{credentialModal.razorpayPaymentId || "Manual Verification"}</span>
+                    </div>
+                    <div>
+                      <span className="text-brand-dim block text-[10px]">Domain Track</span>
+                      <span className="text-brand-white">{credentialModal.domainId || "theme-1-biomedical-ai"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-orange-accent/10 border border-orange-accent/30 text-xs text-orange-accent space-y-1.5">
+                  <div className="font-bold flex items-center gap-1.5">
+                    <ShieldAlert className="w-4 h-4 shrink-0" />
+                    <span>Organizer Security Protocol:</span>
+                  </div>
+                  <p className="text-[11px] leading-relaxed">
+                    1. Verify the 12-digit UTR against your UPI/bank statement.<br />
+                    2. Confirm the payment of ₹{credentialModal.paymentAmount || 100} was credited.<br />
+                    3. Clicking generate will activate their login and generate their official credentials.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs text-brand-muted font-mono block">
+                    Admin Verification Note (saved to audit trail):
+                  </label>
+                  <input
+                    type="text"
+                    value={credentialNote}
+                    onChange={(e) => setCredentialNote(e.target.value)}
+                    placeholder="e.g. Verified on PhonePe statement at 12:45 PM"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white focus:outline-none focus:border-teal-accent"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    onClick={() => setCredentialModal(null)}
+                    className="px-4 py-3 rounded-xl bg-bg-secondary border border-navy-border text-brand-muted hover:text-brand-white text-xs font-mono transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setGeneratingCred(true);
+                      try {
+                        const res = await fetch("/api/admin/actions", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            action: "APPROVE_AND_GENERATE_CREDENTIALS",
+                            payload: {
+                              teamCode: credentialModal.teamCode,
+                              adminNote: credentialNote || "Payment verified by admin",
+                            },
+                          }),
+                        });
+                        const resData = await res.json();
+                        setGeneratingCred(false);
+                        if (!res.ok) {
+                          alert(resData.error || "Failed to generate credentials.");
+                          return;
+                        }
+                        setGeneratedCred(resData);
+                        fetchAdminData();
+                      } catch {
+                        setGeneratingCred(false);
+                        alert("Network error generating credentials.");
+                      }
+                    }}
+                    disabled={generatingCred}
+                    className="flex-1 py-3 rounded-xl bg-gradient-to-r from-teal-accent to-status-green text-bg-primary font-bold text-xs font-mono shadow-glow hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {generatingCred ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-bg-primary border-t-transparent rounded-full animate-spin" />
+                        <span>Generating &amp; Activating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Confirm Payment &amp; Generate Credentials</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            ) : (
+              /* Success view with credentials and email template */
+              <div className="space-y-5 text-center">
+                <div className="w-14 h-14 rounded-full bg-status-green/20 border border-status-green/40 flex items-center justify-center text-status-green mx-auto shadow-glow">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+
+                <div className="space-y-1">
+                  <h3 className="font-display font-bold text-xl text-brand-white">
+                    Credentials Generated &amp; Activated!
+                  </h3>
+                  <p className="text-xs text-brand-muted">
+                    Account is now active. Send the official confirmation email to the team leader below.
+                  </p>
+                </div>
+
+                {/* Credentials Display Card */}
+                <div className="p-5 rounded-2xl bg-bg-secondary border border-teal-accent/30 space-y-3 text-left font-mono text-xs">
+                  <div className="flex items-center justify-between pb-2 border-b border-navy-border/40">
+                    <span className="text-brand-dim uppercase text-[10px]">Team Name</span>
+                    <span className="font-bold text-brand-white">{generatedCred.teamName}</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-navy-border/40">
+                    <span className="text-brand-dim uppercase text-[10px]">Login ID / Team Code</span>
+                    <span className="font-bold text-teal-accent text-sm">{generatedCred.loginUsername}</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-2 border-b border-navy-border/40">
+                    <span className="text-brand-dim uppercase text-[10px]">Secure Password</span>
+                    <span className="font-bold text-status-green text-sm">{generatedCred.loginPassword}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-brand-dim uppercase text-[10px]">Send To (Leader Email)</span>
+                    <span className="font-bold text-brand-white text-xs">{generatedCred.leaderEmail}</span>
+                  </div>
+                </div>
+
+                {/* Email Template Action */}
+                <button
+                  onClick={() => {
+                    const emailBody = `Subject: OptiForge 2026 — Registration Confirmed & Login Credentials
+
+Dear Team ${credentialModal.teamName},
+
+Congratulations! Your registration and payment for OptiForge 2026 have been verified by the IEEE EMBS × IEEE CIS organizing committee.
+
+Here are your official team login credentials:
+• Portal Login URL: https://optiforge-2026.vercel.app/login
+• Team Code (Username): ${generatedCred.loginUsername}
+• Password: ${generatedCred.loginPassword}
+• Innovation Domain: ${credentialModal.track?.shortName || credentialModal.domainId || "Biomedical AI"}
+• Event Date: 30 September 2026 (10:00 AM IST)
+• Venue: Vardhaman College of Engineering
+
+IMPORTANT:
+- Keep this password secure within your team.
+- Bring your college ID cards on event day for verification at the registration desk.
+
+Best regards,
+Organizing Committee · OptiForge 2026
+IEEE EMBS × IEEE CIS Student Branches
+Vardhaman College of Engineering`;
+
+                    navigator.clipboard.writeText(emailBody);
+                    alert("Complete email template copied to clipboard! You can paste and send it to " + generatedCred.leaderEmail);
+                  }}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00629B] to-[#772583] text-white font-bold text-xs font-mono shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                >
+                  <Copy className="w-4 h-4" />
+                  <span>Copy Official Credentials Email Template</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCredentialModal(null);
+                    setGeneratedCred(null);
+                  }}
+                  className="w-full py-3 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono transition-colors"
+                >
+                  Done — Close Modal
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
