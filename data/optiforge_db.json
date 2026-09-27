@@ -3,72 +3,72 @@
     {
       "id": "12b12ab3-a63c-4ee3-8869-ac9c613bf0a0",
       "username": "admin",
-      "password": "$2b$10$xB4QPmHs2jzao6YqtB0Sf.AFaU9HYYH1ZRFWf8KD0wMJYJQAvepLe",
+      "password": "$2b$10$EH2wjldp5GoykCH5WMmncOQCwPDvyVylT/xYsxI5gAbYbpzw4DtOi",
       "name": "Lead Organizer (IEEE EMBS × CIS)",
       "role": "ADMIN",
       "assignedDomainId": null,
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.311Z"
+      "updatedAt": "2026-09-27T10:14:32.551Z"
     },
     {
       "id": "aea26d92-5db8-46cd-adec-d7ada6953fc5",
       "username": "judge_t1",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Dr. K. Srinivas (Biomedical AI & Neural Opt Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-1-biomedical-ai",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.315Z"
+      "updatedAt": "2026-09-27T10:14:32.555Z"
     },
     {
       "id": "7a87cf89-effc-451c-9f6e-cfc72132d25c",
       "username": "judge_t2",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Prof. S. Reddy (Biomedical Signals & ECG/EEG Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-2-signals",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.317Z"
+      "updatedAt": "2026-09-27T10:14:32.557Z"
     },
     {
       "id": "ef298296-0471-4bcc-8929-9be91d774f2c",
       "username": "judge_t3",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Dr. A. Sharma (Medical Imaging & Computer Vision Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-3-imaging",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.320Z"
+      "updatedAt": "2026-09-27T10:14:32.560Z"
     },
     {
       "id": "7786fd97-788c-4e60-8b8e-22425a20c0c0",
       "username": "judge_t4",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Prof. M. Anitha (Machine Learning & AI Theory Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-4-ml-ai",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.324Z"
+      "updatedAt": "2026-09-27T10:14:32.563Z"
     },
     {
       "id": "afa6c1ba-ca17-4332-9318-8f24a1cd3f4c",
       "username": "judge_t5",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Dr. T. Patel (Intelligent Systems & Autonomous Computing Expert)",
       "role": "JUDGE",
       "assignedDomainId": "theme-5-autonomous",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.326Z"
+      "updatedAt": "2026-09-27T10:14:32.565Z"
     },
     {
       "id": "6e20e219-3f75-4eb3-9140-762c90a3a8fc",
       "username": "judge_t6",
-      "password": "$2b$10$tvd.EIVTyJk4.vklVFJx0O2u9cWsB5.Y9nrFPBI0LWV1TKkfMvPsG",
+      "password": "$2b$10$vub1R0IqV1zqP397Va7aJOd5FQwTX6GNi7SGsiwGBKu3U/pLo2oxq",
       "name": "Dr. N. Gupta (CIS & EMBS Open Innovation Jury Chair)",
       "role": "JUDGE",
       "assignedDomainId": "theme-6-open-innovation",
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:43:39.330Z"
+      "updatedAt": "2026-09-27T10:14:32.567Z"
     }
   ],
   "teams": [

@@ -174,6 +174,12 @@ export async function POST(req: Request) {
       registrationToken,
     });
   } catch (err) {
+    if (err instanceof Error && err.message.includes("ConcurrentModificationException")) {
+      return NextResponse.json(
+        { error: "Server is busy processing another registration. Please try submitting again." },
+        { status: 409 }
+      );
+    }
     return NextResponse.json(
       { error: "Server error while registering team. Please try again." },
       { status: 500 }

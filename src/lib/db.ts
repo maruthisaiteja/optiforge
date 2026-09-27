@@ -223,19 +223,25 @@ async function ensureDb(): Promise<DatabaseSchema> {
         _hasTableChecked = true;
       }
 
-      const rows = await sql`SELECT data FROM optiforge_store WHERE id = 'main'`;
+      const rows = await sql`SELECT data, updated_at FROM optiforge_store WHERE id = 'main'`;
       if (rows && rows.length > 0 && rows[0].data) {
         const parsed = rows[0].data as DatabaseSchema;
         if (Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
+          Object.defineProperty(parsed, '__last_updated', { value: rows[0].updated_at, enumerable: false });
           try {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
             fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
           } catch {}
           return filterTestTeams(parsed);
         }
+      } else {
+        // If the table is completely empty (first time setup on Postgres), let it fall back
+        console.warn("[OptiForge DB] Postgres is connected but no data found. Falling back to seed.");
       }
     } catch (err) {
-      console.warn("[OptiForge DB] Postgres read fallback to local/seed:", err);
+      console.error("[OptiForge DB] FATAL: Postgres read failed! Halting to prevent data wipe.", err);
+      // Critical: If Postgres fails, DO NOT fall back to local seed file because saveDb will overwrite the real DB.
+      throw new Error("Database connection failed. Please try again.");
     }
   }
 
@@ -350,14 +356,34 @@ async function saveDb(data: DatabaseSchema): Promise<void> {
         _hasTableChecked = true;
       }
 
-      await sql`
-        INSERT INTO optiforge_store (id, data, updated_at)
-        VALUES ('main', ${JSON.stringify(data)}, NOW())
-        ON CONFLICT (id) DO UPDATE SET
-          data = EXCLUDED.data,
-          updated_at = NOW();
-      `;
+      const lastUpdated = (data as any).__last_updated;
+      let res;
+      
+      if (lastUpdated) {
+        res = await sql`
+          UPDATE optiforge_store
+          SET data = ${JSON.stringify(data)}, updated_at = NOW()
+          WHERE id = 'main' AND updated_at = ${lastUpdated}
+          RETURNING id
+        `;
+      } else {
+        res = await sql`
+          INSERT INTO optiforge_store (id, data, updated_at)
+          VALUES ('main', ${JSON.stringify(data)}, NOW())
+          ON CONFLICT (id) DO UPDATE SET
+            data = EXCLUDED.data,
+            updated_at = NOW()
+          RETURNING id
+        `;
+      }
+
+      if (lastUpdated && res.length === 0) {
+        throw new Error("ConcurrentModificationException: The database was modified by another request. Please try again.");
+      }
     } catch (err) {
+      if (err instanceof Error && err.message.includes("ConcurrentModificationException")) {
+        throw err; // Bubble up OCC errors so callers can retry or fail gracefully
+      }
       console.error("[OptiForge DB] Postgres persistence write error:", err);
     }
   }
