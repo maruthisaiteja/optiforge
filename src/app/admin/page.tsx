@@ -187,14 +187,12 @@ export default function AdminPortal() {
   const weightJudge = Number(data?.settings?.find((s: any) => s.key === "weight_judge")?.value || 40);
 
   const tournamentStages = [
-    { key: "STAGE_1_STRATEGY", label: "Stage 1", time: "09:00 - 09:30", name: "Problem Selection & Strategy" },
-    { key: "STAGE_2_DISTRIBUTION", label: "Stage 2", time: "09:30 - 10:00", name: "Starter Code & Test Suite Distribution" },
-    { key: "STAGE_3_ATTEMPT_1", label: "Stage 3", time: "10:00 - 11:15", name: "Attempt 1 — Baseline Implementation" },
-    { key: "STAGE_4_ATTEMPT_2", label: "Stage 4", time: "11:30 - 12:45", name: "Hidden Shift #1 Injected & Attempt 2" },
-    { key: "STAGE_5_ATTEMPT_3", label: "Stage 5", time: "13:15 - 14:15", name: "Hidden Shift #2 Injected & Attempt 3" },
-    { key: "STAGE_6_FREEZE", label: "Stage 6", time: "14:15", name: "Leaderboard Freeze & Final Submissions Locked" },
-    { key: "STAGE_7_LIVE_PATCH", label: "Stage 7", time: "14:30 - 15:00", name: "The Live Patch Round (Surprise Constraint)" },
-    { key: "STAGE_8_VIVA", label: "Stage 8", time: "15:00 - 16:00", name: "Judges' Viva Q&A & Final Results" },
+    { key: "STAGE_1_ROUND_1", label: "Stage 1", time: "09:00 - 12:15", name: "1st Round" },
+    { key: "STAGE_2_SUBMISSION_1", label: "Stage 2", time: "12:15 - 12:30", name: "Online Submission for AI Evaluation" },
+    { key: "STAGE_3_LUNCH", label: "Stage 3", time: "12:30 - 13:15", name: "Lunch Break" },
+    { key: "STAGE_4_ROUND_2", label: "Stage 4", time: "13:15 - 14:45", name: "2nd Round" },
+    { key: "STAGE_5_SUBMISSION_2", label: "Stage 5", time: "14:45 - 15:00", name: "Online Submission for AI Evaluation" },
+    { key: "STAGE_6_EXPERT_EVAL", label: "Stage 6", time: "15:00 - 16:00", name: "Expert Panel Evaluation" },
   ];
 
   return (

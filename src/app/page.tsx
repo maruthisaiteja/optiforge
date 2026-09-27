@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -1149,6 +1149,44 @@ export default function LandingPage() {
                 style={{ backgroundColor: `${$.success}10`, color: $.success, border: `1px solid ${$.success}30` }}
               >
                 Every verified participant receives a certificate — regardless of final rank!
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* EVENT COORDINATORS & LINKS */}
+        <section className="py-12 max-w-5xl mx-auto px-4 sm:px-8">
+          <div className="p-8 rounded-3xl bg-white border shadow-sm space-y-6" style={{ borderColor: $.border }}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-xl font-bold" style={{ color: $.navy }}>Event Coordinators & Links</h3>
+                <p className="text-sm text-gray-500">Reach out for any event-related queries</p>
+              </div>
+              <a
+                href="https://ieee-embs-vce.vercel.app/"
+                target="_blank"
+                rel="noreferrer"
+                className="px-5 py-2.5 rounded-xl font-bold text-sm shadow-sm hover:-translate-y-0.5 transition-transform inline-flex items-center gap-2"
+                style={{ backgroundColor: $.ieeeBlue, color: "#FFFFFF" }}
+              >
+                IEEE EMBS - Vardhaman College of Engineering Student Chapter
+              </a>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t" style={{ borderColor: $.border }}>
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold uppercase tracking-wider" style={{ color: $.slate }}>Student Coordinators</h4>
+                <ul className="space-y-2 text-sm" style={{ color: $.navy }}>
+                  <li><strong>Maruthi Sai Teja</strong> (EMBS) - 9490298994</li>
+                  <li><strong>Vuggidi Sai Varshith</strong> (EMBS) - 9059573313</li>
+                  <li><strong>P.Srinivas</strong> (CIS) - 6301476793</li>
+                </ul>
+              </div>
+              <div className="space-y-3">
+                <h4 className="text-sm font-bold uppercase tracking-wider" style={{ color: $.slate }}>Faculty Coordinators</h4>
+                <ul className="space-y-2 text-sm" style={{ color: $.navy }}>
+                  <li><strong>Mrs. Polisetty Swetha</strong> (EMBS)</li>
+                  <li><strong>Mrs. Dr Kathirisetty Nikhila</strong> (CIS)</li>
+                </ul>
               </div>
             </div>
           </div>

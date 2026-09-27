@@ -42,7 +42,7 @@ export default function CertificateTemplate({
           className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-navy-deep hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent text-xs font-mono transition-all shadow-glow"
         >
           <Printer className="w-3.5 h-3.5" />
-          <span>Print / Save as PDF</span>
+          <span>Download as PDF</span>
         </button>
       </div>
 
