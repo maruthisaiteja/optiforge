@@ -217,17 +217,21 @@ async function ensureDb(): Promise<DatabaseSchema> {
           CREATE TABLE IF NOT EXISTS optiforge_store (
             id TEXT PRIMARY KEY,
             data JSONB NOT NULL,
-            updated_at TIMESTAMPTZ DEFAULT NOW()
+            updated_at TIMESTAMPTZ DEFAULT NOW(),
+            version INT DEFAULT 1
           );
         `;
+        try {
+          await sql`ALTER TABLE optiforge_store ADD COLUMN IF NOT EXISTS version INT DEFAULT 1;`;
+        } catch {}
         _hasTableChecked = true;
       }
 
-      const rows = await sql`SELECT data, updated_at FROM optiforge_store WHERE id = 'main'`;
+      const rows = await sql`SELECT data, version FROM optiforge_store WHERE id = 'main'`;
       if (rows && rows.length > 0 && rows[0].data) {
         const parsed = rows[0].data as DatabaseSchema;
         if (Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
-          Object.defineProperty(parsed, '__last_updated', { value: rows[0].updated_at, enumerable: false });
+          Object.defineProperty(parsed, '__db_version', { value: rows[0].version || 1, enumerable: false });
           try {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
             fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
@@ -356,28 +360,29 @@ async function saveDb(data: DatabaseSchema): Promise<void> {
         _hasTableChecked = true;
       }
 
-      const lastUpdated = (data as any).__last_updated;
+      const dbVersion = (data as any).__db_version;
       let res;
       
-      if (lastUpdated) {
+      if (dbVersion !== undefined) {
         res = await sql`
           UPDATE optiforge_store
-          SET data = ${JSON.stringify(data)}, updated_at = NOW()
-          WHERE id = 'main' AND updated_at = ${lastUpdated}
+          SET data = ${JSON.stringify(data)}, updated_at = NOW(), version = version + 1
+          WHERE id = 'main' AND version = ${dbVersion}
           RETURNING id
         `;
       } else {
         res = await sql`
-          INSERT INTO optiforge_store (id, data, updated_at)
-          VALUES ('main', ${JSON.stringify(data)}, NOW())
+          INSERT INTO optiforge_store (id, data, updated_at, version)
+          VALUES ('main', ${JSON.stringify(data)}, NOW(), 1)
           ON CONFLICT (id) DO UPDATE SET
             data = EXCLUDED.data,
-            updated_at = NOW()
+            updated_at = NOW(),
+            version = optiforge_store.version + 1
           RETURNING id
         `;
       }
 
-      if (lastUpdated && res.length === 0) {
+      if (dbVersion !== undefined && res.length === 0) {
         throw new Error("ConcurrentModificationException: The database was modified by another request. Please try again.");
       }
     } catch (err) {
