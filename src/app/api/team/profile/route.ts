@@ -61,7 +61,6 @@ export async function GET() {
         expectedOutputChecklist: rawTrack.expectedOutputChecklist,
         description: rawTrack.description,
         statementMarkdown: rawTrack.statementMarkdown,
-        starterNotebookUrl: rawTrack.starterNotebookUrl,
         benchmarkType: rawTrack.benchmarkType,
         // Unlocked shifts based on tournament progression
         activeShiftAttempt2: showShift1 ? rawTrack.hiddenShiftAttempt2 : null,

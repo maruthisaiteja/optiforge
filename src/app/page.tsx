@@ -148,7 +148,6 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Evolutionary Neural Architecture Search & Hybrid GA-ML",
       society: "IEEE EMBS × IEEE CIS",
-      starterFile: "/starter/starter_p1_scheduling.py",
       context:
         "Modern clinical workflows generate continuous multidimensional telemetry, patient records, and biomarker streams. Predictive models must accurately evaluate patient outcomes, survival risk, and treatment responsiveness under clinical uncertainty.",
       coreChallenge:
@@ -181,7 +180,6 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Fuzzy Signal Classifier + Particle Swarm Optimizer",
       society: "IEEE EMBS",
-      starterFile: "/starter/starter_p6_triage.py",
       context:
         "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
       coreChallenge:
@@ -214,7 +212,6 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Evolutionary Segmentation & Hybrid Vision Filters",
       society: "IEEE EMBS",
-      starterFile: "/starter/starter_p5_swarm.py",
       context:
         "Clinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.",
       coreChallenge:
@@ -247,7 +244,6 @@ export default function LandingPage() {
       difficulty: "Intermediate–Advanced",
       technique: "Multi-Objective Heuristics + Deep Evolutionary Networks",
       society: "IEEE CIS",
-      starterFile: "/starter/starter_p2_drone.py",
       context:
         "Intelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.",
       coreChallenge:
@@ -280,7 +276,6 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Swarm Intelligence + Adaptive Multi-Agent Heuristics",
       society: "IEEE CIS",
-      starterFile: "/starter/starter_p4_grid.py",
       context:
         "Decentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.",
       coreChallenge:
@@ -314,7 +309,6 @@ export default function LandingPage() {
       difficulty: "Advanced",
       technique: "Hybrid Evolutionary-Fuzzy Frameworks",
       society: "IEEE CIS & IEEE EMBS Only",
-      starterFile: "/starter/starter_p3_hospital.py",
       context:
         "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
       coreChallenge:
@@ -339,11 +333,19 @@ export default function LandingPage() {
   const faqs = [
     {
       q: "Who can participate?",
-      a: "Any registered student from any institution in India. A team of 2–4 members is required. No prior competition experience needed.",
+      a: "Any registered student from any institution in India. A team of 2–4 members is required.",
     },
     {
       q: "What is the registration fee?",
-      a: "₹100 per team member, payable at the venue on the day of the event.",
+      a: "₹100 per participant. Payment must be completed online via UPI during registration.",
+    },
+    {
+      q: "When is the event?",
+      a: "30 September 2026, from 9:00 AM to 4:00 PM IST.",
+    },
+    {
+      q: "Where is the event?",
+      a: "Vardhaman College of Engineering, Kacharam, Shamshabad, Hyderabad, Telangana – 501218.",
     },
     {
       q: "How is scoring done?",
@@ -352,10 +354,6 @@ export default function LandingPage() {
     {
       q: "Do we need to build a web frontend or deploy an API?",
       a: "No! OptiForge tests pure algorithmic optimization. You submit your Python script (.py) or notebook (.ipynb). Our sandboxed engine executes it against held-out benchmark datasets.",
-    },
-    {
-      q: "What perks and certificates do participants receive?",
-      a: "All verified participants receive authenticated E-Certificates of Participation & Excellence issued jointly by IEEE EMBS Student Chapter and IEEE CIS Chapter, Vardhaman College of Engineering, along with cash prizes, trophies, and tech goodies for podium teams.",
     },
   ];
 
@@ -488,7 +486,7 @@ export default function LandingPage() {
                 style={{ color: $.navy }}
               >
                 <Zap className="w-3.5 h-3.5" style={{ color: $.cyan }} />
-                <span>₹100/member (At venue)</span>
+                <span>₹100 per participant · Online UPI Payment</span>
               </div>
               <div
                 className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium shadow-sm transition-transform hover:-translate-y-1 hover:shadow-md glass-card-subtle cursor-default"
@@ -586,7 +584,7 @@ export default function LandingPage() {
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <span className="relative z-10 flex items-center gap-2">
-                  Register Now (₹100/member)
+                  Register Now · ₹100/person
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </span>
               </Link>
@@ -720,22 +718,14 @@ export default function LandingPage() {
                 </div>
 
                 {/* Card footer buttons */}
-                <div className="relative z-10 pt-4 border-t border-ofBorder/60 flex items-center justify-between gap-2">
+                <div className="relative z-10 pt-4 border-t border-ofBorder/60 flex items-center justify-end">
                   <button
                     onClick={() => setSelectedProblem(item)}
-                    className="px-3 py-2 rounded-xl bg-ofSoftBlue hover:bg-ofBorder/60 border border-ofBorder text-xs text-ofNavy flex items-center gap-1.5 transition-colors font-medium"
+                    className="w-full sm:w-auto px-4 py-2 rounded-xl bg-ofSoftBlue hover:bg-ofBorder/60 border border-ofBorder text-xs text-ofNavy flex items-center justify-center gap-1.5 transition-colors font-medium"
                   >
                     <Eye className="w-3.5 h-3.5 text-ieeeBlue" />
                     <span>Full Spec</span>
                   </button>
-                  <a
-                    href={item.starterFile}
-                    download
-                    className="px-3 py-2 rounded-xl bg-ieeeBlue/10 hover:bg-ieeeBlue/20 border border-ieeeBlue/30 text-xs text-ieeeBlue flex items-center gap-1.5 transition-colors font-mono font-semibold"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Starter .py</span>
-                  </a>
                 </div>
               </div>
             ))}
@@ -968,7 +958,98 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 7. READY TO COMPETE CTA (MATCHING LIVE SITE BOTTOM CTA) */}
+        {/* BEFORE YOU ARRIVE & PARTICIPANT INFORMATION */}
+        <section className="py-12 max-w-4xl mx-auto px-4 sm:px-8 space-y-10">
+          <div className="text-center space-y-3">
+            <h2
+              className="text-3xl font-black"
+              style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
+            >
+              Before You Arrive
+            </h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: $.slate }}>
+              Essential event day details, checklist, and arrival instructions for OptiForge 2026.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Event Overview Card */}
+            <div
+              className="rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm"
+              style={{ background: $.white, border: `1px solid ${$.border}` }}
+            >
+              <h3 className="font-bold text-lg" style={{ color: $.navy }}>
+                OPTIFORGE 2026
+              </h3>
+              <div className="space-y-2 text-sm" style={{ color: $.slate }}>
+                <div><strong>Date:</strong> 30 September 2026</div>
+                <div><strong>Time:</strong> 9:00 AM – 4:00 PM IST</div>
+                <div><strong>Venue:</strong> Vardhaman College of Engineering</div>
+                <div><strong>Location:</strong> Kacharam, Shamshabad, Hyderabad, Telangana – 501218</div>
+                <div><strong>Team Size:</strong> 2–4 Participants</div>
+                <div><strong>Registration Fee:</strong> ₹100 per Participant</div>
+                <div><strong>Payment:</strong> Online via UPI</div>
+              </div>
+            </div>
+
+            {/* Checklist Card */}
+            <div
+              className="rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm"
+              style={{ background: $.white, border: `1px solid ${$.border}` }}
+            >
+              <h3 className="font-bold text-lg" style={{ color: $.navy }}>
+                What Participants Should Bring
+              </h3>
+              <ul className="space-y-2 text-sm list-disc pl-5" style={{ color: $.slate }}>
+                <li>Valid college/student ID</li>
+                <li>Laptop</li>
+                <li>Laptop charger</li>
+                <li>Required development environment/tools</li>
+                <li>Team ID / registration confirmation</li>
+                <li>Any required presentation/demo material</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* On Arrival Workflow */}
+          <div
+            className="rounded-3xl p-6 sm:p-8 space-y-4 shadow-sm text-center"
+            style={{ background: $.white, border: `1px solid ${$.border}` }}
+          >
+            <h3 className="font-bold text-lg" style={{ color: $.navy }}>
+              On Arrival Flow
+            </h3>
+            <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-mono font-semibold pt-2">
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Arrival</span>
+              <span>↓</span>
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Registration / Identity Verification</span>
+              <span>↓</span>
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Team Verification</span>
+              <span>↓</span>
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Opening & Briefing</span>
+              <span>↓</span>
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Challenge Release</span>
+              <span>↓</span>
+              <span className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700">Competition</span>
+            </div>
+            <p className="text-xs pt-2" style={{ color: $.slate }}>
+              Registered teams should arrive before the scheduled starting activities at 9:00 AM.
+            </p>
+          </div>
+
+          {/* Pre-Event Reminder Box */}
+          <div
+            className="p-5 rounded-2xl text-sm leading-relaxed border flex items-start gap-3"
+            style={{ background: "#F0F7FB", borderColor: "#00629B", color: "#00629B" }}
+          >
+            <span className="font-bold text-base">⚠️</span>
+            <div>
+              <strong>Important:</strong> Complete your online UPI payment before the event and keep your registration confirmation and Team ID available when arriving at the venue on 30 September 2026.
+            </div>
+          </div>
+        </section>
+
+        {/* 7. READY TO COMPETE CTA */}
         <section className="py-16 max-w-[1280px] mx-auto px-4 sm:px-8 text-center space-y-8">
           <h2
             className="text-4xl sm:text-6xl font-black"
@@ -977,7 +1058,7 @@ export default function LandingPage() {
             Ready to Compete?
           </h2>
           <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
-            Register your team of 2–4 members. ₹100 per member, payable at the venue on 30 September 2026.
+            Register your team of 2–4 members. ₹100 per participant · Online UPI Payment.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5">
@@ -988,7 +1069,7 @@ export default function LandingPage() {
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative z-10 flex items-center gap-2">
-                Register Now (₹100/member)
+                Register Now · ₹100/person
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </span>
             </Link>
@@ -1118,21 +1199,13 @@ export default function LandingPage() {
                 </ul>
               </div>
 
-              <div className="pt-4 border-t border-ofBorder flex items-center justify-between">
+              <div className="pt-4 border-t border-ofBorder flex items-center justify-end">
                 <button
                   onClick={() => setSelectedProblem(null)}
-                  className="px-4 py-2 rounded-xl text-xs text-ofSlate hover:text-ofNavy transition-colors font-medium"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-signature text-white font-semibold text-xs shadow-bright hover:brightness-110 transition-all"
                 >
                   Close Spec
                 </button>
-                <a
-                  href={selectedProblem.starterFile}
-                  download
-                  className="px-5 py-2.5 rounded-xl bg-gradient-signature text-white font-semibold text-xs shadow-bright hover:brightness-110 transition-all flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>Download Official Starter Script (.py)</span>
-                </a>
               </div>
             </div>
           </div>

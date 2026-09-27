@@ -117,6 +117,8 @@ export default function RegisterPage() {
     },
   ];
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   // Dynamic members (2 to 4)
   const [members, setMembers] = useState<MemberForm[]>([
     {
@@ -223,6 +225,7 @@ export default function RegisterPage() {
       setTeamName("");
       setSelectedProblem("theme-1-biomedical-ai");
       setAgreedToTerms(false);
+      setFieldErrors({});
       setMembers([
         {
           name: "",
@@ -275,6 +278,15 @@ export default function RegisterPage() {
     const updated = [...members];
     updated[index] = { ...updated[index], [field]: value };
 
+    // Clear field error when updated
+    if (fieldErrors[`m_${index}_${field}`]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[`m_${index}_${field}`];
+        return next;
+      });
+    }
+
     // Auto-propagate college name from Leader to other members if blank or unchanged
     if (index === 0 && field === "collegeName" && value.trim()) {
       for (let i = 1; i < updated.length; i++) {
@@ -292,43 +304,45 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
+    const errors: Record<string, string> = {};
 
     if (!teamName.trim()) {
-      setErrorMsg("Please provide a team name.");
-      return;
+      errors.teamName = "Team name is required.";
     }
 
     if (!selectedProblem) {
-      setErrorMsg("Please select one innovation theme from the 9 available themes.");
-      return;
+      errors.selectedProblem = "Please select an innovation theme.";
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     for (let i = 0; i < members.length; i++) {
       const m = members[i];
       if (!m.name.trim()) {
-        setErrorMsg(`Please enter Full Name for Member ${i + 1}.`);
-        return;
+        errors[`m_${i}_name`] = `Full Name is required for Member ${i + 1}.`;
       }
       if (!m.collegeName.trim()) {
-        setErrorMsg(`Please enter College Name for Member ${i + 1}.`);
-        return;
+        errors[`m_${i}_collegeName`] = `College Name is required for Member ${i + 1}.`;
       }
       if (!m.rollNumber.trim()) {
-        setErrorMsg(`Please enter College Roll Number for Member ${i + 1}.`);
-        return;
+        errors[`m_${i}_rollNumber`] = `Roll Number is required for Member ${i + 1}.`;
       }
-      if (!m.email.trim()) {
-        setErrorMsg(`Please enter Email Address for Member ${i + 1}.`);
-        return;
+      if (!m.email.trim() || !emailRegex.test(m.email.trim())) {
+        errors[`m_${i}_email`] = `Valid email address is required for Member ${i + 1}.`;
       }
       if (!m.phone.trim() || m.phone.trim().replace(/\D/g, "").length !== 10) {
-        setErrorMsg(`Please enter a valid 10-digit Phone Number for Member ${i + 1}.`);
-        return;
+        errors[`m_${i}_phone`] = `Valid 10-digit Indian phone number is required for Member ${i + 1}.`;
       }
     }
 
     if (!agreedToTerms) {
-      setErrorMsg("Please accept the event code of conduct to proceed.");
+      errors.terms = "You must accept the event code of conduct to proceed.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setErrorMsg("Please correct the highlighted errors below before proceeding.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
@@ -387,18 +401,39 @@ export default function RegisterPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono">
+      {/* Top Banner & Dynamic Fee Display */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-bg-card border border-teal-accent/40 text-center space-y-4 shadow-2xl relative overflow-hidden">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-accent/15 border border-teal-accent/30 text-teal-accent text-xs font-mono font-semibold">
           <GraduationCap className="w-4 h-4" />
-          <span>Official Team Onboarding</span>
+          <span>Official Team Registration</span>
         </div>
-        <h1 className="font-display font-black text-3xl sm:text-5xl text-brand-white">
-          Register for OptiForge 2026
+        <h1 className="font-display font-black text-3xl sm:text-5xl text-brand-white tracking-tight">
+          OPTIFORGE 2026
         </h1>
-        <p className="text-xs sm:text-sm text-brand-muted max-w-xl mx-auto">
-          Assemble your squad (2 to 4 members). Fee is ₹100 per participant.
-        </p>
+        <div className="flex flex-wrap items-center justify-center gap-2.5 text-xs font-mono">
+          <span className="px-3 py-1.5 rounded-xl bg-bg-secondary border border-navy-border/80 text-teal-accent font-bold">
+            📅 30 September 2026
+          </span>
+          <span className="px-3 py-1.5 rounded-xl bg-bg-secondary border border-navy-border/80 text-brand-white">
+            👥 Team Size: 2–4 Participants
+          </span>
+          <span className="px-3 py-1.5 rounded-xl bg-bg-secondary border border-navy-border/80 text-status-green font-bold">
+            💰 Fee: ₹100 per Participant
+          </span>
+          <span className="px-3 py-1.5 rounded-xl bg-bg-secondary border border-navy-border/80 text-teal-accent">
+            💳 Payment: Online via UPI
+          </span>
+        </div>
+
+        {/* Dynamic Total Fee Callout */}
+        <div className="p-4 rounded-2xl bg-teal-accent/10 border border-teal-accent/30 inline-block text-xs font-mono">
+          <span className="text-brand-muted font-sans font-medium mr-2">
+            {members.length} Participants selected
+          </span>
+          <span className="font-bold text-teal-accent text-sm sm:text-base">
+            · Total Registration Fee: ₹{totalFee}
+          </span>
+        </div>
       </div>
 
       {/* Pending Registration Link */}
@@ -464,10 +499,29 @@ export default function RegisterPage() {
               type="text"
               required
               value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
+              onChange={(e) => {
+                setTeamName(e.target.value);
+                if (fieldErrors.teamName) {
+                  setFieldErrors((prev) => {
+                    const next = { ...prev };
+                    delete next.teamName;
+                    return next;
+                  });
+                }
+              }}
               placeholder="e.g. SwarmIntelligenceVCE"
-              className="w-full px-4 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent"
+              className={`w-full px-4 py-2.5 rounded-xl bg-bg-secondary border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none ${
+                fieldErrors.teamName
+                  ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                  : "border-navy-border focus:border-teal-accent"
+              }`}
             />
+            {fieldErrors.teamName && (
+              <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                <AlertCircle className="w-3 h-3 shrink-0" />
+                <span>{fieldErrors.teamName}</span>
+              </span>
+            )}
           </div>
         </div>
 
@@ -532,8 +586,18 @@ export default function RegisterPage() {
                       value={m.name}
                       onChange={(e) => updateMember(idx, "name", e.target.value)}
                       placeholder="Full Name"
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
+                      className={`w-full px-3 py-2 rounded-lg bg-bg-primary border text-brand-white focus:outline-none ${
+                        fieldErrors[`m_${idx}_name`]
+                          ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                          : "border-navy-border focus:border-teal-accent"
+                      }`}
                     />
+                    {fieldErrors[`m_${idx}_name`] && (
+                      <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{fieldErrors[`m_${idx}_name`]}</span>
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -544,8 +608,18 @@ export default function RegisterPage() {
                       value={m.collegeName}
                       onChange={(e) => updateMember(idx, "collegeName", e.target.value)}
                       placeholder="e.g. Vardhaman College of Engineering"
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
+                      className={`w-full px-3 py-2 rounded-lg bg-bg-primary border text-brand-white focus:outline-none ${
+                        fieldErrors[`m_${idx}_collegeName`]
+                          ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                          : "border-navy-border focus:border-teal-accent"
+                      }`}
                     />
+                    {fieldErrors[`m_${idx}_collegeName`] && (
+                      <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{fieldErrors[`m_${idx}_collegeName`]}</span>
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -556,8 +630,18 @@ export default function RegisterPage() {
                       value={m.rollNumber}
                       onChange={(e) => updateMember(idx, "rollNumber", e.target.value)}
                       placeholder="e.g. 22011A05XX"
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent font-mono"
+                      className={`w-full px-3 py-2 rounded-lg bg-bg-primary border font-mono text-brand-white focus:outline-none ${
+                        fieldErrors[`m_${idx}_rollNumber`]
+                          ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                          : "border-navy-border focus:border-teal-accent"
+                      }`}
                     />
+                    {fieldErrors[`m_${idx}_rollNumber`] && (
+                      <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{fieldErrors[`m_${idx}_rollNumber`]}</span>
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -568,8 +652,18 @@ export default function RegisterPage() {
                       value={m.email}
                       onChange={(e) => updateMember(idx, "email", e.target.value)}
                       placeholder="student@vce.ac.in"
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent"
+                      className={`w-full px-3 py-2 rounded-lg bg-bg-primary border text-brand-white focus:outline-none ${
+                        fieldErrors[`m_${idx}_email`]
+                          ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                          : "border-navy-border focus:border-teal-accent"
+                      }`}
                     />
+                    {fieldErrors[`m_${idx}_email`] && (
+                      <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{fieldErrors[`m_${idx}_email`]}</span>
+                      </span>
+                    )}
                   </div>
 
                   <div>
@@ -581,8 +675,18 @@ export default function RegisterPage() {
                       value={m.phone}
                       onChange={(e) => updateMember(idx, "phone", e.target.value)}
                       placeholder="9876543210"
-                      className="w-full px-3 py-2 rounded-lg bg-bg-primary border border-navy-border text-brand-white focus:outline-none focus:border-teal-accent font-mono"
+                      className={`w-full px-3 py-2 rounded-lg bg-bg-primary border font-mono text-brand-white focus:outline-none ${
+                        fieldErrors[`m_${idx}_phone`]
+                          ? "border-status-red focus:border-status-red ring-1 ring-status-red/50"
+                          : "border-navy-border focus:border-teal-accent"
+                      }`}
                     />
+                    {fieldErrors[`m_${idx}_phone`] && (
+                      <span className="text-[11px] text-status-red font-mono flex items-center gap-1 mt-1">
+                        <AlertCircle className="w-3 h-3 shrink-0" />
+                        <span>{fieldErrors[`m_${idx}_phone`]}</span>
+                      </span>
+                    )}
                   </div>
 
                   <div>

@@ -25,7 +25,6 @@ export async function GET(req: Request) {
       expectedOutputChecklist: track.expectedOutputChecklist,
       description: track.description,
       statementMarkdown: track.statementMarkdown,
-      starterNotebookUrl: track.starterNotebookUrl,
       benchmarkType: track.benchmarkType,
     }));
 

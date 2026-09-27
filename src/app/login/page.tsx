@@ -163,7 +163,7 @@ export default function LoginPage() {
           <div className="flex justify-between items-center text-xs">
             <label className="text-brand-white font-medium">Password</label>
             <span className="text-[11px] text-brand-dim">
-              {activeTab === "TEAM" ? "Initial: Forge#XXXX" : ""}
+              {activeTab === "TEAM" ? "Team Account Security" : ""}
             </span>
           </div>
           <input

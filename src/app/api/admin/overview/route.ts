@@ -36,15 +36,33 @@ export async function GET() {
       judgesCount: judges.length,
     };
 
+    // Strip sensitive data from teams (never expose password hashes to frontend)
+    const safeTeams = teams.map((t: any) => {
+      const { password, razorpaySignature, ...safe } = t;
+      return safe;
+    });
+
+    // Strip sensitive data from judges (never expose password hashes)
+    const safeJudges = judges.map((j: any) => {
+      const { password, ...safe } = j;
+      return safe;
+    });
+
+    // Strip code content from submissions for overview (reduce payload size)
+    const safeSubmissions = submissions.map((s: any) => {
+      const { codeContent, ...safe } = s;
+      return safe;
+    });
+
     return NextResponse.json({
       stats,
-      teams,
+      teams: safeTeams,
       tracks,
-      submissions,
+      submissions: safeSubmissions,
       announcements,
       settings,
-      auditLogs: auditLogs.slice(0, 50),
-      judges,
+      auditLogs: auditLogs.slice(0, 100),
+      judges: safeJudges,
     });
   } catch (err) {
     return NextResponse.json({ error: "Error loading admin overview." }, { status: 500 });

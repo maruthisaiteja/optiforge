@@ -320,33 +320,11 @@ async function seed() {
     },
   ];
 
-  // 4. Official Registered Teams (Preserving verified credentials)
-  // OPT-26-1904 verified real UPI payment of ₹150 with 12-digit UTR 512165830063
-  const password1904 = "$2b$10$MWZejK9ObIVI4ZNYoxx35uh72AtZbV9cj1Bbv4egHFKbGZTd85Ofy"; // bcrypt for Forge#1904
+  // 4. Official Registered Teams
   const password7151 = "$2b$10$.aHsr/m/toe/kxRW2TA9A.dnNMEzQ9f.mEBiGrQlEkjCHLBnBjs7i"; // bcrypt for Forge#7151
   const password1112 = "$2b$10$x3ZJ.PiZjzctW.vqupdm2.d23WXHejkBKRqZA4SJszx.6znzYCSNu"; // bcrypt for Forge#1112
 
   const teamsData = [
-    {
-      id: "team-id-1904",
-      teamCode: "OPT-26-1904",
-      teamName: "Team 1904",
-      leaderEmail: "chair.embs@vce.ac.in",
-      leaderPhone: "9490298994",
-      password: password1904,
-      domainId: "theme-1-biomedical-ai",
-      skillLevel: "Standard",
-      paymentStatus: "CONFIRMED",
-      paymentAmount: 150,
-      razorpayPaymentId: "512165830063",
-      razorpayOrderId: "order_upi_512165830063",
-      razorpaySignature: "UPI_DIRECT_SETTLEMENT",
-      attemptsUsed: 0,
-      bestScore: 0,
-      isDisqualified: false,
-      createdAt: now,
-      updatedAt: now,
-    },
     {
       id: "team-id-7151",
       teamCode: "OPT-26-7151",
@@ -390,45 +368,6 @@ async function seed() {
   ];
 
   const teamMembers = [
-    {
-      id: crypto.randomUUID(),
-      teamId: "team-id-1904",
-      name: "Maruthi Sai Teja",
-      collegeName: "Vardhaman College of Engineering",
-      rollNumber: "22881A0501",
-      branch: "CSE",
-      year: "3rd Year",
-      email: "chair.embs@vce.ac.in",
-      phone: "9490298994",
-      tshirtSize: null,
-      createdAt: now,
-    },
-    {
-      id: crypto.randomUUID(),
-      teamId: "team-id-1904",
-      name: "Sai Teja",
-      collegeName: "Vardhaman College of Engineering",
-      rollNumber: "22881A0502",
-      branch: "CSE",
-      year: "3rd Year",
-      email: "saiteja.dev@vce.ac.in",
-      phone: "9490298995",
-      tshirtSize: null,
-      createdAt: now,
-    },
-    {
-      id: crypto.randomUUID(),
-      teamId: "team-id-1904",
-      name: "K. Rithvik",
-      collegeName: "Vardhaman College of Engineering",
-      rollNumber: "22881A0503",
-      branch: "IT",
-      year: "3rd Year",
-      email: "rithvik.k@vce.ac.in",
-      phone: "9490298996",
-      tshirtSize: null,
-      createdAt: now,
-    },
     {
       id: crypto.randomUUID(),
       teamId: "team-id-7151",

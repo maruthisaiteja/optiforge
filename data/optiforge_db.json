@@ -73,26 +73,6 @@
   ],
   "teams": [
     {
-      "id": "team-id-1904",
-      "teamCode": "OPT-26-1904",
-      "teamName": "Team 1904",
-      "leaderEmail": "chair.embs@vce.ac.in",
-      "leaderPhone": "9490298994",
-      "password": "$2b$10$MWZejK9ObIVI4ZNYoxx35uh72AtZbV9cj1Bbv4egHFKbGZTd85Ofy",
-      "domainId": "theme-1-biomedical-ai",
-      "skillLevel": "Standard",
-      "paymentStatus": "CONFIRMED",
-      "paymentAmount": 150,
-      "razorpayPaymentId": "512165830063",
-      "razorpayOrderId": "order_upi_512165830063",
-      "razorpaySignature": "UPI_DIRECT_SETTLEMENT",
-      "attemptsUsed": 0,
-      "bestScore": 0,
-      "isDisqualified": false,
-      "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
-    },
-    {
       "id": "team-id-7151",
       "teamCode": "OPT-26-7151",
       "teamName": "Team 7151",
@@ -134,45 +114,6 @@
     }
   ],
   "teamMembers": [
-    {
-      "id": "3cbc4e13-b4b7-4abf-baf4-140e726e3b3d",
-      "teamId": "team-id-1904",
-      "name": "Maruthi Sai Teja",
-      "collegeName": "Vardhaman College of Engineering",
-      "rollNumber": "22881A0501",
-      "branch": "CSE",
-      "year": "3rd Year",
-      "email": "chair.embs@vce.ac.in",
-      "phone": "9490298994",
-      "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
-    },
-    {
-      "id": "5089b13c-9f89-4c76-b487-429856f5d5e1",
-      "teamId": "team-id-1904",
-      "name": "Sai Teja",
-      "collegeName": "Vardhaman College of Engineering",
-      "rollNumber": "22881A0502",
-      "branch": "CSE",
-      "year": "3rd Year",
-      "email": "saiteja.dev@vce.ac.in",
-      "phone": "9490298995",
-      "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
-    },
-    {
-      "id": "0d7442ce-e0cd-49b8-9fac-235475303e4e",
-      "teamId": "team-id-1904",
-      "name": "K. Rithvik",
-      "collegeName": "Vardhaman College of Engineering",
-      "rollNumber": "22881A0503",
-      "branch": "IT",
-      "year": "3rd Year",
-      "email": "rithvik.k@vce.ac.in",
-      "phone": "9490298996",
-      "tshirtSize": null,
-      "createdAt": "2026-09-23T16:08:26.523Z"
-    },
     {
       "id": "89722b27-3b6e-4741-b100-d2d9715c562e",
       "teamId": "team-id-7151",

@@ -103,7 +103,7 @@ export default function SubmissionModal({
               }}
               disabled={isSubmitting}
               rows={3}
-              placeholder="e.g., In response to the 20% nursing staff reduction, increased penalty weight on consecutive shifts from 1.5 to 3.2 and adjusted population mutation rate..."
+              placeholder="e.g., In response to non-stationary sensor noise and shift constraints, increased mutation rate from 0.02 to 0.05 and added multi-objective fitness weights for precision and latency..."
               className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-electric-violet resize-none transition-colors"
             />
             <p className="text-[11px] text-brand-muted leading-relaxed">
@@ -122,7 +122,7 @@ export default function SubmissionModal({
             onChange={(e) => setApproachNotes(e.target.value)}
             disabled={isSubmitting}
             rows={2}
-            placeholder="e.g., GA parameters: pop=80, crossover=0.85 (2-point), mutation=0.04 (adaptive)..."
+            placeholder="e.g., GA/PSO parameters: pop=80, crossover=0.85 (2-point), mutation=0.04 (adaptive), swarm inertia w=0.7..."
             className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-teal-accent resize-none transition-colors"
           />
         </div>

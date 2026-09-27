@@ -26,13 +26,21 @@ import {
   ShieldAlert,
   Eye,
   Key,
+  ClipboardList,
+  UserCog,
 } from "lucide-react";
+import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
+import TeamManagementTab from "@/components/admin/TeamManagementTab";
+import AuditLogsTab from "@/components/admin/AuditLogsTab";
 
 export default function AdminPortal() {
   const router = useRouter();
 
+  const [isGeneratingAllCerts, setIsGeneratingAllCerts] = useState(false);
+  const [certProgressStatus, setCertProgressStatus] = useState("");
+
   const [activeTab, setActiveTab] = useState<
-    "TEAMS" | "SUBMISSIONS" | "STAGE_CTRL" | "CONFIDENTIAL_SHIFTS" | "LEADERBOARD_CTRL" | "ANNOUNCEMENTS" | "CERTIFICATES"
+    "TEAMS" | "TEAM_MGMT" | "SUBMISSIONS" | "STAGE_CTRL" | "CONFIDENTIAL_SHIFTS" | "LEADERBOARD_CTRL" | "ANNOUNCEMENTS" | "CERTIFICATES" | "AUDIT_LOGS"
   >("TEAMS");
 
   const [data, setData] = useState<any>(null);
@@ -358,6 +366,30 @@ export default function AdminPortal() {
         >
           <Award className="w-4 h-4" />
           <span>Certificate Studio</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("TEAM_MGMT")}
+          className={`px-4 py-2 rounded-lg transition-all font-semibold flex items-center gap-2 ${
+            activeTab === "TEAM_MGMT"
+              ? "bg-navy-deep text-teal-accent border border-teal-accent/40"
+              : "text-brand-muted hover:text-brand-white"
+          }`}
+        >
+          <UserCog className="w-4 h-4" />
+          <span>Team Management</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab("AUDIT_LOGS")}
+          className={`px-4 py-2 rounded-lg transition-all font-semibold flex items-center gap-2 ${
+            activeTab === "AUDIT_LOGS"
+              ? "bg-navy-deep text-teal-accent border border-teal-accent/40"
+              : "text-brand-muted hover:text-brand-white"
+          }`}
+        >
+          <ClipboardList className="w-4 h-4" />
+          <span>Audit Logs ({data?.auditLogs?.length || 0})</span>
         </button>
       </div>
 
@@ -921,40 +953,132 @@ export default function AdminPortal() {
                 Official E-Certificate Generation Studio
               </h3>
               <p className="text-xs text-brand-muted">
-                Authenticated E-Certificates issued jointly by IEEE EMBS Student Chapter & IEEE CIS Local Chapter.
+                Authenticated E-Certificates generated separately per participant under IEEE EMBS & IEEE CIS.
               </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                disabled={isGeneratingAllCerts}
+                onClick={async () => {
+                  setIsGeneratingAllCerts(true);
+                  setCertProgressStatus("Starting batch certificate download...");
+                  await downloadAllTeamCertificates(data?.teams || [], (curr, total, name) => {
+                    setCertProgressStatus(`Downloading ${curr}/${total}: ${name}`);
+                  });
+                  setCertProgressStatus("Completed downloading all participant certificates!");
+                  setTimeout(() => {
+                    setIsGeneratingAllCerts(false);
+                    setCertProgressStatus("");
+                  }, 3000);
+                }}
+                className="px-5 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-mono font-bold text-xs shadow-glow hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
+              >
+                <Download className="w-4 h-4" />
+                <span>{isGeneratingAllCerts ? "Generating & Downloading..." : "Download All Certificates"}</span>
+              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {(data?.teams || []).map((team: any) => (
-              <div
-                key={team.id}
-                className="p-5 rounded-2xl bg-bg-card border border-navy-border space-y-3 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex justify-between items-center text-xs font-mono text-brand-muted mb-1">
-                    <span>{team.teamCode}</span>
-                    <span className="text-teal-accent">Score: {team.bestScore.toFixed(1)}</span>
-                  </div>
-                  <h4 className="font-display font-bold text-brand-white text-base">{team.teamName}</h4>
-                  <p className="text-xs text-brand-muted mt-1">
-                    {team.members?.length || 0} participants registered
-                  </p>
-                </div>
+          {certProgressStatus && (
+            <div className="p-3.5 rounded-xl bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono flex items-center gap-2 animate-pulse">
+              <RefreshCw className="w-4 h-4 animate-spin shrink-0" />
+              <span>{certProgressStatus}</span>
+            </div>
+          )}
 
-                <Link
-                  href={`/certificate?teamCode=${team.teamCode}`}
-                  target="_blank"
-                  className="w-full py-2 rounded-xl bg-navy-deep hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent text-center text-xs font-mono transition-all flex items-center justify-center gap-1.5"
-                >
-                  <Award className="w-3.5 h-3.5" />
-                  <span>Preview & Print Certificates</span>
-                </Link>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(data?.teams || [])
+              .filter(
+                (team: any) =>
+                  !["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"].includes((team.teamCode || "").toUpperCase()) &&
+                  !["TEAM 1904", "I'M GAME", "TEST"].includes((team.teamName || "").trim().toUpperCase())
+              )
+              .map((team: any) => {
+                const trackName = team.track?.name || team.track?.shortName || "Computational Intelligence Track";
+
+                return (
+                  <div
+                    key={team.id}
+                    className="p-5 rounded-2xl bg-bg-card border border-navy-border space-y-4 shadow-lg flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="flex justify-between items-center text-xs font-mono text-brand-muted mb-1">
+                        <span className="text-teal-accent font-bold">{team.teamCode}</span>
+                        <span>Best Score: {team.bestScore > 0 ? team.bestScore.toFixed(1) : "0.0"}</span>
+                      </div>
+                      <h4 className="font-display font-bold text-brand-white text-base">{team.teamName}</h4>
+                      <p className="text-xs text-brand-muted mt-0.5 font-mono">
+                        Track: {team.track?.shortName || "CI Track"} · {team.members?.length || 0} Participants
+                      </p>
+                    </div>
+
+                    {/* Member List with Individual Download Buttons */}
+                    <div className="space-y-2 border-t border-navy-border/60 pt-3">
+                      <span className="text-[11px] font-mono text-brand-dim uppercase tracking-wider block">
+                        Participant Certificates ({team.members?.length || 0}):
+                      </span>
+                      <div className="space-y-2">
+                        {(team.members || []).map((m: any, idx: number) => (
+                          <div
+                            key={m.id || idx}
+                            className="p-2.5 rounded-xl bg-bg-secondary/70 border border-navy-border/40 flex items-center justify-between gap-2 text-xs"
+                          >
+                            <div>
+                              <div className="font-semibold text-brand-white">{m.name}</div>
+                              <div className="text-[10px] font-mono text-brand-dim">
+                                {m.rollNumber ? `${m.rollNumber} · ` : ""}{m.branch || "Participant"}
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() =>
+                                downloadSingleCertificate(
+                                  m,
+                                  { id: team.id, teamCode: team.teamCode, teamName: team.teamName, rank: team.rank || null },
+                                  trackName,
+                                  team.rank || null
+                                )
+                              }
+                              className="px-3 py-1.5 rounded-lg bg-navy-deep hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent font-mono text-[11px] font-semibold transition-all flex items-center gap-1.5 shrink-0"
+                            >
+                              <Download className="w-3.5 h-3.5" />
+                              <span>Download Certificate</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-navy-border/40 flex justify-end">
+                      <Link
+                        href={`/certificate?teamCode=${team.teamCode}`}
+                        target="_blank"
+                        className="text-xs font-mono text-brand-muted hover:text-teal-accent flex items-center gap-1 transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Preview Web Certificate</span>
+                      </Link>
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         </div>
+      )}
+
+      {/* TAB 8: TEAM MANAGEMENT */}
+      {activeTab === "TEAM_MGMT" && (
+        <TeamManagementTab
+          teams={data?.teams || []}
+          onAdminAction={handleAdminAction}
+          onRefresh={fetchAdminData}
+        />
+      )}
+
+      {/* TAB 9: AUDIT LOGS */}
+      {activeTab === "AUDIT_LOGS" && (
+        <AuditLogsTab auditLogs={data?.auditLogs || []} />
       )}
 
       {/* MODAL: MANUAL PAYMENT OVERRIDE */}

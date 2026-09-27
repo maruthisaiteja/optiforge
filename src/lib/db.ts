@@ -162,6 +162,38 @@ export interface DatabaseSchema {
   auditLogs: AuditLogRecord[];
 }
 
+const TEST_TEAM_CODES = new Set(["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"]);
+const TEST_TEAM_NAMES = new Set(["TEAM 1904", "I'M GAME", "TEST"]);
+
+function filterTestTeams(data: DatabaseSchema): DatabaseSchema {
+  if (!data || !Array.isArray(data.teams)) return data;
+
+  const testTeamIds = new Set(
+    data.teams
+      .filter(
+        (t) =>
+          (t.teamCode && TEST_TEAM_CODES.has(t.teamCode.toUpperCase())) ||
+          (t.teamName && TEST_TEAM_NAMES.has(t.teamName.trim().toUpperCase()))
+      )
+      .map((t) => t.id)
+  );
+
+  if (testTeamIds.size === 0) return data;
+
+  data.teams = data.teams.filter((t) => !testTeamIds.has(t.id));
+  if (Array.isArray(data.teamMembers)) {
+    data.teamMembers = data.teamMembers.filter((m) => !testTeamIds.has(m.teamId));
+  }
+  if (Array.isArray(data.submissions)) {
+    data.submissions = data.submissions.filter((s) => !testTeamIds.has(s.teamId));
+  }
+  if (Array.isArray(data.judgeEvaluations)) {
+    data.judgeEvaluations = data.judgeEvaluations.filter((e) => !testTeamIds.has(e.teamId));
+  }
+
+  return data;
+}
+
 let _hasTableChecked = false;
 function getPostgresClient() {
   const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
@@ -199,7 +231,7 @@ async function ensureDb(): Promise<DatabaseSchema> {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
             fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
           } catch {}
-          return parsed;
+          return filterTestTeams(parsed);
         }
       }
     } catch (err) {
@@ -226,7 +258,7 @@ async function ensureDb(): Promise<DatabaseSchema> {
             `;
           } catch {}
         }
-        return parsed;
+        return filterTestTeams(parsed);
       } catch {}
     }
     const initial: DatabaseSchema = {
@@ -254,13 +286,13 @@ async function ensureDb(): Promise<DatabaseSchema> {
         ON CONFLICT (id) DO NOTHING;
       `.catch(() => {});
     }
-    return parsed;
+    return filterTestTeams(parsed);
   } catch {
     if (fs.existsSync(SEED_FILE)) {
       try {
         const seedRaw = fs.readFileSync(SEED_FILE, "utf8");
         fs.writeFileSync(DB_FILE, seedRaw, "utf8");
-        return JSON.parse(seedRaw) as DatabaseSchema;
+        return filterTestTeams(JSON.parse(seedRaw) as DatabaseSchema);
       } catch {}
     }
     return {
@@ -526,6 +558,50 @@ export const db = {
       } else {
         return db.team.create({ data: create });
       }
+    },
+    delete: async ({ where }: { where: { id?: string; teamCode?: string } }): Promise<{
+      deletedTeam: TeamRecord;
+      deletedMembersCount: number;
+      deletedSubmissionsCount: number;
+      deletedEvaluationsCount: number;
+    }> => {
+      return withDbLock(async () => {
+        const data = await ensureDb();
+        const idx = data.teams.findIndex(
+          (t) => (where.id && t.id === where.id) || (where.teamCode && t.teamCode === where.teamCode)
+        );
+        if (idx === -1) throw new Error("Team not found");
+
+        const deletedTeam = { ...data.teams[idx] };
+        const teamId = deletedTeam.id;
+
+        // Remove team record
+        data.teams.splice(idx, 1);
+
+        // Remove associated team members
+        const membersBefore = data.teamMembers.length;
+        data.teamMembers = data.teamMembers.filter((m) => m.teamId !== teamId);
+        const deletedMembersCount = membersBefore - data.teamMembers.length;
+
+        // Remove associated submissions
+        const subsBefore = data.submissions.length;
+        data.submissions = data.submissions.filter((s) => s.teamId !== teamId);
+        const deletedSubmissionsCount = subsBefore - data.submissions.length;
+
+        // Remove associated judge evaluations
+        const evalsBefore = data.judgeEvaluations.length;
+        data.judgeEvaluations = data.judgeEvaluations.filter((e) => e.teamId !== teamId);
+        const deletedEvaluationsCount = evalsBefore - data.judgeEvaluations.length;
+
+        await saveDb(data);
+
+        return {
+          deletedTeam,
+          deletedMembersCount,
+          deletedSubmissionsCount,
+          deletedEvaluationsCount,
+        };
+      });
     },
   },
 

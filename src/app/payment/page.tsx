@@ -285,7 +285,7 @@ function PaymentContent() {
                 ₹{amount}
               </div>
               <span className="text-xs text-brand-muted">
-                ₹50 × {team?.membersCount || 3} members · {team?.trackName || "OptiForge 2026"}
+                ₹100 × {team?.membersCount || 3} members · {team?.trackName || "OptiForge 2026"}
               </span>
             </div>
 
@@ -446,81 +446,70 @@ function PaymentContent() {
               <CheckCircle2 className="w-8 h-8" />
             </div>
             <h1 className="font-display font-black text-2xl sm:text-3xl text-brand-white">
-              Registration Confirmed!
+              Registration Successful
             </h1>
             <p className="text-xs text-brand-muted font-mono">
               Receipt No: <span className="text-teal-accent">{receiptData?.receiptNumber}</span>
             </p>
           </div>
 
-          {/* Credentials Card */}
+          {/* Credentials & Summary Card */}
           <div className="p-6 rounded-2xl bg-bg-secondary border border-teal-accent/30 space-y-4">
             <div className="flex items-center justify-between border-b border-navy-border/60 pb-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-teal-accent">
+              <div className="flex items-center gap-2 text-xs font-mono text-teal-accent font-bold">
                 <Terminal className="w-4 h-4" />
-                <span>Your Official Team Credentials</span>
+                <span>Registration & Team Summary</span>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={copyTeamCode}
-                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
-                >
-                  {copiedCode ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-status-green" />
-                      <span className="text-status-green">Copied Code</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy Team ID</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={copyDefaultPass}
-                  className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
-                >
-                  {copiedPass ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-status-green" />
-                      <span className="text-status-green">Copied Pass</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>Copy Password</span>
-                    </>
-                  )}
-                </button>
-              </div>
+              <button
+                onClick={copyTeamCode}
+                className="flex items-center gap-1 text-[11px] font-mono text-brand-muted hover:text-brand-white px-2 py-1 rounded bg-bg-primary border border-navy-border"
+              >
+                {copiedCode ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-status-green" />
+                    <span className="text-status-green">Copied Code</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>Copy Team ID</span>
+                  </>
+                )}
+              </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Team ID</span>
-                <span className="text-sm font-bold text-brand-white">{receiptData?.teamCode || teamCode}</span>
+                <span className="text-sm font-bold text-teal-accent">{receiptData?.teamCode || teamCode}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
                 <span className="text-brand-dim text-[10px] block uppercase">Team Name</span>
-                <span className="text-sm font-bold text-teal-accent">{receiptData?.teamName || team?.teamName}</span>
+                <span className="text-sm font-bold text-brand-white">{receiptData?.teamName || team?.teamName}</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">Default Password</span>
-                <span className="text-sm font-bold text-brand-white">Forge#{(receiptData?.teamCode || teamCode).split("-")[2] || "2026"}</span>
+                <span className="text-brand-dim text-[10px] block uppercase">Participants</span>
+                <span className="text-sm font-bold text-brand-white">{team?.membersCount || 3} Members</span>
               </div>
               <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
-                <span className="text-brand-dim text-[10px] block uppercase">UPI Reference / UTR</span>
-                <span className="text-xs text-status-green font-mono truncate block">
-                  {receiptData?.paymentId || utrNumber || "512165830063"}
+                <span className="text-brand-dim text-[10px] block uppercase">Registration Fee</span>
+                <span className="text-sm font-bold text-brand-white">₹{receiptData?.paymentAmount || amount}</span>
+              </div>
+              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
+                <span className="text-brand-dim text-[10px] block uppercase">Payment Status</span>
+                <span className="text-xs text-status-green font-bold flex items-center gap-1 mt-0.5">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>✓ Paid Online via UPI</span>
                 </span>
+              </div>
+              <div className="p-3 rounded-lg bg-bg-primary border border-navy-border">
+                <span className="text-brand-dim text-[10px] block uppercase">Event Date</span>
+                <span className="text-xs font-bold text-teal-accent mt-0.5 block">30 September 2026</span>
               </div>
             </div>
 
-            <p className="text-[11px] text-brand-muted leading-relaxed">
-              Your registration has been officially confirmed and activated by{" "}
-              <span className="text-brand-white font-semibold">IEEE Vardhaman Student Branch</span>. Keep your
-              Team ID and Password safe to access your team dashboard and starter materials.
+            <p className="text-[11px] text-brand-muted leading-relaxed text-center pt-2">
+              Your OptiForge 2026 registration has been successfully confirmed.
             </p>
           </div>
 

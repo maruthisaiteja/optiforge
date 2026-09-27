@@ -171,7 +171,6 @@ export async function POST(req: Request) {
       paymentAmount: newTeam.paymentAmount,
       memberCount: members.length,
       assignedDomain,
-      temporaryPassword: rawPassword,
       registrationToken,
     });
   } catch (err) {

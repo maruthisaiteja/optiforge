@@ -12,36 +12,18 @@ async function verify() {
 
   const db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
 
-  // 1. Verify OPT-26-1904
-  const team1904 = db.teams.find((t) => t.teamCode === "OPT-26-1904");
-  if (!team1904) {
-    throw new Error("FAIL: OPT-26-1904 not found in database!");
+  // 1. Verify OPT-26-7151
+  const team7151 = db.teams.find((t) => t.teamCode === "OPT-26-7151");
+  if (!team7151) {
+    throw new Error("FAIL: OPT-26-7151 not found in database!");
   }
-  const members1904 = db.teamMembers.filter((m) => m.teamId === team1904.id);
+  const members7151 = db.teamMembers.filter((m) => m.teamId === team7151.id);
 
-  console.log("✔ OPT-26-1904 found:", team1904.teamName);
-  console.log("  - Payment Status:", team1904.paymentStatus);
-  console.log("  - Payment Amount: ₹" + team1904.paymentAmount);
-  console.log("  - UTR (Payment ID):", team1904.razorpayPaymentId);
-  console.log("  - Member Count:", members1904.length);
-
-  if (team1904.paymentStatus !== "CONFIRMED") {
-    throw new Error("FAIL: OPT-26-1904 paymentStatus is not CONFIRMED!");
-  }
-  if (team1904.razorpayPaymentId !== "512165830063") {
-    throw new Error("FAIL: OPT-26-1904 UTR is not 512165830063!");
-  }
-
-  // 2. Check Password Authentication
-  const passMatch = await bcrypt.compare("Forge#1904", team1904.password);
-  if (!passMatch) {
-    throw new Error("FAIL: Password Forge#1904 failed bcrypt match!");
-  }
-  console.log("✔ Password Forge#1904 bcrypt validation: PASSED");
+  console.log("✔ OPT-26-7151 found:", team7151.teamName);
+  console.log("  - Payment Status:", team7151.paymentStatus);
+  console.log("  - Member Count:", members7151.length);
 
   // 2b. Verify OPT-26-7151 (Pending registration team)
-  const team7151 = db.teams.find((t) => t.teamCode === "OPT-26-7151");
-  if (!team7151) throw new Error("FAIL: OPT-26-7151 not found in database!");
   if (team7151.paymentStatus !== "PENDING_PAYMENT") {
     throw new Error("FAIL: OPT-26-7151 should be in PENDING_PAYMENT status!");
   }

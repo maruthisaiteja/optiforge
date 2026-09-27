@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getServerSession } from "@/lib/auth";
+import { getServerSession, hashPassword } from "@/lib/auth";
 import { evaluateSubmission } from "@/lib/evaluator/runner";
 
 export async function POST(req: Request) {
@@ -225,6 +225,131 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ success: true, autoScore: evalResult.autoScore });
+      }
+
+      case "DELETE_TEAM": {
+        const { teamCode, confirmCode, reason } = payload;
+        if (!teamCode || !reason || !reason.trim()) {
+          return NextResponse.json({ error: "Team code and deletion reason are both required." }, { status: 400 });
+        }
+        if (confirmCode !== teamCode) {
+          return NextResponse.json({ error: "Confirmation code does not match. Please type the exact Team ID to confirm deletion." }, { status: 400 });
+        }
+
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        // Capture pre-deletion metadata for audit (no sensitive data)
+        const auditMeta = {
+          teamCode: team.teamCode,
+          teamName: team.teamName,
+          leaderEmail: team.leaderEmail,
+          membersCount: team.members?.length || 0,
+          paymentStatus: team.paymentStatus,
+          paymentAmount: team.paymentAmount,
+          attemptsUsed: team.attemptsUsed,
+          bestScore: team.bestScore,
+          domainId: team.domainId,
+          registeredAt: team.createdAt,
+        };
+
+        const result = await db.team.delete({ where: { teamCode } });
+
+        await db.auditLog.create({
+          data: {
+            action: "TEAM_DELETED",
+            performedBy: `${session.name} (${session.id})`,
+            details: JSON.stringify({
+              ...auditMeta,
+              deletedMembersCount: result.deletedMembersCount,
+              deletedSubmissionsCount: result.deletedSubmissionsCount,
+              deletedEvaluationsCount: result.deletedEvaluationsCount,
+              deletionTimestamp: new Date().toISOString(),
+            }),
+            reason: reason.trim(),
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: `Team ${teamCode} (${auditMeta.teamName}) permanently deleted.`,
+          deletedMembers: result.deletedMembersCount,
+          deletedSubmissions: result.deletedSubmissionsCount,
+          deletedEvaluations: result.deletedEvaluationsCount,
+        });
+      }
+
+      case "RESET_TEAM_PASSWORD": {
+        const { teamCode, reason } = payload;
+        if (!teamCode) {
+          return NextResponse.json({ error: "Team code is required." }, { status: 400 });
+        }
+
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        // Generate new temporary password
+        const codeSuffix = teamCode.split("-")[2] || Math.random().toString(36).slice(2, 6);
+        const tempPassword = `Forge#${codeSuffix}_${Date.now().toString(36).slice(-4)}`;
+        const hashedPassword = await hashPassword(tempPassword);
+
+        await db.team.update({
+          where: { teamCode },
+          data: { password: hashedPassword },
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "TEAM_PASSWORD_RESET",
+            performedBy: `${session.name} (${session.id})`,
+            details: `Password reset for team ${team.teamName} (${team.teamCode}). A new temporary password was generated.`,
+            reason: reason || "Admin-initiated password reset",
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          teamCode,
+          temporaryPassword: tempPassword,
+          message: "Password has been reset. Share the temporary password securely with the team leader.",
+        });
+      }
+
+      case "RESET_JUDGE_PASSWORD": {
+        const { judgeUsername, reason } = payload;
+        if (!judgeUsername) {
+          return NextResponse.json({ error: "Judge username is required." }, { status: 400 });
+        }
+
+        const judge = await db.user.findUnique({ where: { username: judgeUsername } });
+        if (!judge || judge.role !== "JUDGE") {
+          return NextResponse.json({ error: "Judge account not found." }, { status: 404 });
+        }
+
+        const tempPassword = `Judge#${judgeUsername}_${Date.now().toString(36).slice(-5)}`;
+        const hashedPassword = await hashPassword(tempPassword);
+
+        await db.user.upsert({
+          where: { username: judgeUsername },
+          update: { password: hashedPassword },
+          create: { ...judge, password: hashedPassword } as any,
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "JUDGE_PASSWORD_RESET",
+            performedBy: `${session.name} (${session.id})`,
+            details: `Password reset for judge ${judge.name} (${judgeUsername}). A new temporary password was generated.`,
+            reason: reason || "Admin-initiated judge password reset",
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          judgeUsername,
+          temporaryPassword: tempPassword,
+          message: "Judge password has been reset. Share the temporary password securely.",
+        });
       }
 
       default:

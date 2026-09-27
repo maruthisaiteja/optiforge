@@ -325,18 +325,12 @@ export default function TeamDashboard() {
                 </button>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-bg-secondary/70 border border-navy-border/60 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-brand-dim uppercase block">Default Password</span>
-                  <span className="text-sm font-bold text-brand-white">{defaultPass}</span>
-                </div>
-                <button
-                  onClick={() => copyToClipboard(defaultPass, "pass")}
-                  className="p-1.5 text-brand-muted hover:text-brand-white rounded hover:bg-navy-deep transition-colors"
-                  title="Copy Default Password"
-                >
-                  {copiedPass ? <Check className="w-3.5 h-3.5 text-status-green" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
+              <div className="p-3.5 rounded-xl bg-bg-secondary/70 border border-navy-border/60">
+                <span className="text-[10px] text-brand-dim uppercase block">Account Security</span>
+                <span className="text-sm font-bold text-status-green flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-status-green" />
+                  <span>Encrypted (Bcrypt)</span>
+                </span>
               </div>
 
               <div className="p-3.5 rounded-xl bg-bg-secondary/70 border border-navy-border/60">
@@ -377,16 +371,6 @@ export default function TeamDashboard() {
                   </div>
                 </div>
 
-                {track.starterNotebookUrl && (
-                  <a
-                    href={track.starterNotebookUrl}
-                    download
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-signature text-bg-primary font-display font-bold text-xs shadow-glow hover:brightness-110 transition-all shrink-0"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download Starter Kit</span>
-                  </a>
-                )}
               </div>
 
               <div className="space-y-3 text-xs leading-relaxed text-brand-muted font-sans">
