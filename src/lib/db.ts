@@ -501,82 +501,110 @@ export const db = {
         members?: { create: Omit<TeamMemberRecord, "id" | "teamId" | "createdAt">[] };
       };
     }) => {
-      const data = await ensureDb();
-      const now = new Date().toISOString();
-      const teamId = crypto.randomUUID();
+      let attempts = 0;
+      const maxAttempts = 6;
+      while (attempts < maxAttempts) {
+        try {
+          const data = await ensureDb();
+          const now = new Date().toISOString();
+          const teamId = crypto.randomUUID();
 
-      const newTeam: TeamRecord = {
-        id: teamId,
-        teamCode: teamData.teamCode,
-        teamName: teamData.teamName,
-        leaderEmail: teamData.leaderEmail,
-        leaderPhone: teamData.leaderPhone,
-        password: teamData.password,
-        domainId: teamData.domainId || null,
-        prefTrack1: teamData.prefTrack1 || null,
-        prefTrack2: teamData.prefTrack2 || null,
-        prefTrack3: teamData.prefTrack3 || null,
-        prefTrack4: teamData.prefTrack4 || null,
-        skillLevel: teamData.skillLevel || "Intermediate",
-        paymentStatus: teamData.paymentStatus || "PENDING_PAYMENT",
-        paymentAmount: teamData.paymentAmount || 100,
-        razorpayOrderId: teamData.razorpayOrderId || null,
-        razorpayPaymentId: teamData.razorpayPaymentId || null,
-        razorpaySignature: teamData.razorpaySignature || null,
-        attemptsUsed: teamData.attemptsUsed || 0,
-        bestScore: teamData.bestScore || 0,
-        finalJudgeScore: teamData.finalJudgeScore || null,
-        finalCombinedScore: teamData.finalCombinedScore || null,
-        isDisqualified: teamData.isDisqualified || false,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      data.teams.push(newTeam);
-
-      const createdMembers: TeamMemberRecord[] = [];
-      if (teamData.members?.create) {
-        for (const m of teamData.members.create) {
-          const mem: TeamMemberRecord = {
-            id: crypto.randomUUID(),
-            teamId,
-            name: m.name,
-            collegeName: (m as any).collegeName || null,
-            rollNumber: m.rollNumber,
-            branch: m.branch,
-            year: m.year,
-            email: m.email,
-            phone: m.phone,
-            tshirtSize: m.tshirtSize || null,
+          const newTeam: TeamRecord = {
+            id: teamId,
+            teamCode: teamData.teamCode,
+            teamName: teamData.teamName,
+            leaderEmail: teamData.leaderEmail,
+            leaderPhone: teamData.leaderPhone,
+            password: teamData.password,
+            domainId: teamData.domainId || null,
+            prefTrack1: teamData.prefTrack1 || null,
+            prefTrack2: teamData.prefTrack2 || null,
+            prefTrack3: teamData.prefTrack3 || null,
+            prefTrack4: teamData.prefTrack4 || null,
+            skillLevel: teamData.skillLevel || "Intermediate",
+            paymentStatus: teamData.paymentStatus || "PENDING_PAYMENT",
+            paymentAmount: teamData.paymentAmount || 100,
+            razorpayOrderId: teamData.razorpayOrderId || null,
+            razorpayPaymentId: teamData.razorpayPaymentId || null,
+            razorpaySignature: teamData.razorpaySignature || null,
+            attemptsUsed: teamData.attemptsUsed || 0,
+            bestScore: teamData.bestScore || 0,
+            finalJudgeScore: teamData.finalJudgeScore || null,
+            finalCombinedScore: teamData.finalCombinedScore || null,
+            isDisqualified: teamData.isDisqualified || false,
             createdAt: now,
+            updatedAt: now,
           };
-          data.teamMembers.push(mem);
-          createdMembers.push(mem);
+
+          data.teams.push(newTeam);
+
+          const createdMembers: TeamMemberRecord[] = [];
+          if (teamData.members?.create) {
+            for (const m of teamData.members.create) {
+              const mem: TeamMemberRecord = {
+                id: crypto.randomUUID(),
+                teamId,
+                name: m.name,
+                collegeName: (m as any).collegeName || null,
+                rollNumber: m.rollNumber,
+                branch: m.branch,
+                year: m.year,
+                email: m.email,
+                phone: m.phone,
+                tshirtSize: m.tshirtSize || null,
+                createdAt: now,
+              };
+              data.teamMembers.push(mem);
+              createdMembers.push(mem);
+            }
+          }
+
+          await saveDb(data);
+          const track = data.problemTracks.find((tr) => tr.id === newTeam.domainId) || null;
+          return { ...newTeam, members: createdMembers, track };
+        } catch (err: any) {
+          attempts++;
+          if (attempts < maxAttempts && err?.message?.includes("ConcurrentModificationException")) {
+            await new Promise((resolve) => setTimeout(resolve, Math.floor(Math.random() * 120) + 40 * attempts));
+            continue;
+          }
+          throw err;
         }
       }
-
-      await saveDb(data);
-      const track = data.problemTracks.find((tr) => tr.id === newTeam.domainId) || null;
-      return { ...newTeam, members: createdMembers, track };
+      throw new Error("ConcurrentModificationException: Maximum database write retries exceeded.");
     },
     update: async ({ where, data: updates }: { where: { id?: string; teamCode?: string }; data: Partial<TeamRecord> }) => {
-      const data = await ensureDb();
-      const idx = data.teams.findIndex(
-        (t) => (where.id && t.id === where.id) || (where.teamCode && t.teamCode === where.teamCode)
-      );
-      if (idx === -1) throw new Error("Team not found");
+      let attempts = 0;
+      const maxAttempts = 6;
+      while (attempts < maxAttempts) {
+        try {
+          const data = await ensureDb();
+          const idx = data.teams.findIndex(
+            (t) => (where.id && t.id === where.id) || (where.teamCode && t.teamCode === where.teamCode)
+          );
+          if (idx === -1) throw new Error("Team not found");
 
-      data.teams[idx] = {
-        ...data.teams[idx],
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      };
-      await saveDb(data);
+          data.teams[idx] = {
+            ...data.teams[idx],
+            ...updates,
+            updatedAt: new Date().toISOString(),
+          };
+          await saveDb(data);
 
-      const team = data.teams[idx];
-      const members = data.teamMembers.filter((m) => m.teamId === team.id);
-      const track = data.problemTracks.find((tr) => tr.id === team.domainId) || null;
-      return { ...team, members, track };
+          const team = data.teams[idx];
+          const members = data.teamMembers.filter((m) => m.teamId === team.id);
+          const track = data.problemTracks.find((tr) => tr.id === team.domainId) || null;
+          return { ...team, members, track };
+        } catch (err: any) {
+          attempts++;
+          if (attempts < maxAttempts && err?.message?.includes("ConcurrentModificationException")) {
+            await new Promise((resolve) => setTimeout(resolve, Math.floor(Math.random() * 120) + 40 * attempts));
+            continue;
+          }
+          throw err;
+        }
+      }
+      throw new Error("ConcurrentModificationException: Maximum database update retries exceeded.");
     },
     upsert: async ({
       where,

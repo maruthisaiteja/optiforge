@@ -48,14 +48,25 @@ export async function GET() {
     const tracks = await db.problemTrack.findMany();
     const trackMap = new Map(tracks.map((tr) => [tr.id, tr.shortName]));
 
-    const entries = activeTeams.map((t, idx) => {
+    // Strictly deduplicate by teamCode so no duplicate team data can ever exist
+    const seenTeamCodes = new Set<string>();
+    const deduplicatedTeams: typeof activeTeams = [];
+    for (const t of activeTeams) {
+      const code = t.teamCode?.toUpperCase();
+      if (code && !seenTeamCodes.has(code)) {
+        seenTeamCodes.add(code);
+        deduplicatedTeams.push(t);
+      }
+    }
+
+    const entries = deduplicatedTeams.map((t, idx) => {
       return {
         id: t.id,
         rank: idx + 1,
         teamCode: t.teamCode,
         teamName: t.teamName,
-        trackName: trackMap.get(t.domainId || "") || "GA Track",
-        trackId: t.domainId || "track-ga",
+        trackName: trackMap.get(t.domainId || "") || "Innovation Theme",
+        trackId: t.domainId || "theme-1-biomedical-ai",
         attemptsUsed: t.attemptsUsed,
         bestScore: t.bestScore,
         finalJudgeScore: t.finalJudgeScore,
