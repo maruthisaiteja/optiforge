@@ -110,7 +110,17 @@ export async function POST(req: Request) {
       currentAttempt = team.attemptsUsed + 1;
     }
 
-    const trackId = customTrackId || team.domainId || "theme-1-biomedical-ai";
+    // Strict domain locking: Regular teams are locked to team.domainId from registration.
+    // Only the test sandbox account (isTestTeam) can dynamically select and switch tracks.
+    const trackId = (isTestTeam && customTrackId) ? customTrackId : (team.domainId || "theme-1-biomedical-ai");
+
+    // If test team chose a custom track, also persist it on the test team's profile
+    if (isTestTeam && customTrackId && customTrackId !== team.domainId) {
+      await db.team.update({
+        where: { id: team.id },
+        data: { domainId: customTrackId },
+      });
+    }
 
     // 1. Plagiarism / Similarity Check across submissions in same track
     let maxSimilarity = 0;
@@ -158,6 +168,7 @@ export async function POST(req: Request) {
     const submission = await db.submission.create({
       data: {
         teamId: team.id,
+        trackId,
         attemptNumber: currentAttempt,
         filename: filename || defaultFilename,
         codeContent: codeContent || `[GitHub Repository Submission: ${githubUrl}]`,

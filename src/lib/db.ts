@@ -117,6 +117,7 @@ export interface SubmissionRecord {
   submittedAt: string;
 
   // Hack2Skill Extended Submission & AI Evaluation Fields
+  trackId?: string | null;
   problemTitle?: string | null;
   problemDescription?: string | null;
   githubUrl?: string | null;
@@ -300,6 +301,22 @@ async function ensureDb(): Promise<DatabaseSchema> {
         const parsed = rows[0].data as DatabaseSchema;
         if (Array.isArray(parsed.users) && Array.isArray(parsed.teams)) {
           Object.defineProperty(parsed, '__db_version', { value: rows[0].version || 1, enumerable: false });
+
+          // Merge any granular submissions from optiforge_submissions table
+          try {
+            const subRows = await sql`SELECT data FROM optiforge_submissions ORDER BY created_at DESC LIMIT 500`;
+            if (subRows && subRows.length > 0) {
+              if (!Array.isArray(parsed.submissions)) parsed.submissions = [];
+              const existingIds = new Set(parsed.submissions.map((s) => s.id));
+              for (const r of subRows) {
+                if (r.data && !existingIds.has((r.data as any).id)) {
+                  parsed.submissions.push(r.data as any);
+                  existingIds.add((r.data as any).id);
+                }
+              }
+            }
+          } catch {}
+
           try {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
             fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), "utf8");
@@ -846,6 +863,7 @@ export const db = {
           submittedAt: new Date().toISOString(),
 
           // Hack2Skill Extended Submission & AI Evaluation Fields
+          trackId: subData.trackId || null,
           problemTitle: subData.problemTitle || null,
           problemDescription: subData.problemDescription || null,
           githubUrl: subData.githubUrl || null,

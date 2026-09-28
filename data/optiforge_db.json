@@ -69,6 +69,16 @@
       "assignedDomainId": "theme-6-open-innovation",
       "createdAt": "2026-09-23T16:08:26.523Z",
       "updatedAt": "2026-09-27T13:48:18.766Z"
+    },
+    {
+      "id": "optiforge-test-user-id",
+      "username": "testteam",
+      "password": "$2b$10$ByPTloIj.ZwL1PQHMmCTeO6ZVeBbQEUfPeMyri7DMnuv13h8OIebm",
+      "name": "AI Evaluation Test Sandbox",
+      "role": "TEAM",
+      "assignedDomainId": "theme-1-biomedical-ai",
+      "createdAt": "2026-09-28T21:37:51.408Z",
+      "updatedAt": "2026-09-28T21:37:51.408Z"
     }
   ],
   "teams": [
@@ -137,6 +147,28 @@
       "isDisqualified": false,
       "createdAt": "2026-09-27T09:09:45.578Z",
       "updatedAt": "2026-09-27T09:09:45.606Z"
+    },
+    {
+      "id": "optiforge-test-team-sandbox-id",
+      "teamCode": "OPT-26-TEST",
+      "teamName": "AI Evaluation Test Sandbox",
+      "leaderEmail": "test@optiforge.internal",
+      "leaderPhone": "9999999999",
+      "password": "$2b$10$ByPTloIj.ZwL1PQHMmCTeO6ZVeBbQEUfPeMyri7DMnuv13h8OIebm",
+      "domainId": "theme-1-biomedical-ai",
+      "skillLevel": "Advanced",
+      "paymentStatus": "CONFIRMED",
+      "paymentAmount": 100,
+      "razorpayOrderId": "rzp_test_bypass",
+      "razorpayPaymentId": "TEST_UTR_VERIFIED",
+      "razorpaySignature": "ADMIN_VERIFIED_APPROVED",
+      "attemptsUsed": 0,
+      "bestScore": 0,
+      "finalJudgeScore": null,
+      "finalCombinedScore": null,
+      "isDisqualified": false,
+      "createdAt": "2026-09-28T21:37:51.408Z",
+      "updatedAt": "2026-09-28T21:37:51.419Z"
     }
   ],
   "teamMembers": [
@@ -243,6 +275,19 @@
       "phone": "8888888888",
       "tshirtSize": null,
       "createdAt": "2026-09-27T09:09:45.578Z"
+    },
+    {
+      "id": "optiforge-test-member-leader",
+      "teamId": "optiforge-test-team-sandbox-id",
+      "name": "Test Leader (Sandbox Evaluator)",
+      "collegeName": "Vardhaman College of Engineering",
+      "rollNumber": "26TEST01",
+      "branch": "CSE",
+      "year": "3rd Year",
+      "email": "test@optiforge.internal",
+      "phone": "9999999999",
+      "tshirtSize": "L",
+      "createdAt": "2026-09-28T21:37:51.408Z"
     }
   ],
   "problemTracks": [

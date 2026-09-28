@@ -99,3 +99,48 @@ export async function GET() {
     return NextResponse.json({ error: "Failed to load team profile." }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request) {
+  try {
+    const session = await getServerSession();
+    if (!session || session.role !== "TEAM") {
+      return NextResponse.json({ error: "Unauthorized: Team login required." }, { status: 401 });
+    }
+
+    const team = await db.team.findUnique({
+      where: { id: session.id },
+    });
+
+    if (!team) {
+      return NextResponse.json({ error: "Team not found." }, { status: 404 });
+    }
+
+    const isTestTeam =
+      team.teamCode === "OPT-26-TEST" ||
+      team.teamCode?.includes("TEST") ||
+      team.leaderEmail === "test@optiforge.internal";
+
+    if (!isTestTeam) {
+      return NextResponse.json(
+        { error: "Track selection is locked upon registration for participating teams." },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const { domainId } = body;
+
+    if (!domainId) {
+      return NextResponse.json({ error: "domainId is required." }, { status: 400 });
+    }
+
+    await db.team.update({
+      where: { id: team.id },
+      data: { domainId },
+    });
+
+    return NextResponse.json({ success: true, domainId });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || "Failed to update track." }, { status: 500 });
+  }
+}

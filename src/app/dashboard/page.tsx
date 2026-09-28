@@ -9,7 +9,7 @@ import {
   ArrowRight, ShieldAlert, HelpCircle, Eye, CheckSquare, ShieldCheck,
   Lock, Copy, Check, Calendar, Building, GraduationCap, ExternalLink,
   EyeOff, LogOut, Server, Globe, Share2, Target, Shield,
-  ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle, Info
+  ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle, Info, Edit3
 } from "lucide-react";
 import AiEvaluationResultsModal from "@/components/AiEvaluationResultsModal";
 
@@ -56,11 +56,53 @@ export default function TeamDashboard() {
   const [approachNotes, setApproachNotes] = useState("");
   const [whatChangedNotes, setWhatChangedNotes] = useState("");
   const [formValidation, setFormValidation] = useState<string | null>(null);
+  const [formNotice, setFormNotice] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const formSectionRef = React.useRef<HTMLDivElement>(null);
 
   // Modal inspection state
   const [activeModalSubmission, setActiveModalSubmission] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const populateFormFromSubmission = (sub: any, overwriteReflection = false, isTest = false) => {
+    if (!sub) return;
+    if (sub.problemTitle) setProblemTitle(sub.problemTitle);
+    if (sub.problemDescription) setProblemDescription(sub.problemDescription);
+    if (sub.githubUrl) setGithubUrl(sub.githubUrl);
+    if (sub.deployedUrl) setDeployedUrl(sub.deployedUrl);
+    if (sub.mediaUrl) setMediaUrl(sub.mediaUrl);
+    if (sub.codeContent && !sub.codeContent.startsWith("[GitHub Repository Submission:")) {
+      setCodeContent(sub.codeContent);
+    }
+    if (sub.filename) setFileName(sub.filename);
+    if (sub.approachNotes) setApproachNotes(sub.approachNotes);
+    if (overwriteReflection && sub.whatChangedNotes) {
+      setWhatChangedNotes(sub.whatChangedNotes);
+    }
+    if (isTest && sub.trackId) {
+      setSelectedTrackId(sub.trackId);
+    }
+  };
+
+  const handleTrackChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newTrackId = e.target.value;
+    setSelectedTrackId(newTrackId);
+    try {
+      await fetch("/api/team/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domainId: newTrackId }),
+      });
+      const profRes = await fetch("/api/team/profile");
+      if (profRes.ok) {
+        const profData = await profRes.json();
+        setTeam(profData.team);
+        setTrack(profData.track);
+      }
+    } catch (err) {
+      console.error("Failed to update test track:", err);
+    }
+  };
 
   const loadDashboardData = async () => {
     try {
@@ -74,16 +116,62 @@ export default function TeamDashboard() {
 
       const subRes = await fetch("/api/submissions");
       const subData = await subRes.json();
-      setSubmissions(subData.submissions || []);
+      const subList: any[] = subData.submissions || [];
+      setSubmissions(subList);
 
       const profRes = await fetch("/api/team/profile");
       if (profRes.ok) {
         const profData = await profRes.json();
-        setTeam(profData.team);
+        const loadedTeam = profData.team;
+        setTeam(loadedTeam);
         setTrack(profData.track);
         setTournament(profData.tournament);
-        if (profData.team?.domainId) {
-          setSelectedTrackId(profData.team.domainId);
+
+        const isTest =
+          loadedTeam?.teamCode === "OPT-26-TEST" ||
+          loadedTeam?.teamCode?.includes("TEST") ||
+          loadedTeam?.leaderEmail === "test@optiforge.internal";
+
+        let populated = false;
+
+        // 1. Try restoring in-progress draft from localStorage
+        if (loadedTeam?.id && typeof window !== "undefined") {
+          try {
+            const rawDraft = localStorage.getItem(`optiforge_submission_draft_${loadedTeam.id}`);
+            if (rawDraft) {
+              const draft = JSON.parse(rawDraft);
+              if (draft && (draft.problemTitle || draft.githubUrl || draft.codeContent)) {
+                if (draft.problemTitle) setProblemTitle(draft.problemTitle);
+                if (draft.problemDescription) setProblemDescription(draft.problemDescription);
+                if (draft.githubUrl) setGithubUrl(draft.githubUrl);
+                if (draft.deployedUrl) setDeployedUrl(draft.deployedUrl);
+                if (draft.mediaUrl) setMediaUrl(draft.mediaUrl);
+                if (draft.codeContent) setCodeContent(draft.codeContent);
+                if (draft.fileName) setFileName(draft.fileName);
+                if (draft.approachNotes) setApproachNotes(draft.approachNotes);
+                if (draft.whatChangedNotes) setWhatChangedNotes(draft.whatChangedNotes);
+                if (isTest && draft.selectedTrackId) {
+                  setSelectedTrackId(draft.selectedTrackId);
+                } else if (loadedTeam?.domainId) {
+                  setSelectedTrackId(loadedTeam.domainId);
+                }
+                populated = true;
+              }
+            }
+          } catch {}
+        }
+
+        // 2. If no local draft was restored, pre-fill from latest recorded submission
+        if (!populated && subList.length > 0) {
+          const latest = subList[0];
+          populateFormFromSubmission(latest, false, isTest);
+          if (isTest && latest.trackId) {
+            setSelectedTrackId(latest.trackId);
+          } else if (loadedTeam?.domainId) {
+            setSelectedTrackId(loadedTeam.domainId);
+          }
+        } else if (!populated && loadedTeam?.domainId) {
+          setSelectedTrackId(loadedTeam.domainId);
         }
       }
 
@@ -100,6 +188,40 @@ export default function TeamDashboard() {
   useEffect(() => {
     loadDashboardData();
   }, []);
+
+  // Auto-save form draft to localStorage on edits
+  useEffect(() => {
+    if (!team?.id || typeof window === "undefined") return;
+    try {
+      localStorage.setItem(
+        `optiforge_submission_draft_${team.id}`,
+        JSON.stringify({
+          problemTitle,
+          problemDescription,
+          githubUrl,
+          deployedUrl,
+          mediaUrl,
+          codeContent,
+          fileName,
+          approachNotes,
+          whatChangedNotes,
+          selectedTrackId,
+        })
+      );
+    } catch {}
+  }, [
+    team?.id,
+    problemTitle,
+    problemDescription,
+    githubUrl,
+    deployedUrl,
+    mediaUrl,
+    codeContent,
+    fileName,
+    approachNotes,
+    whatChangedNotes,
+    selectedTrackId,
+  ]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -173,11 +295,34 @@ export default function TeamDashboard() {
         setIsModalOpen(true);
       }
 
-      // Reset fields
-      setCodeContent("");
-      setFileName("");
+      // Preserve all submitted fields in the editor so teams can easily edit and resubmit
+      // Clear only the reflection note so they can write what changed for the next attempt
       setWhatChangedNotes("");
       setIsSubmitting(false);
+      setFormNotice(
+        `✓ Attempt ${data.submission?.attemptNumber || (team?.attemptsUsed || 0) + 1} evaluated successfully and stored. You can edit any fields below to submit Attempt ${(team?.attemptsUsed || 0) + 2 > 3 && !isTestAccount ? "3" : (team?.attemptsUsed || 0) + 2}.`
+      );
+
+      // Save latest submitted values into localStorage draft
+      if (team?.id && typeof window !== "undefined") {
+        try {
+          localStorage.setItem(
+            `optiforge_submission_draft_${team.id}`,
+            JSON.stringify({
+              problemTitle,
+              problemDescription,
+              githubUrl,
+              deployedUrl,
+              mediaUrl,
+              codeContent,
+              fileName,
+              approachNotes,
+              selectedTrackId,
+            })
+          );
+        } catch {}
+      }
+
       loadDashboardData();
     } catch {
       setFormValidation("Network error during evaluation. Please try again.");
@@ -240,7 +385,13 @@ export default function TeamDashboard() {
           <div className="text-sm font-mono text-brand-muted flex flex-wrap items-center gap-4">
             <span>ID: <strong className="text-brand-white">{team?.teamCode}</strong></span>
             {leader && <span>Leader: <strong className="text-brand-white">{leader.name}</strong></span>}
-            <span>Track: <strong className="text-teal-accent">{track?.shortName || track?.name || "Biomedical AI"}</strong></span>
+            <span>
+              Track:{" "}
+              <strong className="text-teal-accent">
+                {INNOVATION_THEMES.find((t) => t.id === selectedTrackId)?.label?.split(":")[1]?.trim() || track?.shortName || track?.name || "Biomedical AI"}
+              </strong>
+              {isTestAccount && <span className="ml-1.5 text-[10px] text-purple-300 font-mono">(Sandbox)</span>}
+            </span>
           </div>
         </div>
         <button
@@ -294,7 +445,7 @@ export default function TeamDashboard() {
           {/* ═══════════════════════════════════════════════════════════════
               HACK2SKILL-GRADE AI CODE SUBMISSION CONSOLE
              ═══════════════════════════════════════════════════════════════ */}
-          <div className="rounded-2xl bg-bg-card border border-navy-border shadow-xl overflow-hidden">
+          <div ref={formSectionRef} className="rounded-2xl bg-bg-card border border-navy-border shadow-xl overflow-hidden scroll-mt-24">
             
             {/* Header Strip with Attempt Counter */}
             <div className="p-5 border-b border-navy-border bg-[#0C192E] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -346,6 +497,56 @@ export default function TeamDashboard() {
 
             {/* Submission Form */}
             <form onSubmit={handleFormSubmit} className="p-6 space-y-5">
+
+              {/* Status / Pre-filled Data Notification Banner */}
+              {formNotice && (
+                <div className="p-3.5 rounded-xl bg-teal-accent/15 border border-teal-accent/40 text-teal-accent text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-teal-accent" />
+                    <span>{formNotice}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setFormNotice(null)}
+                    className="text-xs text-brand-muted hover:text-brand-white ml-2"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              {submissions.length > 0 && !formNotice && (
+                <div className="p-3.5 rounded-xl bg-teal-accent/10 border border-teal-accent/25 text-teal-accent text-xs flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 shrink-0 text-teal-accent" />
+                    <span>
+                      Stored data from Attempt #{latestSub?.attemptNumber || submissions.length} is pre-filled. Edit your links, description, or code below and submit Attempt {(team?.attemptsUsed || 0) + 1} {isTestAccount ? "(Unlimited Sandbox)" : "of 3"}.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setProblemTitle("");
+                      setProblemDescription("");
+                      setGithubUrl("");
+                      setDeployedUrl("");
+                      setMediaUrl("");
+                      setCodeContent("");
+                      setFileName("");
+                      setWhatChangedNotes("");
+                      setFormNotice("Editor fields cleared. You can start fresh.");
+                      if (team?.id && typeof window !== "undefined") {
+                        try {
+                          localStorage.removeItem(`optiforge_submission_draft_${team.id}`);
+                        } catch {}
+                      }
+                    }}
+                    className="text-[11px] underline text-brand-muted hover:text-brand-white shrink-0 ml-2"
+                  >
+                    Clear Fields
+                  </button>
+                </div>
+              )}
               
               {/* Submission Instruction Card */}
               <div className="p-4 rounded-xl bg-bg-secondary/60 border border-navy-border/60 text-xs text-brand-muted space-y-1">
@@ -360,22 +561,60 @@ export default function TeamDashboard() {
                 </p>
               </div>
 
-              {/* 1. Challenge Track Selection */}
+              {/* 1. Challenge Track Selection: Locked for regular teams, selectable for test sandbox */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-brand-white">
-                  Challenges / Domain Track <span className="text-teal-accent">*</span>
-                </label>
-                <select
-                  value={selectedTrackId}
-                  onChange={(e) => setSelectedTrackId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white focus:outline-none focus:border-teal-accent transition-colors font-mono"
-                >
-                  {INNOVATION_THEMES.map((theme) => (
-                    <option key={theme.id} value={theme.id}>
-                      {theme.label} ({theme.society})
-                    </option>
-                  ))}
-                </select>
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-brand-white">
+                    Challenges / Domain Track <span className="text-teal-accent">*</span>
+                  </label>
+                  {isTestAccount ? (
+                    <span className="text-[10px] text-purple-300 font-mono font-semibold flex items-center gap-1 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/30">
+                      <Sparkles className="w-3 h-3 text-purple-400" /> Test Sandbox Selector
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-teal-accent font-mono flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-teal-accent" /> Locked upon Registration
+                    </span>
+                  )}
+                </div>
+
+                {isTestAccount ? (
+                  <>
+                    <select
+                      value={selectedTrackId}
+                      onChange={handleTrackChange}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-purple-500/40 text-xs text-brand-white focus:outline-none focus:border-teal-accent transition-colors font-mono cursor-pointer"
+                    >
+                      {INNOVATION_THEMES.map((theme) => (
+                        <option key={theme.id} value={theme.id}>
+                          {theme.label} ({theme.society})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-[10px] text-brand-muted font-mono">
+                      Sandbox privilege: Change track at any time to audit your code against different challenge ontologies.
+                    </p>
+                  </>
+                ) : (
+                  <div className="p-3.5 rounded-xl bg-bg-secondary/70 border border-navy-border flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-teal-accent/10 border border-teal-accent/30 flex items-center justify-center text-teal-accent shrink-0">
+                        <Lock className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-brand-white">
+                          {INNOVATION_THEMES.find((t) => t.id === (team?.domainId || selectedTrackId))?.label || track?.name || "Biomedical Artificial Intelligence"}
+                        </div>
+                        <div className="text-[10px] text-brand-muted font-mono">
+                          {INNOVATION_THEMES.find((t) => t.id === (team?.domainId || selectedTrackId))?.society || track?.society || "IEEE EMBS × CIS"} · Registered Theme (Non-transferable)
+                        </div>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-[10px] font-mono font-bold shrink-0">
+                      LOCKED
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* 2. Problem Statement Title */}
@@ -685,13 +924,27 @@ export default function TeamDashboard() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
+                      <div className="flex items-center gap-2">
+                        <div className="text-right mr-1">
                           <span className="font-display font-black text-lg text-teal-accent">
                             {currentScore.toFixed(2)}
                           </span>
                           <span className="text-[10px] text-brand-muted block font-mono">/ 100</span>
                         </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            populateFormFromSubmission(sub, true, isTestAccount);
+                            setFormNotice(`Loaded Attempt #${sub.attemptNumber} data into editor. Make changes and submit Attempt ${(team?.attemptsUsed || 0) + 1}.`);
+                            formSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-teal-accent/10 hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                          title="Load this attempt's code and details into editor"
+                        >
+                          <Edit3 className="w-3 h-3" />
+                          <span>Edit & Resubmit</span>
+                        </button>
 
                         <button
                           onClick={() => {
