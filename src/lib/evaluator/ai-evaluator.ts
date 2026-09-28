@@ -581,6 +581,33 @@ export async function evaluateOptiforgeSubmission(
   });
   const titleMatchRatio = titleTokens.length > 0 ? titleTokenMatches / titleTokens.length : 0.75;
 
+  // Deep Functional Scope Claim Analysis (Description vs Working Code Implementation)
+  const cleanDescription = (problemDescription || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ");
+  const descTokens = cleanDescription.split(/\s+/).filter((t) => t.length > 3 && !STOP_WORDS.has(t));
+  const uniqueDescTokens = Array.from(new Set(descTokens));
+
+  // Identify features relegated to Future Improvements or Roadmap in README
+  const futureScopeSection = ghReadmeText.match(/(?:future|roadmap|upcoming|todo|planned|improvements)[\s\S]*?(?:license|author|contributing|$)/i)?.[0]?.toLowerCase() || "";
+
+  let verifiedCodeMatches = 0;
+  let futureOnlyMatches = 0;
+
+  const allRepoCodeText = Array.from(fileContentsMap.values()).join(" ").toLowerCase() + " " + effectiveCode.toLowerCase();
+
+  uniqueDescTokens.forEach((token) => {
+    const inCode = allRepoCodeText.includes(token);
+    const inFutureReadme = futureScopeSection.includes(token);
+
+    if (inCode) {
+      verifiedCodeMatches++;
+    } else if (inFutureReadme) {
+      futureOnlyMatches++;
+    }
+  });
+
+  const scopeImplementationRatio = uniqueDescTokens.length > 0 ? verifiedCodeMatches / uniqueDescTokens.length : 0.50;
+  const futureClaimRatio = uniqueDescTokens.length > 0 ? futureOnlyMatches / uniqueDescTokens.length : 0.0;
+
   // 7. Security & Secret Hygiene Audit
   const foundSecurityViolations: string[] = [];
   const foundSecrets: string[] = [];
@@ -678,21 +705,21 @@ export async function evaluateOptiforgeSubmission(
 
   // 1. Code Quality (0 - 100, Weight: 20%)
   const cqVariance = ((shaSeed % 113) - 56) / 100; // -0.56 to +0.56
-  let codeQualityRaw = 46.00;
-  if (sourceFilesCount >= 6) codeQualityRaw += 14.00;
-  else if (sourceFilesCount >= 3) codeQualityRaw += 9.00;
+  let codeQualityRaw = 40.00;
+  if (sourceFilesCount >= 6) codeQualityRaw += 12.00;
+  else if (sourceFilesCount >= 3) codeQualityRaw += 8.00;
   else if (sourceFilesCount >= 1) codeQualityRaw += 4.00;
 
-  if (hasTypeHints) codeQualityRaw += 8.50;
-  if (hasDocstrings) codeQualityRaw += 5.50;
+  if (hasTypeHints) codeQualityRaw += 9.00;
+  if (hasDocstrings) codeQualityRaw += 5.00;
   if (hasLockfile) codeQualityRaw += 4.00;
-  if (hasReadme) codeQualityRaw += Math.min(5.50, 2.00 + (ghReadmeText.length / 800));
+  if (hasReadme) codeQualityRaw += Math.min(5.00, 2.00 + (ghReadmeText.length / 1000));
 
   if (ghCommitsCount > 15) codeQualityRaw += 6.00;
   else if (ghCommitsCount > 6) codeQualityRaw += 3.50;
   else if (ghCommitsCount > 0) codeQualityRaw += 1.50; // Shallow commit history
 
-  const codeQualityScore = Number(Math.min(98.50, Math.max(35.00, codeQualityRaw + cqVariance)).toFixed(2));
+  const codeQualityScore = Number(Math.min(98.00, Math.max(30.00, codeQualityRaw + cqVariance)).toFixed(2));
 
   // 2. Security (0 - 100, Weight: 12%)
   const secVariance = ((shaSeed % 89) - 44) / 100;
@@ -754,27 +781,39 @@ export async function evaluateOptiforgeSubmission(
 
   // 6. Domain & Track Innovation (0 - 100, Weight: 10%)
   const domVariance = ((shaSeed % 97) - 48) / 100;
-  let domainRaw = 55.00;
+  let domainRaw = 24.00; // Baseline for standard/generic off-the-shelf implementations
   if (isSevereDomainMismatch) {
-    domainRaw = 19.00; // Strict penalty for off-domain challenge submission
+    domainRaw = 18.00; // Strict penalty for off-domain challenge submission
   } else {
-    if (trackCoreHits > 0) domainRaw += Math.min(18.00, trackCoreHits * 4.5);
-    if (trackDetectedFrameworks.length > 0) domainRaw += Math.min(15.00, trackDetectedFrameworks.length * 5.0);
-    if (trackDetectedAlgorithms.length > 0) domainRaw += Math.min(12.00, trackDetectedAlgorithms.length * 4.0);
+    // Exclude generic utilities from track innovation
+    const specializedFwCount = trackDetectedFrameworks.filter(
+      (fw) => !["numpy", "pandas", "scipy", "opencv", "cv2", "ultralytics", "yolo", "yolov8", "flask", "streamlit", "django", "matplotlib"].includes(fw.toLowerCase())
+    ).length;
+    const specializedAlgoCount = trackDetectedAlgorithms.length;
+
+    if (trackStrictHits > 0) domainRaw += Math.min(20.00, trackStrictHits * 5.0);
+    if (specializedFwCount > 0) domainRaw += Math.min(25.00, specializedFwCount * 8.0);
+    if (specializedAlgoCount > 0) domainRaw += Math.min(25.00, specializedAlgoCount * 8.0);
   }
-  const domainTrackScore = Number(Math.min(100.00, Math.max(15.00, domainRaw + domVariance)).toFixed(2));
+  const domainTrackScore = Number(Math.min(98.00, Math.max(16.00, domainRaw + domVariance)).toFixed(2));
 
   // 7. Problem Statement Alignment (0 - 100, Weight: 12%)
   const alignVariance = ((shaSeed % 71) - 35) / 100;
-  let alignRaw = 50.00;
+  let alignRaw = 28.00;
   if (isSevereDomainMismatch) {
-    alignRaw = 28.00; // Challenge mandate divergence
+    alignRaw = 26.00; // Severe challenge divergence
   } else {
-    if (problemTitle && problemTitle.trim().length > 10) alignRaw += 10.00;
-    if (problemDescription && problemDescription.trim().length > 30) alignRaw += 10.00;
-    alignRaw += titleMatchRatio * 20.00;
+    // Title alignment: max 16 points
+    alignRaw += titleMatchRatio * 16.00;
+    // Verified implementation of claimed description capabilities: max 30 points
+    alignRaw += scopeImplementationRatio * 30.00;
+
+    // Deduct if major claims are relegated to future scope or missing from code
+    if (futureClaimRatio > 0.10 || scopeImplementationRatio < 0.50) {
+      alignRaw -= 10.00; // Unimplemented scope gap penalty
+    }
   }
-  const problemAlignmentScore = Number(Math.min(99.00, Math.max(20.00, alignRaw + alignVariance)).toFixed(2));
+  const problemAlignmentScore = Number(Math.min(98.00, Math.max(18.00, alignRaw + alignVariance)).toFixed(2));
 
   // Overall Weighted Score (Continuous 2-Decimal Precision)
   // Code Quality 20%, Security 12%, Efficiency 18%, Testing 18%, Accessibility 10%, Track 10%, Alignment 12%
@@ -835,15 +874,20 @@ export async function evaluateOptiforgeSubmission(
     insights.push(
       `Domain Mismatch: Critical challenge divergence detected. Submission implements ${offDomainMatch?.label || "an off-domain project"}, which does not satisfy the requirements of ${ontology.name}. Track innovation and problem alignment scores have been strictly penalized.`
     );
-  } else if (trackDetectedFrameworks.length > 0 || trackDetectedAlgorithms.length > 0) {
-    const list = [...trackDetectedFrameworks, ...trackDetectedAlgorithms].slice(0, 4).join(", ");
-    insights.push(
-      `Domain alignment: Discovered specialized computational modules (${list}) matching track requirements.`
-    );
   } else {
-    insights.push(
-      `Domain alignment: Routine implementation patterns detected. Recommend leveraging specialized track libraries for higher innovation scoring.`
-    );
+    const specializedFwCount = trackDetectedFrameworks.filter(
+      (fw) => !["numpy", "pandas", "scipy", "opencv", "cv2", "ultralytics", "yolo", "yolov8", "flask", "streamlit", "django", "matplotlib"].includes(fw.toLowerCase())
+    ).length;
+    if (specializedFwCount > 0 || trackDetectedAlgorithms.length > 0) {
+      const list = [...trackDetectedFrameworks, ...trackDetectedAlgorithms].slice(0, 4).join(", ");
+      insights.push(
+        `Domain alignment: Discovered specialized computational modules (${list}) matching track requirements.`
+      );
+    } else {
+      insights.push(
+        `Track innovation notice: Uses standard utility libraries without domain-specific algorithmic formulations. Score: ${domainTrackScore}/100.`
+      );
+    }
   }
 
   // Insight 5: Live deployment & performance
@@ -870,9 +914,13 @@ export async function evaluateOptiforgeSubmission(
     insights.push(
       `Actionable Recommendation: To qualify for ${ontology.name}, connect computer vision logic to clinical/health outcomes (e.g. head-trauma risk estimation from helmet non-compliance) or submit to an autonomous systems / open innovation track.`
     );
+  } else if (futureClaimRatio > 0.10 || scopeImplementationRatio < 0.50) {
+    insights.push(
+      `Problem alignment notice: Core detection verified, but advanced capabilities (e.g. automated fines, live RTSP streams) remain as future roadmap items rather than working code. Score: ${problemAlignmentScore}/100.`
+    );
   } else if (problemTitle) {
     insights.push(
-      `Problem statement fidelity: Code implementation maps directly to "${problemTitle}" with ${Math.round(titleMatchRatio * 100)}% architectural terminology alignment.`
+      `Problem statement fidelity: Code implementation maps directly to "${problemTitle}" with ${Math.round(scopeImplementationRatio * 100)}% verified functional coverage.`
     );
   }
 
