@@ -77,23 +77,23 @@ export default function AiEvaluationResultsModal({
 
   const score = Number(submission.autoScore || 0);
 
-  // Compute breakdown scores with sensible fallbacks
-  const codeQuality = Number(submission.codeQualityScore || submission.metricsBreakdown?.codeQuality?.score || 84);
-  const security = Number(submission.securityScore || submission.metricsBreakdown?.security?.score || 83);
-  const efficiency = Number(submission.efficiencyMetricScore || submission.metricsBreakdown?.efficiency?.score || 100);
-  const testing = Number(submission.testingScore || submission.metricsBreakdown?.testing?.score || 96);
-  const accessibility = Number(submission.accessibilityScore || submission.metricsBreakdown?.accessibility?.score || 99);
-  const domainTrack = Number(submission.domainTrackScore || submission.metricsBreakdown?.domainTrack?.score || 100);
-  const problemAlignment = Number(submission.problemAlignmentScore || submission.metricsBreakdown?.problemAlignment?.score || 98);
+  // Extract breakdown scores strictly with proportional fallback to overall score
+  const codeQuality = Number(submission.codeQualityScore ?? submission.metricsBreakdown?.codeQuality?.score ?? score);
+  const efficiency = Number(submission.efficiencyMetricScore ?? submission.metricsBreakdown?.efficiency?.score ?? score);
+  const testing = Number(submission.testingScore ?? submission.metricsBreakdown?.testing?.score ?? score);
+  const security = Number(submission.securityScore ?? submission.metricsBreakdown?.security?.score ?? score);
+  const problemAlignment = Number(submission.problemAlignmentScore ?? submission.metricsBreakdown?.problemAlignment?.score ?? score);
+  const domainTrack = Number(submission.domainTrackScore ?? submission.metricsBreakdown?.domainTrack?.score ?? score);
+  const accessibility = Number(submission.accessibilityScore ?? submission.metricsBreakdown?.accessibility?.score ?? score);
 
   const metricsList = [
-    { label: "Code Quality", score: codeQuality, icon: <Code2 className="w-3.5 h-3.5" />, color: "bg-teal-400" },
-    { label: "Security", score: security, icon: <Shield className="w-3.5 h-3.5" />, color: "bg-emerald-400" },
-    { label: "Efficiency", score: efficiency, icon: <Zap className="w-3.5 h-3.5" />, color: "bg-cyan-400" },
-    { label: "Testing", score: testing, icon: <FileCheck className="w-3.5 h-3.5" />, color: "bg-sky-400" },
-    { label: "Accessibility", score: accessibility, icon: <Eye className="w-3.5 h-3.5" />, color: "bg-purple-400" },
-    { label: "Track Innovation", score: domainTrack, icon: <Layers className="w-3.5 h-3.5" />, color: "bg-indigo-400" },
-    { label: "Problem Statement Alignment", score: problemAlignment, icon: <Target className="w-3.5 h-3.5" />, color: "bg-teal-300" },
+    { label: "Code Quality", weight: "20%", score: codeQuality, icon: <Code2 className="w-3.5 h-3.5" />, color: "bg-teal-400" },
+    { label: "Efficiency & Latency", weight: "18%", score: efficiency, icon: <Zap className="w-3.5 h-3.5" />, color: "bg-cyan-400" },
+    { label: "Testing & Validation", weight: "18%", score: testing, icon: <FileCheck className="w-3.5 h-3.5" />, color: "bg-sky-400" },
+    { label: "Security & Secret Hygiene", weight: "12%", score: security, icon: <Shield className="w-3.5 h-3.5" />, color: "bg-emerald-400" },
+    { label: "Problem Alignment", weight: "12%", score: problemAlignment, icon: <Target className="w-3.5 h-3.5" />, color: "bg-teal-300" },
+    { label: "Track Innovation", weight: "10%", score: domainTrack, icon: <Layers className="w-3.5 h-3.5" />, color: "bg-indigo-400" },
+    { label: "Accessibility & Docs", weight: "10%", score: accessibility, icon: <Eye className="w-3.5 h-3.5" />, color: "bg-purple-400" },
   ];
 
   // Circular gauge calculations
@@ -105,12 +105,12 @@ export default function AiEvaluationResultsModal({
   const insights = submission.aiInsights && submission.aiInsights.length > 0
     ? submission.aiInsights
     : [
-        `Codebase architecture: Evaluated modular source structure with clean abstractions and typed interfaces.`,
-        `Security audit: Verified zero exposed private keys or raw environment variables in public commits.`,
-        `Algorithmic efficiency: Optimized execution complexity with sub-second processing throughput.`,
-        `Testing rigor: Implementation incorporates validation datasets and assertion verification routines.`,
-        `Accessibility & documentation: Verified technical architecture documentation and responsive layout.`,
-        `Problem alignment: High semantic alignment with clinical and algorithmic objectives of the challenge.`,
+        `Codebase architecture: Evaluated modular source structure and language hygiene.`,
+        `Testing rigor: Automated assertions and validation partitions audited.`,
+        `Security audit: Credential hygiene and repository tree scanned for sensitive files.`,
+        `Domain alignment: Specialized computational modules and track requirements evaluated.`,
+        `Algorithmic efficiency: Runtime throughput and execution complexity evaluated.`,
+        `Problem alignment: Semantic correlation with problem statement and track requirements evaluated.`,
       ];
 
   const repoStats = submission.repoStats;
@@ -232,6 +232,7 @@ export default function AiEvaluationResultsModal({
                       <span className="text-slate-300 font-medium flex items-center gap-2">
                         <span className="text-cyan-400">{m.icon}</span>
                         {m.label}
+                        <span className="text-[10px] text-slate-500 font-mono">({m.weight})</span>
                       </span>
                       <span className="font-mono font-bold text-white text-xs">
                         {m.score.toFixed(2)}%
@@ -281,7 +282,7 @@ export default function AiEvaluationResultsModal({
                 <GithubIcon className="w-3.5 h-3.5 text-cyan-400" /> Source Tree & AST
               </span>
               <div className="text-sm font-bold text-white">
-                {repoStats?.sourceFilesCount || 1} Source Files
+                {repoStats?.sourceFilesCount !== undefined ? repoStats.sourceFilesCount : (submission.filename ? 1 : 0)} Source Files
               </div>
               <div className="text-[11px] text-slate-400 font-mono">
                 {repoStats?.languages?.join(", ") || "Python"}
@@ -330,7 +331,9 @@ export default function AiEvaluationResultsModal({
                 <Activity className="w-3.5 h-3.5 text-cyan-400" /> Extracted Frameworks
               </span>
               <div className="text-sm font-bold text-white truncate">
-                {repoStats?.detectedFrameworks?.slice(0, 3).join(", ") || "NumPy, PyTorch"}
+                {repoStats?.detectedFrameworks && repoStats.detectedFrameworks.length > 0
+                  ? repoStats.detectedFrameworks.slice(0, 4).join(", ")
+                  : "Standard Python Modules"}
               </div>
               <div className="text-[11px] text-slate-400 font-mono">
                 {repoStats?.hasGitignore ? ".gitignore active" : "Code sandboxed"}

@@ -601,18 +601,21 @@ export default function TeamDashboard() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {[
-                    { label: "Code Quality", score: latestSub.codeQualityScore || latestSub.solutionQuality || 84.00, color: "bg-teal-400" },
-                    { label: "Security", score: latestSub.securityScore || 83.00, color: "bg-emerald-400" },
-                    { label: "Efficiency", score: latestSub.efficiencyMetricScore || latestSub.efficiencyScore || 100.00, color: "bg-cyan-400" },
-                    { label: "Testing", score: latestSub.testingScore || latestSub.consistencyScore || 96.00, color: "bg-sky-400" },
-                    { label: "Accessibility", score: latestSub.accessibilityScore || 99.00, color: "bg-purple-400" },
-                    { label: "Track Innovation", score: latestSub.domainTrackScore || 100.00, color: "bg-indigo-400" },
-                    { label: "Problem Statement Alignment", score: latestSub.problemAlignmentScore || latestSub.designQuality || 98.00, color: "bg-teal-300" },
+                    { label: "Code Quality", weight: "20%", score: latestSub.codeQualityScore ?? latestSub.solutionQuality ?? Number(latestSub.autoScore || 0), color: "bg-teal-400" },
+                    { label: "Efficiency & Latency", weight: "18%", score: latestSub.efficiencyMetricScore ?? latestSub.efficiencyScore ?? Number(latestSub.autoScore || 0), color: "bg-cyan-400" },
+                    { label: "Testing & Validation", weight: "18%", score: latestSub.testingScore ?? latestSub.consistencyScore ?? Number(latestSub.autoScore || 0), color: "bg-sky-400" },
+                    { label: "Security & Secrets", weight: "12%", score: latestSub.securityScore ?? Number(latestSub.autoScore || 0), color: "bg-emerald-400" },
+                    { label: "Problem Alignment", weight: "12%", score: latestSub.problemAlignmentScore ?? latestSub.designQuality ?? Number(latestSub.autoScore || 0), color: "bg-teal-300" },
+                    { label: "Track Innovation", weight: "10%", score: latestSub.domainTrackScore ?? Number(latestSub.autoScore || 0), color: "bg-indigo-400" },
+                    { label: "Accessibility & Docs", weight: "10%", score: latestSub.accessibilityScore ?? Number(latestSub.autoScore || 0), color: "bg-purple-400" },
                   ].map((item, idx) => (
                     <div key={idx} className="p-3 rounded-xl bg-bg-secondary/60 border border-navy-border/60 space-y-1.5">
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-brand-white font-medium">{item.label}</span>
-                        <span className="font-mono font-bold text-teal-accent">{Number(item.score).toFixed(2)}</span>
+                        <span className="text-brand-white font-medium flex items-center gap-1.5">
+                          <span>{item.label}</span>
+                          <span className="text-[10px] text-brand-muted font-mono">({item.weight})</span>
+                        </span>
+                        <span className="font-mono font-bold text-teal-accent">{Number(item.score).toFixed(2)}%</span>
                       </div>
                       <div className="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
                         <div

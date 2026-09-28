@@ -123,13 +123,13 @@ export interface SubmissionRecord {
   deployedUrl?: string | null;
   mediaUrl?: string | null;
   notebookContent?: string | null;
-  codeQualityScore?: number;
-  securityScore?: number;
-  efficiencyMetricScore?: number;
-  testingScore?: number;
-  accessibilityScore?: number;
-  domainTrackScore?: number;
-  problemAlignmentScore?: number;
+  codeQualityScore?: number | null;
+  securityScore?: number | null;
+  efficiencyMetricScore?: number | null;
+  testingScore?: number | null;
+  accessibilityScore?: number | null;
+  domainTrackScore?: number | null;
+  problemAlignmentScore?: number | null;
   aiInsights?: string[];
   metricsBreakdown?: any;
   repoStats?: any;
@@ -844,6 +844,24 @@ export const db = {
           similarityFlag: subData.similarityFlag || false,
           ipAddress: subData.ipAddress || null,
           submittedAt: new Date().toISOString(),
+
+          // Hack2Skill Extended Submission & AI Evaluation Fields
+          problemTitle: subData.problemTitle || null,
+          problemDescription: subData.problemDescription || null,
+          githubUrl: subData.githubUrl || null,
+          deployedUrl: subData.deployedUrl || null,
+          mediaUrl: subData.mediaUrl || null,
+          notebookContent: subData.notebookContent || null,
+          codeQualityScore: subData.codeQualityScore ?? null,
+          securityScore: subData.securityScore ?? null,
+          efficiencyMetricScore: subData.efficiencyMetricScore ?? null,
+          testingScore: subData.testingScore ?? null,
+          accessibilityScore: subData.accessibilityScore ?? null,
+          domainTrackScore: subData.domainTrackScore ?? null,
+          problemAlignmentScore: subData.problemAlignmentScore ?? null,
+          aiInsights: subData.aiInsights || [],
+          metricsBreakdown: subData.metricsBreakdown || null,
+          repoStats: subData.repoStats || null,
         };
         data.submissions.push(sub);
         await saveDb(data);
