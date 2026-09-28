@@ -126,13 +126,15 @@ export default function TeamDashboard() {
       return;
     }
 
+    const isTestAccount = team?.teamCode === "OPT-26-TEST" || team?.teamCode?.includes("TEST") || team?.leaderEmail === "test@optiforge.internal";
+
     const currentAttempts = team?.attemptsUsed || 0;
-    if (currentAttempts >= 3) {
+    if (!isTestAccount && currentAttempts >= 3) {
       setFormValidation("Maximum 3 attempts reached. Further standard submissions are locked.");
       return;
     }
 
-    if (currentAttempts >= 1 && (!whatChangedNotes || !whatChangedNotes.trim())) {
+    if (!isTestAccount && currentAttempts >= 1 && (!whatChangedNotes || !whatChangedNotes.trim())) {
       setFormValidation(`A mandatory 'What changed and why' reflection note is required for Attempt ${currentAttempts + 1}.`);
       return;
     }
@@ -210,7 +212,8 @@ export default function TeamDashboard() {
 
   const members = team?.members || [];
   const leader = members.length > 0 ? members[0] : null;
-  const defaultPass = team?.defaultPassword || `Forge#${team?.teamCode?.split("-")[2] || "2026"}`;
+  const isTestAccount = team?.teamCode === "OPT-26-TEST" || team?.teamCode?.includes("TEST") || team?.leaderEmail === "test@optiforge.internal";
+  const defaultPass = isTestAccount ? "Test#Forge2026" : (team?.defaultPassword || `Forge#${team?.teamCode?.split("-")[2] || "2026"}`);
   const totalScore = (team?.bestScore || 0) + (team?.vivaScore || 0);
 
   // Latest submission for quick score card
@@ -228,6 +231,11 @@ export default function TeamDashboard() {
             <span className="px-3 py-1 rounded-full bg-teal-accent/10 border border-teal-accent/30 text-teal-accent text-xs font-mono flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" /> Active
             </span>
+            {isTestAccount && (
+              <span className="px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-purple-400" /> Test Sandbox (Unlimited Attempts)
+              </span>
+            )}
           </div>
           <div className="text-sm font-mono text-brand-muted flex flex-wrap items-center gap-4">
             <span>ID: <strong className="text-brand-white">{team?.teamCode}</strong></span>
@@ -306,7 +314,7 @@ export default function TeamDashboard() {
 
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-bg-secondary border border-navy-border text-xs font-mono text-brand-white">
-                  Submission Attempts: <strong className="text-teal-accent">{team?.attemptsUsed || 0} / 3</strong>
+                  Submission Attempts: <strong className="text-teal-accent">{team?.attemptsUsed || 0} {isTestAccount ? "(Unlimited Sandbox)" : "/ 3"}</strong>
                 </span>
               </div>
             </div>
@@ -496,8 +504,10 @@ export default function TeamDashboard() {
               {(team?.attemptsUsed || 0) >= 1 && (
                 <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/30 space-y-2">
                   <label className="block text-xs font-semibold text-orange-400 flex items-center justify-between">
-                    <span>What Changed & Why? (Mandatory Reflection)</span>
-                    <span className="text-[10px] font-mono">* Required for Attempt {(team?.attemptsUsed || 0) + 1}</span>
+                    <span>What Changed & Why? {isTestAccount ? "(Optional in Sandbox)" : "(Mandatory Reflection)"}</span>
+                    <span className="text-[10px] font-mono">
+                      {isTestAccount ? "* Optional Sandbox Reflection" : `* Required for Attempt ${(team?.attemptsUsed || 0) + 1}`}
+                    </span>
                   </label>
                   <textarea
                     value={whatChangedNotes}
@@ -521,7 +531,7 @@ export default function TeamDashboard() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || (team?.attemptsUsed || 0) >= 3}
+                  disabled={isSubmitting || (!isTestAccount && (team?.attemptsUsed || 0) >= 3)}
                   className="w-full py-3.5 rounded-xl bg-teal-accent hover:bg-teal-accent/90 disabled:bg-navy-deep disabled:text-brand-muted text-slate-950 font-display font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-accent/10"
                 >
                   {isSubmitting ? (
@@ -529,12 +539,14 @@ export default function TeamDashboard() {
                       <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
                       <span>Autonomous AI Auditor Inspecting Codebase & Deployments...</span>
                     </>
-                  ) : (team?.attemptsUsed || 0) >= 3 ? (
+                  ) : (!isTestAccount && (team?.attemptsUsed || 0) >= 3) ? (
                     <span>All 3 Evaluation Attempts Utilized (Locked)</span>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      <span>Submit Solution for AI Evaluation (Attempt {(team?.attemptsUsed || 0) + 1} of 3)</span>
+                      <span>
+                        Submit Solution for AI Evaluation (Attempt {(team?.attemptsUsed || 0) + 1} {isTestAccount ? "· Unlimited Sandbox" : "of 3"})
+                      </span>
                     </>
                   )}
                 </button>

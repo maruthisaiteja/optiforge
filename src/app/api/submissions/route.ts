@@ -76,29 +76,31 @@ export async function POST(req: Request) {
 
     let currentAttempt: number;
 
+    const isTestTeam = team.teamCode === "OPT-26-TEST" || team.teamCode?.includes("TEST") || team.leaderEmail === "test@optiforge.internal";
+
     if (isLivePatch) {
       // Check if team already submitted live patch
       const existingLivePatches = await db.submission.findMany({
         where: { teamId: team.id, isLivePatch: true },
       });
-      if (existingLivePatches.length > 0) {
+      if (!isTestTeam && existingLivePatches.length > 0) {
         return NextResponse.json(
           { error: "Stage 7 Live Patch already submitted. Only one live patch attempt is permitted." },
           { status: 400 }
         );
       }
-      currentAttempt = 4;
+      currentAttempt = isTestTeam ? team.attemptsUsed + 1 : 4;
     } else {
-      // Strict 3 attempts limit enforcement
-      if (team.attemptsUsed >= 3) {
+      // Strict 3 attempts limit enforcement (EXEMPT for test account)
+      if (!isTestTeam && team.attemptsUsed >= 3) {
         return NextResponse.json(
           { error: "Maximum attempts reached (3 of 3 attempts used). Further standard submissions are locked." },
           { status: 400 }
         );
       }
 
-      // Enforce mandatory 'what changed and why' note for Attempt 2 and Attempt 3
-      if (team.attemptsUsed >= 1 && (!whatChangedNotes || !whatChangedNotes.trim())) {
+      // Enforce mandatory 'what changed and why' note for Attempt 2 and Attempt 3 (optional for test account)
+      if (!isTestTeam && team.attemptsUsed >= 1 && (!whatChangedNotes || !whatChangedNotes.trim())) {
         return NextResponse.json(
           { error: "A mandatory 'What changed and why' reflection note is required for Attempt 2 and Attempt 3." },
           { status: 400 }
