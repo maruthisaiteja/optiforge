@@ -169,35 +169,8 @@ export interface DatabaseSchema {
   auditLogs: AuditLogRecord[];
 }
 
-const TEST_TEAM_CODES = new Set(["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"]);
-const TEST_TEAM_NAMES = new Set(["TEAM 1904", "I'M GAME", "TEST"]);
-
 function filterTestTeams(data: DatabaseSchema): DatabaseSchema {
-  if (!data || !Array.isArray(data.teams)) return data;
-
-  const testTeamIds = new Set(
-    data.teams
-      .filter(
-        (t) =>
-          (t.teamCode && TEST_TEAM_CODES.has(t.teamCode.toUpperCase())) ||
-          (t.teamName && TEST_TEAM_NAMES.has(t.teamName.trim().toUpperCase()))
-      )
-      .map((t) => t.id)
-  );
-
-  if (testTeamIds.size === 0) return data;
-
-  data.teams = data.teams.filter((t) => !testTeamIds.has(t.id));
-  if (Array.isArray(data.teamMembers)) {
-    data.teamMembers = data.teamMembers.filter((m) => !testTeamIds.has(m.teamId));
-  }
-  if (Array.isArray(data.submissions)) {
-    data.submissions = data.submissions.filter((s) => !testTeamIds.has(s.teamId));
-  }
-  if (Array.isArray(data.judgeEvaluations)) {
-    data.judgeEvaluations = data.judgeEvaluations.filter((e) => !testTeamIds.has(e.teamId));
-  }
-
+  // Preserve all real participant registrations without dropping any teams
   return data;
 }
 

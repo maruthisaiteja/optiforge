@@ -15,8 +15,7 @@ export async function GET(req: Request) {
     const judgeEvaluations = await db.judgeEvaluation.findMany();
     const activeStage = (await db.systemSetting.get("active_stage")) || "STAGE_3_ATTEMPT_1";
 
-    const testTeamCodes = new Set(["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"]);
-    const validTeams = teams.filter((t) => !testTeamCodes.has(t.teamCode?.toUpperCase()));
+    const validTeams = teams;
 
     // Escape CSV cell helper
     const esc = (val: any) => {

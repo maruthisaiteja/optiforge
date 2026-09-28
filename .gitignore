@@ -43,3 +43,4 @@ data/*.tmp.*
 
 # Secure admin credentials (never commit)
 secure-admin/OPTIFORGE_JUDGE_CREDENTIALS.md
+*.tsbuildinfo

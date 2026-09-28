@@ -23,7 +23,9 @@ import {
   ArrowUpDown,
   Filter,
   Download,
+  FileCheck,
 } from "lucide-react";
+import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
 
 interface TeamManagementTabProps {
   teams: any[];
@@ -81,8 +83,7 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
       a.click();
       window.URL.revokeObjectURL(url);
 
-      const testTeamCodes = new Set(["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"]);
-      const validCount = (teams || []).filter((t: any) => !testTeamCodes.has(t.teamCode?.toUpperCase())).length;
+      const validCount = (teams || []).length;
 
       setExportNotice(
         `Successfully generated master export for ${validCount} registered teams (${(teams || []).reduce((acc: number, t: any) => acc + (t.members?.length || 0), 0)} members). Plaintext passwords included where default initial credentials were retained.`
@@ -103,8 +104,7 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
 
   // Download Team Credentials CSV File (Admin Only)
   const downloadTeamCredentialsCsv = () => {
-    const testTeamCodes = new Set(["OPT-26-1904", "OPT-26-3340", "OPT-26-7902"]);
-    const validTeams = (teams || []).filter((t: any) => !testTeamCodes.has(t.teamCode?.toUpperCase()));
+    const validTeams = teams || [];
     
     const headers = "Team ID,Team Name,Team Leader Name,Team Leader Email,Password,Login URL,Registration Status\n";
     const origin = typeof window !== "undefined" ? window.location.origin : "https://optiforge-2026.vercel.app";
@@ -324,6 +324,24 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
           >
             <KeyRound className="w-3.5 h-3.5" />
             <span>{showCredentialsMode ? "Hide Credentials View" : "Team Credentials View"}</span>
+          </button>
+
+          <button
+            onClick={() => generateAttendanceSheetPdf(teams || [])}
+            className="px-3.5 py-1.5 rounded-lg bg-[#00629B]/25 hover:bg-[#00629B]/40 border border-[#00629B]/60 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm"
+            title="Download official physical desk attendance sheet for verified teams with submitted UTR (PDF)"
+          >
+            <FileCheck className="w-3.5 h-3.5 text-teal-accent" />
+            <span>Attendance Sheet (PDF)</span>
+          </button>
+
+          <button
+            onClick={() => generateCredentialsSheetPdf(teams || [])}
+            className="px-3.5 py-1.5 rounded-lg bg-[#772583]/25 hover:bg-[#772583]/40 border border-[#772583]/60 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm"
+            title="Download official team login IDs and passwords master directory (PDF)"
+          >
+            <KeyRound className="w-3.5 h-3.5 text-orange-accent" />
+            <span>Credentials (PDF)</span>
           </button>
 
           <button

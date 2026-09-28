@@ -31,6 +31,7 @@ import {
   Copy,
 } from "lucide-react";
 import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
+import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
 import TeamManagementTab from "@/components/admin/TeamManagementTab";
 import AuditLogsTab from "@/components/admin/AuditLogsTab";
 
@@ -240,21 +241,41 @@ export default function AdminPortal() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             onClick={fetchAdminData}
             className="p-2.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono transition-all flex items-center gap-1.5"
+            title="Refresh database records"
           >
             <RefreshCw className="w-4 h-4 text-teal-accent" />
-            <span>Refresh Data</span>
+            <span>Refresh</span>
+          </button>
+
+          <button
+            onClick={() => generateAttendanceSheetPdf(data?.teams || [])}
+            className="px-3.5 py-2.5 rounded-xl bg-[#00629B]/25 hover:bg-[#00629B]/40 border border-[#00629B]/60 text-white text-xs font-mono font-semibold transition-all flex items-center gap-2 shadow-sm"
+            title="Generate Official Physical Desk Attendance Roster for verified UTR-submitted teams only (PDF)"
+          >
+            <FileCheck className="w-4 h-4 text-teal-accent" />
+            <span>Attendance Sheet (PDF)</span>
+          </button>
+
+          <button
+            onClick={() => generateCredentialsSheetPdf(data?.teams || [])}
+            className="px-3.5 py-2.5 rounded-xl bg-[#772583]/25 hover:bg-[#772583]/40 border border-[#772583]/60 text-white text-xs font-mono font-semibold transition-all flex items-center gap-2 shadow-sm"
+            title="Generate Master Credentials Directory with Team IDs, Names & Passwords (PDF)"
+          >
+            <Key className="w-4 h-4 text-orange-accent" />
+            <span>Credentials (PDF)</span>
           </button>
 
           <button
             onClick={exportTeamsCsv}
-            className="px-4 py-2.5 rounded-xl bg-navy-deep hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent text-xs font-mono font-semibold transition-all flex items-center gap-2"
+            className="px-3.5 py-2.5 rounded-xl bg-navy-deep hover:bg-teal-accent/20 border border-teal-accent/30 text-teal-accent text-xs font-mono font-semibold transition-all flex items-center gap-2"
+            title="Export complete 3-sheet Excel/CSV master roster"
           >
             <Download className="w-4 h-4" />
-            <span>Export Roster CSV</span>
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
@@ -458,7 +479,7 @@ export default function AdminPortal() {
               />
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-mono">
+            <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
               <span className="text-brand-muted">Status:</span>
               <select
                 value={statusFilter}
@@ -469,6 +490,24 @@ export default function AdminPortal() {
                 <option value="CONFIRMED">CONFIRMED (Paid)</option>
                 <option value="PENDING_PAYMENT">PENDING_PAYMENT</option>
               </select>
+
+              <button
+                onClick={() => generateAttendanceSheetPdf(data?.teams || [])}
+                className="px-2.5 py-1.5 rounded-lg bg-[#00629B]/20 hover:bg-[#00629B]/30 border border-[#00629B]/40 text-teal-accent font-semibold transition-all flex items-center gap-1.5"
+                title="Download official physical desk attendance sheet for verified teams with submitted UTR (PDF)"
+              >
+                <FileCheck className="w-3.5 h-3.5" />
+                <span>Attendance (PDF)</span>
+              </button>
+
+              <button
+                onClick={() => generateCredentialsSheetPdf(data?.teams || [])}
+                className="px-2.5 py-1.5 rounded-lg bg-[#772583]/20 hover:bg-[#772583]/30 border border-[#772583]/40 text-orange-accent font-semibold transition-all flex items-center gap-1.5"
+                title="Download official team login IDs and passwords master directory (PDF)"
+              >
+                <Key className="w-3.5 h-3.5" />
+                <span>Credentials (PDF)</span>
+              </button>
             </div>
           </div>
 
