@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getServerSession } from "@/lib/auth";
-import { evaluateSubmission } from "@/lib/evaluator/runner";
+import { evaluateOptiforgeSubmission } from "@/lib/evaluator/ai-evaluator";
 import { computeCodeSimilarity } from "@/lib/evaluator/similarity";
 
 export async function GET(req: Request) {
@@ -50,10 +50,28 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { codeContent, filename, approachNotes, whatChangedNotes, isLivePatch } = body;
+    const {
+      codeContent,
+      filename,
+      approachNotes,
+      whatChangedNotes,
+      isLivePatch,
+      problemTitle,
+      problemDescription,
+      githubUrl,
+      deployedUrl,
+      mediaUrl,
+      trackId: customTrackId,
+    } = body;
 
-    if (!codeContent || !codeContent.trim()) {
-      return NextResponse.json({ error: "Code content cannot be empty." }, { status: 400 });
+    const hasCode = Boolean(codeContent && codeContent.trim());
+    const hasGithub = Boolean(githubUrl && githubUrl.trim());
+
+    if (!hasCode && !hasGithub) {
+      return NextResponse.json(
+        { error: "Please provide either source code / notebook content OR a public GitHub repository link." },
+        { status: 400 }
+      );
     }
 
     let currentAttempt: number;
@@ -90,7 +108,7 @@ export async function POST(req: Request) {
       currentAttempt = team.attemptsUsed + 1;
     }
 
-    const trackId = team.domainId || "theme-1-biomedical-ai";
+    const trackId = customTrackId || team.domainId || "theme-1-biomedical-ai";
 
     // 1. Plagiarism / Similarity Check across submissions in same track
     let maxSimilarity = 0;
@@ -99,11 +117,15 @@ export async function POST(req: Request) {
     });
     const trackTeamIds = allTrackTeams.map((t) => t.id).filter((id) => id !== team.id);
 
-    for (const otherId of trackTeamIds) {
-      const otherSubs = await db.submission.findMany({ where: { teamId: otherId } });
-      for (const otherSub of otherSubs) {
-        const sim = computeCodeSimilarity(codeContent, otherSub.codeContent);
-        if (sim > maxSimilarity) maxSimilarity = sim;
+    if (hasCode) {
+      for (const otherId of trackTeamIds) {
+        const otherSubs = await db.submission.findMany({ where: { teamId: otherId } });
+        for (const otherSub of otherSubs) {
+          if (otherSub.codeContent) {
+            const sim = computeCodeSimilarity(codeContent, otherSub.codeContent);
+            if (sim > maxSimilarity) maxSimilarity = sim;
+          }
+        }
       }
     }
 
@@ -113,37 +135,67 @@ export async function POST(req: Request) {
     const priorSubs = await db.submission.findMany({ where: { teamId: team.id } });
     const priorScores = priorSubs.map((s) => s.autoScore);
 
-    // 3. Execute Sandboxed Benchmark Runner
-    const evalResult = await evaluateSubmission(trackId, codeContent, priorScores);
+    // 3. Execute Autonomous Hack2Skill AI Evaluator Model
+    const evalResult = await evaluateOptiforgeSubmission({
+      trackId,
+      problemTitle: problemTitle || "",
+      problemDescription: problemDescription || "",
+      codeContent: codeContent || "",
+      filename: filename || (isLivePatch ? "live_patch_solution.py" : `attempt_${currentAttempt}.py`),
+      githubUrl: githubUrl || "",
+      deployedUrl: deployedUrl || "",
+      mediaUrl: mediaUrl || "",
+      approachNotes: approachNotes?.trim() || "",
+      whatChangedNotes: whatChangedNotes?.trim() || "",
+      attemptNumber: currentAttempt,
+      priorScores,
+    });
 
-    // 4. Save Submission
+    // 4. Save Submission Record with Full 7-Parameter Breakdown & AI Insights
     const defaultFilename = isLivePatch ? "live_patch_solution.py" : `attempt_${currentAttempt}.py`;
     const submission = await db.submission.create({
       data: {
         teamId: team.id,
         attemptNumber: currentAttempt,
         filename: filename || defaultFilename,
-        codeContent,
+        codeContent: codeContent || `[GitHub Repository Submission: ${githubUrl}]`,
         approachNotes: approachNotes?.trim() || null,
         whatChangedNotes: whatChangedNotes?.trim() || null,
         isLivePatch: Boolean(isLivePatch),
         status: evalResult.status,
         runtimeMs: evalResult.runtimeMs,
-        solutionQuality: evalResult.solutionQuality,
-        efficiencyScore: evalResult.efficiencyScore,
-        designQuality: evalResult.designQuality,
-        consistencyScore: evalResult.consistencyScore,
-        autoScore: evalResult.autoScore,
-        isAiAssisted: evalResult.isAiAssisted,
-        aiExplanation: evalResult.aiExplanation,
-        executionLogs: evalResult.executionLogs,
+        solutionQuality: evalResult.metrics.codeQuality.score,
+        efficiencyScore: evalResult.metrics.efficiency.score,
+        designQuality: evalResult.metrics.problemAlignment.score,
+        consistencyScore: evalResult.metrics.testing.score,
+        autoScore: evalResult.overallScore,
+        isAiAssisted: true,
+        aiExplanation: evalResult.summary,
+        executionLogs: evalResult.insights.join("\n"),
         similarityScore: maxSimilarity,
         similarityFlag: isSimilarityFlagged,
+
+        // Hack2Skill Extended Fields
+        problemTitle: problemTitle?.trim() || null,
+        problemDescription: problemDescription?.trim() || null,
+        githubUrl: githubUrl?.trim() || null,
+        deployedUrl: deployedUrl?.trim() || null,
+        mediaUrl: mediaUrl?.trim() || null,
+        codeQualityScore: evalResult.metrics.codeQuality.score,
+        securityScore: evalResult.metrics.security.score,
+        efficiencyMetricScore: evalResult.metrics.efficiency.score,
+        testingScore: evalResult.metrics.testing.score,
+        accessibilityScore: evalResult.metrics.accessibility.score,
+        domainTrackScore: evalResult.metrics.domainTrack.score,
+        problemAlignmentScore: evalResult.metrics.problemAlignment.score,
+        aiInsights: evalResult.insights,
+        metricsBreakdown: evalResult.metrics,
+        repoStats: evalResult.repoStats,
       },
     });
 
-    // 5. Update Team Stats
-    const newBestScore = Math.max(team.bestScore, evalResult.autoScore);
+    // 5. Update Team Stats (Best Score & Attempts)
+    const newBestScore = Math.max(team.bestScore, evalResult.overallScore);
     const updatedTeam = await db.team.update({
       where: { id: team.id },
       data: {
@@ -152,11 +204,11 @@ export async function POST(req: Request) {
       },
     });
 
-    // 6. Log Audit
+    // 6. Log Audit Record
     const actionLabel = isLivePatch ? "LIVE_PATCH_EVALUATED" : "SUBMISSION_EVALUATED";
     const detailsLabel = isLivePatch
-      ? `Team ${team.teamName} completed Stage 7 Live Patch. Auto-Score: ${evalResult.autoScore}. Similarity: ${maxSimilarity}%.`
-      : `Team ${team.teamName} completed Attempt ${currentAttempt}/3. Auto-Score: ${evalResult.autoScore}. Similarity: ${maxSimilarity}%.`;
+      ? `Team ${team.teamName} completed Stage 7 Live Patch. Auto-Score: ${evalResult.overallScore}. Similarity: ${maxSimilarity}%.`
+      : `Team ${team.teamName} completed Attempt ${currentAttempt}/3. Auto-Score: ${evalResult.overallScore}. Similarity: ${maxSimilarity}%.`;
 
     await db.auditLog.create({
       data: {
@@ -169,12 +221,14 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       submission,
+      evalResult,
       attemptsRemaining: isLivePatch ? 3 - team.attemptsUsed : 3 - currentAttempt,
       teamBestScore: updatedTeam.bestScore,
     });
-  } catch {
+  } catch (error: any) {
+    console.error("Submission evaluation error:", error);
     return NextResponse.json(
-      { error: "Server error executing submission evaluation." },
+      { error: "Server error executing submission evaluation: " + (error?.message || "Unknown error") },
       { status: 500 }
     );
   }

@@ -14,8 +14,17 @@ import {
   AlertCircle,
   HelpCircle,
   ShieldAlert,
+  Server,
+  ExternalLink,
 } from "lucide-react";
 import CodeViewer from "@/components/CodeViewer";
+
+const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+    <path d="M9 18c-4.51 2-5-2-7-2" />
+  </svg>
+);
 
 export default function JudgePortal() {
   const router = useRouter();
@@ -317,6 +326,64 @@ export default function JudgePortal() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              )}
+
+              {/* Problem Title & Deliverables Links */}
+              {currentSub && (currentSub.problemTitle || currentSub.githubUrl || currentSub.deployedUrl) && (
+                <div className="p-4 rounded-xl bg-bg-card border border-navy-border space-y-2.5">
+                  {currentSub.problemTitle && (
+                    <div>
+                      <span className="text-[10px] font-mono uppercase text-teal-accent tracking-wider block">
+                        Problem Statement Title
+                      </span>
+                      <h4 className="font-bold text-sm text-brand-white">
+                        {currentSub.problemTitle}
+                      </h4>
+                    </div>
+                  )}
+                  {currentSub.problemDescription && (
+                    <p className="text-xs text-brand-muted leading-relaxed">
+                      {currentSub.problemDescription}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    {currentSub.githubUrl && (
+                      <a
+                        href={currentSub.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-secondary border border-navy-border text-xs text-teal-accent hover:underline font-mono"
+                      >
+                        <GithubIcon className="w-3.5 h-3.5" />
+                        <span>GitHub Repository</span>
+                        <ExternalLink className="w-3 h-3 text-brand-muted" />
+                      </a>
+                    )}
+                    {currentSub.deployedUrl && (
+                      <a
+                        href={currentSub.deployedUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-secondary border border-navy-border text-xs text-cyan-400 hover:underline font-mono"
+                      >
+                        <Server className="w-3.5 h-3.5" />
+                        <span>Deployed Prototype</span>
+                        <ExternalLink className="w-3 h-3 text-brand-muted" />
+                      </a>
+                    )}
+                    {currentSub.mediaUrl && (
+                      <a
+                        href={currentSub.mediaUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-secondary border border-navy-border text-xs text-purple-400 hover:underline font-mono"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Presentation / Demo</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
               )}
 

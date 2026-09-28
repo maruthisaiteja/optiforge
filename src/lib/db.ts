@@ -115,6 +115,24 @@ export interface SubmissionRecord {
   similarityFlag: boolean;
   ipAddress?: string | null;
   submittedAt: string;
+
+  // Hack2Skill Extended Submission & AI Evaluation Fields
+  problemTitle?: string | null;
+  problemDescription?: string | null;
+  githubUrl?: string | null;
+  deployedUrl?: string | null;
+  mediaUrl?: string | null;
+  notebookContent?: string | null;
+  codeQualityScore?: number;
+  securityScore?: number;
+  efficiencyMetricScore?: number;
+  testingScore?: number;
+  accessibilityScore?: number;
+  domainTrackScore?: number;
+  problemAlignmentScore?: number;
+  aiInsights?: string[];
+  metricsBreakdown?: any;
+  repoStats?: any;
 }
 
 export interface JudgeEvaluationRecord {
