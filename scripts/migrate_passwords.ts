@@ -1,5 +1,5 @@
-import { db } from "c:/Users/marut/Desktop/optiforge/src/lib/db";
-import { generateSecureTeamPassword, hashPassword } from "c:/Users/marut/Desktop/optiforge/src/lib/auth";
+import { db } from "../src/lib/db";
+import { generateSecureTeamPassword, hashPassword } from "../src/lib/auth";
 
 async function main() {
   const teams = await db.team.findMany();
