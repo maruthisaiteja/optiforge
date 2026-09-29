@@ -4,6 +4,9 @@ import { getServerSession } from "@/lib/auth";
 import { evaluateOptiforgeSubmission } from "@/lib/evaluator/ai-evaluator";
 import { computeCodeSimilarity } from "@/lib/evaluator/similarity";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(req: Request) {
   try {
     const session = await getServerSession();

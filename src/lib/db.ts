@@ -328,7 +328,14 @@ async function ensureDb(): Promise<DatabaseSchema> {
         // If the table is completely empty (first time setup on Postgres), let it fall back
         console.warn("[OptiForge DB] Postgres is connected but no data found. Falling back to seed.");
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (
+        err?.message?.includes("Dynamic server usage") ||
+        err?.digest === "DYNAMIC_SERVER_USAGE" ||
+        err?.cause?.message?.includes("Dynamic server usage")
+      ) {
+        throw err;
+      }
       console.error("[OptiForge DB] FATAL: Postgres read failed! Halting to prevent data wipe.", err);
       // Critical: If Postgres fails, DO NOT fall back to local seed file because saveDb will overwrite the real DB.
       throw new Error("Database connection failed. Please try again.");
