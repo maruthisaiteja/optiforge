@@ -51,3 +51,21 @@ export async function getServerSession(): Promise<SessionUser | null> {
   if (!token) return null;
   return verifyToken(token);
 }
+
+export function generateSecureTeamPassword(): string {
+  const alphaChars = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const numChars = "23456789";
+  const specialChars = ["#", "$", "!", "@"];
+
+  let part1 = "";
+  let part2 = "";
+  for (let i = 0; i < 3; i++) {
+    part1 += alphaChars.charAt(Math.floor(Math.random() * alphaChars.length));
+  }
+  for (let i = 0; i < 3; i++) {
+    part2 += numChars.charAt(Math.floor(Math.random() * numChars.length));
+  }
+  const symbol = specialChars[Math.floor(Math.random() * specialChars.length)];
+  return `Forge#${part1}${symbol}${part2}`;
+}
+

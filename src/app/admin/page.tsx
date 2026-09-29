@@ -29,6 +29,8 @@ import {
   ClipboardList,
   UserCog,
   Copy,
+  Lock,
+  Mail,
 } from "lucide-react";
 import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
 import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
@@ -72,6 +74,8 @@ export default function AdminPortal() {
   const [credentialNote, setCredentialNote] = useState("");
   const [generatingCred, setGeneratingCred] = useState(false);
   const [generatedCred, setGeneratedCred] = useState<any>(null);
+  const [sendingModalEmail, setSendingModalEmail] = useState(false);
+  const [modalEmailNotice, setModalEmailNotice] = useState<string | null>(null);
 
   const fetchAdminData = async () => {
     try {
@@ -277,6 +281,41 @@ export default function AdminPortal() {
             <Download className="w-4 h-4" />
             <span>Export CSV</span>
           </button>
+
+          {(() => {
+            const isLocked = data?.settings?.find((s: any) => s.key === "submissions_locked")?.value !== "false";
+            return (
+              <button
+                onClick={async () => {
+                  const targetState = !isLocked;
+                  const confirmMsg = targetState
+                    ? "Lock team code submissions? (Teams will be blocked from submitting code until unlocked or event day)"
+                    : "Unlock team code submissions? (Teams will be able to submit code and receive autonomous AI scores)";
+                  if (!window.confirm(confirmMsg)) return;
+                  await handleAdminAction("SET_SUBMISSIONS_LOCK", { locked: targetState });
+                  fetchAdminData();
+                }}
+                className={`px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold transition-all flex items-center gap-2 shadow-sm ${
+                  isLocked
+                    ? "bg-amber-500/15 border-amber-500/40 text-amber-300 hover:bg-amber-500/25"
+                    : "bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25"
+                }`}
+                title={isLocked ? "Submissions are currently LOCKED for participants. Click to unlock." : "Submissions are currently UNLOCKED. Click to lock."}
+              >
+                {isLocked ? (
+                  <>
+                    <Lock className="w-4 h-4 text-amber-400" />
+                    <span>Submissions: LOCKED</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 text-emerald-400" />
+                    <span>Submissions: UNLOCKED</span>
+                  </>
+                )}
+              </button>
+            );
+          })()}
         </div>
       </div>
 
@@ -635,6 +674,33 @@ export default function AdminPortal() {
                           <Key className="w-3.5 h-3.5" />
                           <span>{isApproved ? "View Credentials" : "Generate Credentials"}</span>
                         </button>
+
+                        {isApproved && (
+                          <button
+                            onClick={async () => {
+                              try {
+                                const res = await fetch("/api/admin/email/send-credentials", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ teamCode: t.teamCode }),
+                                });
+                                const r = await res.json();
+                                if (res.ok && r.success) {
+                                  alert(`Credentials email sent to ${r.count} member(s) of ${t.teamName}: ${r.sentTo.join(", ")}`);
+                                } else {
+                                  alert(r.error || "Failed to send email.");
+                                }
+                              } catch {
+                                alert("Network error sending email.");
+                              }
+                            }}
+                            className="px-3 py-2 rounded-xl bg-teal-accent/15 hover:bg-teal-accent/25 border border-teal-accent/30 text-teal-accent text-xs font-mono transition-colors flex items-center gap-1.5"
+                            title="Dispatch official credentials email to all team members"
+                          >
+                            <Mail className="w-3.5 h-3.5" />
+                            <span>Email</span>
+                          </button>
+                        )}
 
                         {/* 2. Expand/Collapse Members button */}
                         <button
@@ -1697,6 +1763,50 @@ export default function AdminPortal() {
                   </div>
                 </div>
 
+                {/* Dispatch Email Button */}
+                <button
+                  onClick={async () => {
+                    setSendingModalEmail(true);
+                    setModalEmailNotice(null);
+                    try {
+                      const res = await fetch("/api/admin/email/send-credentials", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ teamCode: generatedCred.loginUsername }),
+                      });
+                      const data = await res.json();
+                      if (res.ok && data.success) {
+                        setModalEmailNotice(`✓ Credentials email dispatched successfully to ${data.count} member(s): ${data.sentTo.join(", ")}`);
+                      } else {
+                        setModalEmailNotice(`✕ ${data.error || "Failed to send email."}`);
+                      }
+                    } catch {
+                      setModalEmailNotice("✕ Network error sending credentials email.");
+                    }
+                    setSendingModalEmail(false);
+                  }}
+                  disabled={sendingModalEmail}
+                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-teal-accent to-status-green text-bg-primary font-bold text-xs font-mono shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {sendingModalEmail ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-bg-primary border-t-transparent rounded-full animate-spin" />
+                      <span>Sending Email via SMTP...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="w-4 h-4" />
+                      <span>Dispatch Official IEEE Credentials Email to All Members</span>
+                    </>
+                  )}
+                </button>
+
+                {modalEmailNotice && (
+                  <div className={`p-3 rounded-xl text-xs font-mono ${modalEmailNotice.startsWith("✓") ? "bg-status-green/15 text-status-green border border-status-green/30" : "bg-status-red/15 text-status-red border border-status-red/30"}`}>
+                    {modalEmailNotice}
+                  </div>
+                )}
+
                 {/* Email Template Action */}
                 <button
                   onClick={() => {
@@ -1726,18 +1836,19 @@ Vardhaman College of Engineering`;
                     navigator.clipboard.writeText(emailBody);
                     alert("Complete email template copied to clipboard! You can paste and send it to " + generatedCred.leaderEmail);
                   }}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00629B] to-[#772583] text-white font-bold text-xs font-mono shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white font-bold text-xs font-mono shadow-sm transition-all flex items-center justify-center gap-2"
                 >
                   <Copy className="w-4 h-4" />
-                  <span>Copy Official Credentials Email Template</span>
+                  <span>Copy Credentials Template to Clipboard</span>
                 </button>
 
                 <button
                   onClick={() => {
                     setCredentialModal(null);
                     setGeneratedCred(null);
+                    setModalEmailNotice(null);
                   }}
-                  className="w-full py-3 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-white text-xs font-mono transition-colors"
+                  className="w-full py-2.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-muted hover:text-brand-white text-xs font-mono transition-colors"
                 >
                   Done — Close Modal
                 </button>

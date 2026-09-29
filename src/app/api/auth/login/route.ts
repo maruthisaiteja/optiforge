@@ -48,6 +48,9 @@ export async function POST(req: Request) {
 
       const isTestTeam = team.teamCode === "OPT-26-TEST";
       let isValid = await comparePassword(password, team.password);
+      if (!isValid && team.rawPassword && password === team.rawPassword) {
+        isValid = true;
+      }
       if (!isValid && isTestTeam && (
         password === "Test#Forge2026" ||
         password === "test1234" ||

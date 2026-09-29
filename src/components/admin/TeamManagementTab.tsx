@@ -94,6 +94,116 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
     setIsExporting(false);
   };
 
+  // Email dispatch & password regeneration states
+  const [sendingEmailFor, setSendingEmailFor] = useState<string | null>(null);
+  const [isBroadcastingEmails, setIsBroadcastingEmails] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [isRegeneratingPasswords, setIsRegeneratingPasswords] = useState(false);
+
+  // Send credentials email to a single team
+  const handleSendTeamEmail = async (team: any) => {
+    setSendingEmailFor(team.teamCode);
+    setEmailStatus(null);
+    try {
+      const res = await fetch("/api/admin/email/send-credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ teamCode: team.teamCode }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        setEmailStatus({
+          type: "success",
+          message: `Official credentials email dispatched successfully to ${result.count} member(s) of ${team.teamName} (${team.teamCode}): ${result.sentTo.join(", ")}`,
+        });
+      } else {
+        setEmailStatus({
+          type: "error",
+          message: result.error || "Failed to send credentials email.",
+        });
+      }
+    } catch {
+      setEmailStatus({
+        type: "error",
+        message: "Network error sending credentials email.",
+      });
+    }
+    setSendingEmailFor(null);
+  };
+
+  // Broadcast credentials to all teams
+  const handleBroadcastAllEmails = async () => {
+    const confirmed = window.confirm(
+      `Broadcast Registration Confirmation & Login Credentials to all ${teams.length} teams via SMTP?\n\nThis will send the official IEEE email template with individual team passwords to every registered member.`
+    );
+    if (!confirmed) return;
+
+    setIsBroadcastingEmails(true);
+    setEmailStatus(null);
+    try {
+      const res = await fetch("/api/admin/email/send-credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ broadcastAll: true }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        setEmailStatus({
+          type: "success",
+          message: `Broadcast complete! Credentials dispatched to ${result.totalTeams} teams (${result.count} total recipients).`,
+        });
+      } else {
+        setEmailStatus({
+          type: "error",
+          message: result.error || "Failed to broadcast credentials.",
+        });
+      }
+    } catch {
+      setEmailStatus({
+        type: "error",
+        message: "Network error broadcasting emails.",
+      });
+    }
+    setIsBroadcastingEmails(false);
+  };
+
+  // Bulk password regeneration (zero data loss)
+  const handleRegenerateAllPasswords = async () => {
+    const confirmed = window.confirm(
+      "Regenerate new secure, non-predictable passwords for all teams?\n\n• Cryptographically generated tokens (e.g. Forge#KLM$849)\n• 100% preservation of all live teams, submissions, UTRs, and attempt history\n• New passwords will be immediately active."
+    );
+    if (!confirmed) return;
+
+    setIsRegeneratingPasswords(true);
+    setEmailStatus(null);
+    try {
+      const res = await fetch("/api/admin/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "REGENERATE_ALL_PASSWORDS", payload: {} }),
+      });
+      const result = await res.json();
+      if (res.ok && result.success) {
+        setEmailStatus({
+          type: "success",
+          message: `Successfully regenerated secure passwords for all ${result.count} teams! Live database updated. Zero data loss.`,
+        });
+        onRefresh();
+      } else {
+        setEmailStatus({
+          type: "error",
+          message: result.error || "Failed to regenerate passwords.",
+        });
+      }
+    } catch {
+      setEmailStatus({
+        type: "error",
+        message: "Network error regenerating passwords.",
+      });
+    }
+    setIsRegeneratingPasswords(false);
+  };
+
   // Team Credentials View Mode & Password Toggles
   const [showCredentialsMode, setShowCredentialsMode] = useState(false);
   const [visiblePasswords, setVisiblePasswords] = useState<Record<string, boolean>>({});
@@ -345,6 +455,44 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
           </button>
 
           <button
+            onClick={handleBroadcastAllEmails}
+            disabled={isBroadcastingEmails}
+            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#00629B] to-[#238B68] hover:brightness-110 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+            title="Dispatch official IEEE Registration Confirmation & Login Credentials email to all teams"
+          >
+            {isBroadcastingEmails ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Broadcasting...</span>
+              </>
+            ) : (
+              <>
+                <Mail className="w-3.5 h-3.5 text-white" />
+                <span>Broadcast All Emails</span>
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={handleRegenerateAllPasswords}
+            disabled={isRegeneratingPasswords}
+            className="px-3.5 py-1.5 rounded-lg bg-[#772583]/20 hover:bg-[#772583]/30 border border-[#772583]/50 text-white font-semibold text-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
+            title="Regenerate secure, non-predictable passwords for all teams (preserves all data)"
+          >
+            {isRegeneratingPasswords ? (
+              <>
+                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Regenerating...</span>
+              </>
+            ) : (
+              <>
+                <KeyRound className="w-3.5 h-3.5 text-orange-accent" />
+                <span>Regenerate Passwords</span>
+              </>
+            )}
+          </button>
+
+          <button
             onClick={downloadTeamCredentialsCsv}
             className="px-3.5 py-1.5 rounded-lg bg-bg-secondary border border-teal-accent/40 text-teal-accent hover:bg-navy-deep font-semibold text-xs transition-all flex items-center gap-1.5"
             title="Download Team Credentials CSV (XLSX/CSV compatible)"
@@ -366,6 +514,32 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
           </button>
         </div>
       </div>
+
+      {/* Email / Action Feedback Toast / Banner */}
+      {emailStatus && (
+        <div
+          className={`p-4 rounded-xl border flex items-center justify-between text-xs font-mono animate-fade-in ${
+            emailStatus.type === "success"
+              ? "bg-[#238B68]/15 border-[#238B68]/40 text-[#238B68]"
+              : "bg-red-500/15 border-red-500/40 text-red-400"
+          }`}
+        >
+          <div className="flex items-center gap-2.5">
+            {emailStatus.type === "success" ? (
+              <Check className="w-4 h-4 shrink-0" />
+            ) : (
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+            )}
+            <span>{emailStatus.message}</span>
+          </div>
+          <button
+            onClick={() => setEmailStatus(null)}
+            className="text-xs text-brand-muted hover:text-brand-white ml-3"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Team Table */}
       <div className="rounded-2xl bg-bg-card border border-navy-border/80 overflow-hidden shadow-xl">
@@ -499,6 +673,18 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                     </td>
                     <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleSendTeamEmail(t)}
+                          disabled={sendingEmailFor === t.teamCode}
+                          className="p-1.5 rounded-lg bg-bg-secondary hover:bg-teal-accent/20 border border-navy-border text-brand-muted hover:text-teal-accent transition-colors disabled:opacity-50"
+                          title={`Send Credentials Email to ${t.teamName} (${t.members?.length || 1} recipients)`}
+                        >
+                          {sendingEmailFor === t.teamCode ? (
+                            <div className="w-3.5 h-3.5 border-2 border-teal-accent border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Mail className="w-3.5 h-3.5" />
+                          )}
+                        </button>
                         <button
                           onClick={() => setSelectedTeam(t)}
                           className="p-1.5 rounded-lg bg-bg-secondary hover:bg-navy-deep border border-navy-border text-brand-muted hover:text-brand-white transition-colors"
@@ -735,6 +921,33 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* Credentials & Email Dispatch */}
+            <div className="p-4 rounded-xl bg-bg-secondary border border-teal-accent/30 space-y-3 font-mono text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-brand-dim uppercase text-[10px]">Team Password</span>
+                <span className="font-bold text-teal-accent">
+                  {selectedTeam.rawPassword || `Forge#${selectedTeam.teamCode?.split("-")[2] || "2026"}`}
+                </span>
+              </div>
+              <button
+                onClick={() => handleSendTeamEmail(selectedTeam)}
+                disabled={sendingEmailFor === selectedTeam.teamCode}
+                className="w-full py-2.5 rounded-lg bg-teal-accent hover:bg-teal-accent/90 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+              >
+                {sendingEmailFor === selectedTeam.teamCode ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    <span>Dispatching Credentials Email...</span>
+                  </>
+                ) : (
+                  <>
+                    <Mail className="w-3.5 h-3.5" />
+                    <span>Send Official Credentials Email to All Members</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>

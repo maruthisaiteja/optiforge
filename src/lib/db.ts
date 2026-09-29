@@ -47,6 +47,7 @@ export interface TeamRecord {
   leaderEmail: string;
   leaderPhone: string;
   password: string;
+  rawPassword?: string | null;
   domainId?: string | null;
   prefTrack1?: string | null;
   prefTrack2?: string | null;

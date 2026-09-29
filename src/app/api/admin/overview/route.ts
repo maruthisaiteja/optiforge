@@ -38,7 +38,7 @@ export async function GET() {
 
     // Strip sensitive data from teams (never expose password hashes to frontend)
     const safeTeams = teams.map((t: any) => {
-      const { password, razorpaySignature, ...safe } = t;
+      const { password, ...safe } = t;
       return safe;
     });
 

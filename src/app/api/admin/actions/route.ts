@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getServerSession, hashPassword } from "@/lib/auth";
+import { getServerSession, hashPassword, generateSecureTeamPassword } from "@/lib/auth";
 import { evaluateSubmission } from "@/lib/evaluator/runner";
 
 export async function POST(req: Request) {
@@ -390,17 +390,19 @@ export async function POST(req: Request) {
         const team = await db.team.findUnique({ where: { teamCode } });
         if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
 
-        // Generate the official Forge#XXXX password
-        const codeSuffix = teamCode.split("-")[2] || "2026";
-        const rawPassword = `Forge#${codeSuffix}`;
+        // Generate non-predictable high-entropy secure password
+        const rawPassword = team.rawPassword && !team.rawPassword.startsWith(`Forge#${teamCode.split("-")[2] || "2026"}`)
+          ? team.rawPassword
+          : generateSecureTeamPassword();
         const hashedPassword = await hashPassword(rawPassword);
 
-        // Update: store real password hash + mark as approved
+        // Update: store real password hash + rawPassword + mark as approved
         try {
           await db.team.update({
             where: { teamCode },
             data: {
               password: hashedPassword,
+              rawPassword,
               paymentStatus: "CONFIRMED" as const,
               razorpaySignature: "ADMIN_VERIFIED_APPROVED",
             },
@@ -412,10 +414,11 @@ export async function POST(req: Request) {
               where: { teamCode },
               update: {
                 password: hashedPassword,
+                rawPassword,
                 paymentStatus: "CONFIRMED" as const,
                 razorpaySignature: "ADMIN_VERIFIED_APPROVED",
               },
-              create: { ...team, password: hashedPassword, paymentStatus: "CONFIRMED" as const, razorpaySignature: "ADMIN_VERIFIED_APPROVED", members: { create: team.members || [] } },
+              create: { ...team, password: hashedPassword, rawPassword, paymentStatus: "CONFIRMED" as const, razorpaySignature: "ADMIN_VERIFIED_APPROVED", members: { create: team.members || [] } },
             });
           } catch (upsertErr) {
             return NextResponse.json({ error: "Failed to generate credentials: " + (upsertErr instanceof Error ? upsertErr.message : String(upsertErr)) }, { status: 500 });
@@ -428,8 +431,8 @@ export async function POST(req: Request) {
             data: {
               action: "CREDENTIALS_GENERATED",
               performedBy: `${session.name} (${session.id})`,
-              details: `Credentials generated for team ${team.teamName} (${teamCode}). UTR: ${team.razorpayPaymentId}. Admin note: ${adminNote || "None"}`,
-              reason: "Admin verified UPI payment and generated team login credentials",
+              details: `Secure credentials generated for team ${team.teamName} (${teamCode}). UTR: ${team.razorpayPaymentId}. Admin note: ${adminNote || "None"}`,
+              reason: "Admin verified UPI payment and generated secure team login credentials",
             },
           });
         } catch {}
@@ -440,7 +443,97 @@ export async function POST(req: Request) {
           loginPassword: rawPassword,
           leaderEmail: team.leaderEmail,
           teamName: team.teamName,
-          message: `Credentials generated for ${team.teamName}. Share login via email to ${team.leaderEmail}.`,
+          message: `Secure credentials generated for ${team.teamName}. Credentials can be dispatched via email.`,
+        });
+      }
+
+      case "REGENERATE_TEAM_PASSWORD": {
+        const { teamCode } = payload;
+        if (!teamCode) {
+          return NextResponse.json({ error: "Team code is required." }, { status: 400 });
+        }
+
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        const newRawPassword = generateSecureTeamPassword();
+        const hashedPassword = await hashPassword(newRawPassword);
+
+        await db.team.update({
+          where: { teamCode },
+          data: {
+            password: hashedPassword,
+            rawPassword: newRawPassword,
+          },
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "PASSWORD_REGENERATED",
+            performedBy: session.name || "Admin",
+            details: `Regenerated secure password for team ${team.teamName} (${teamCode}).`,
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          teamCode,
+          teamName: team.teamName,
+          loginPassword: newRawPassword,
+          message: `New secure password generated for ${team.teamName}: ${newRawPassword}`,
+        });
+      }
+
+      case "REGENERATE_ALL_PASSWORDS": {
+        const allTeams = await db.team.findMany();
+        let count = 0;
+
+        for (const t of allTeams) {
+          if (t.teamCode === "OPT-26-TEST") continue;
+          const newRaw = generateSecureTeamPassword();
+          const newHash = await hashPassword(newRaw);
+          await db.team.update({
+            where: { id: t.id },
+            data: {
+              password: newHash,
+              rawPassword: newRaw,
+            },
+          });
+          count++;
+        }
+
+        await db.auditLog.create({
+          data: {
+            action: "ALL_PASSWORDS_REGENERATED",
+            performedBy: session.name || "Admin",
+            details: `Regenerated secure non-predictable passwords for ${count} teams.`,
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          count,
+          message: `Successfully regenerated secure passwords for all ${count} teams.`,
+        });
+      }
+
+      case "SET_SUBMISSIONS_LOCK": {
+        const { locked } = payload;
+        const lockVal = locked ? "true" : "false";
+        await db.systemSetting.set("submissions_locked", lockVal);
+
+        await db.auditLog.create({
+          data: {
+            action: locked ? "SUBMISSIONS_LOCKED" : "SUBMISSIONS_UNLOCKED",
+            performedBy: session.name || "Admin",
+            details: `Admin ${locked ? "locked" : "unlocked"} team submissions portal.`,
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          locked: Boolean(locked),
+          message: `Team submissions portal is now ${locked ? "LOCKED" : "UNLOCKED"}.`,
         });
       }
 

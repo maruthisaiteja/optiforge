@@ -21,6 +21,7 @@ export async function GET() {
     const leaderboardFrozen = (await db.systemSetting.get("leaderboard_frozen")) === "true";
     const livePatchDeadline = (await db.systemSetting.get("live_patch_deadline")) || null;
     const livePatchDuration = (await db.systemSetting.get("live_patch_duration_mins")) || "20";
+    const submissionsLocked = (await db.systemSetting.get("submissions_locked")) !== "false";
 
     const rawTrack = team.domainId
       ? await db.problemTrack.findUnique({ where: { id: team.domainId } })
@@ -93,6 +94,7 @@ export async function GET() {
         leaderboardFrozen,
         livePatchDeadline,
         livePatchDuration,
+        submissionsLocked,
       },
     });
   } catch {

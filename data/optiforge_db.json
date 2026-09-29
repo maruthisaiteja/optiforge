@@ -88,7 +88,7 @@
       "teamName": "Team 7151",
       "leaderEmail": "team7151@vce.ac.in",
       "leaderPhone": "9490298994",
-      "password": "$2b$10$.aHsr/m/toe/kxRW2TA9A.dnNMEzQ9f.mEBiGrQlEkjCHLBnBjs7i",
+      "password": "$2b$10$O2MG3fWyiD5ydLyH1UyBvOi5.swCdqiXIzLIs6soCr.uq.iGW8A46",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
@@ -100,7 +100,8 @@
       "bestScore": 0,
       "isDisqualified": false,
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-27T09:07:50.796Z"
+      "updatedAt": "2026-09-29T11:16:20.334Z",
+      "rawPassword": "Forge#PMZ$949"
     },
     {
       "id": "team-id-1112",
@@ -108,7 +109,7 @@
       "teamName": "Team 1112",
       "leaderEmail": "team1112@vce.ac.in",
       "leaderPhone": "9490298994",
-      "password": "$2b$10$x3ZJ.PiZjzctW.vqupdm2.d23WXHejkBKRqZA4SJszx.6znzYCSNu",
+      "password": "$2b$10$QlbOlqpnFWkOL3gQbaPWsO9NU.VmmQKI1JKhuVnayyOuU1WXkq.Q2",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Standard",
       "paymentStatus": "PENDING_PAYMENT",
@@ -120,7 +121,8 @@
       "bestScore": 0,
       "isDisqualified": false,
       "createdAt": "2026-09-23T16:08:26.523Z",
-      "updatedAt": "2026-09-23T16:08:26.523Z"
+      "updatedAt": "2026-09-29T11:16:20.461Z",
+      "rawPassword": "Forge#QXM$925"
     },
     {
       "id": "674423dc-8502-4421-b14a-0916e153436f",
@@ -128,7 +130,7 @@
       "teamName": "CrashTest5",
       "leaderEmail": "a@a.com",
       "leaderPhone": "9999999999",
-      "password": "$2b$10$/0aMrOBj9tUHdYgp1zeHO.j0jhImu6vEgREiVGGZ01k0RTeJ/u4BC",
+      "password": "$2b$10$pVfIzjJZAIUhlLFckoTLjOXIcAJlbMNJKZmkgBvZYcCFL3kLx9cXG",
       "domainId": "theme-1-biomedical-ai",
       "prefTrack1": "theme-1-biomedical-ai",
       "prefTrack2": null,
@@ -146,7 +148,8 @@
       "finalCombinedScore": null,
       "isDisqualified": false,
       "createdAt": "2026-09-27T09:09:45.578Z",
-      "updatedAt": "2026-09-27T09:09:45.606Z"
+      "updatedAt": "2026-09-29T11:16:20.576Z",
+      "rawPassword": "Forge#XFB@687"
     },
     {
       "id": "optiforge-test-team-sandbox-id",
@@ -154,7 +157,7 @@
       "teamName": "AI Evaluation Test Sandbox",
       "leaderEmail": "test@optiforge.internal",
       "leaderPhone": "9999999999",
-      "password": "$2b$10$ByPTloIj.ZwL1PQHMmCTeO6ZVeBbQEUfPeMyri7DMnuv13h8OIebm",
+      "password": "$2b$10$SkMOqvam4Z3WI9S5IVuGm.Gt87VUEVU1.U3R75TGK43bxWAg8psra",
       "domainId": "theme-1-biomedical-ai",
       "skillLevel": "Advanced",
       "paymentStatus": "CONFIRMED",
@@ -168,7 +171,8 @@
       "finalCombinedScore": null,
       "isDisqualified": false,
       "createdAt": "2026-09-28T21:37:51.408Z",
-      "updatedAt": "2026-09-28T21:37:51.419Z"
+      "updatedAt": "2026-09-29T11:16:20.692Z",
+      "rawPassword": "Test#Forge2026"
     }
   ],
   "teamMembers": [

@@ -78,6 +78,17 @@ export async function POST(req: Request) {
 
     const isTestTeam = team.teamCode === "OPT-26-TEST" || team.teamCode?.includes("TEST") || team.leaderEmail === "test@optiforge.internal";
 
+    // Pre-event submission lock: Locked until Event Day (Sept 30, 2026 9:00 AM) unless test team
+    const submissionsLocked = (await db.systemSetting.get("submissions_locked")) !== "false";
+    if (submissionsLocked && !isTestTeam) {
+      return NextResponse.json(
+        {
+          error: "Submissions are currently locked. The evaluation portal opens on Event Day (September 30, 2026 at 9:00 AM IST). You can review your problem track and prepare your repository.",
+        },
+        { status: 403 }
+      );
+    }
+
     if (isLivePatch) {
       // Check if team already submitted live patch
       const existingLivePatches = await db.submission.findMany({
