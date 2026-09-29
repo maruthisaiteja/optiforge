@@ -39,8 +39,9 @@ function PaymentContent() {
 
   // Dynamic QR Code Data URL
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
+  const [showPhonePeStandee, setShowPhonePeStandee] = useState(false);
 
-  const upiId = process.env.NEXT_PUBLIC_UPI_ID || "9490298994@axl";
+  const upiId = process.env.NEXT_PUBLIC_UPI_ID || "9490298994-2@ybl";
   const upiPhone = process.env.NEXT_PUBLIC_UPI_PHONE || "9490298994";
   const upiName = process.env.NEXT_PUBLIC_UPI_NAME || "Pilli Maruthi Sai Teja";
   const amount = team?.paymentAmount || 200;
@@ -302,10 +303,16 @@ function PaymentContent() {
 
           {/* Unified Payment Center: QR Code & Transfer Details in a Single Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center p-6 rounded-2xl bg-bg-secondary/70 border border-navy-border/60">
-            {/* Dynamic QR Code */}
+            {/* Dynamic QR Code & PhonePe Standee */}
             <div className="flex flex-col items-center justify-center space-y-3">
-              <div className="p-3 bg-white rounded-2xl shadow-xl border-2 border-teal-accent/30">
-                {qrDataUrl ? (
+              <div className="p-3 bg-white rounded-2xl shadow-xl border-2 border-teal-accent/30 relative flex items-center justify-center">
+                {showPhonePeStandee ? (
+                  <img
+                    src="/phonepe-qr.jpg"
+                    alt="Official PhonePe QR Code"
+                    className="w-48 h-48 sm:w-52 sm:h-52 object-contain rounded-lg"
+                  />
+                ) : qrDataUrl ? (
                   <img
                     src={qrDataUrl}
                     alt={`UPI QR Code for ₹${amount}`}
@@ -317,9 +324,18 @@ function PaymentContent() {
                   </div>
                 )}
               </div>
-              <span className="text-[11px] font-mono text-brand-dim text-center">
-                Scan via any UPI App
-              </span>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-[11px] font-mono text-brand-dim text-center">
+                  {showPhonePeStandee ? "PhonePe Standee (Enter ₹" + amount + ")" : "Scan via any UPI App (Auto-fills ₹" + amount + ")"}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowPhonePeStandee(!showPhonePeStandee)}
+                  className="text-[10px] font-mono text-teal-accent hover:underline cursor-pointer"
+                >
+                  {showPhonePeStandee ? "⇄ Switch to Auto-Fill Dynamic QR" : "⇄ Having trouble? View PhonePe QR"}
+                </button>
+              </div>
             </div>
 
             {/* Direct Details with Copy Buttons */}
