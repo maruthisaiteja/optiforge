@@ -180,6 +180,19 @@ export async function sendTeamCredentialsEmail(team: TeamEmailPayload): Promise<
                         Open Team Dashboard &rarr;
                       </a>
                     </div>
+
+                    <!-- Official WhatsApp Group Link -->
+                    <div style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed #BAE6FD; text-align: center;">
+                      <div style="font-size: 11px; font-weight: 700; color: #0369A1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                        💬 Official Participants WhatsApp Group
+                      </div>
+                      <a href="https://chat.whatsapp.com/E6BBGfsEpThDPqwUuFefWO" target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-size: 13px; font-weight: 700; text-decoration: none; padding: 10px 24px; border-radius: 8px; box-shadow: 0 3px 8px rgba(37, 211, 102, 0.25);">
+                        Join WhatsApp Group &rarr;
+                      </a>
+                      <div style="margin-top: 6px; font-size: 11px; color: #64748B;">
+                        Direct link: <a href="https://chat.whatsapp.com/E6BBGfsEpThDPqwUuFefWO" target="_blank" style="color: #0284C7; text-decoration: underline;">https://chat.whatsapp.com/E6BBGfsEpThDPqwUuFefWO</a>
+                      </div>
+                    </div>
                   </td>
                 </tr>
               </table>
@@ -268,6 +281,7 @@ OFFICIAL LOGIN CREDENTIALS:
 - Team Code: ${team.teamCode}
 - Password: ${team.rawPassword}
 - Assigned Track: ${trackName}
+- WhatsApp Group: https://chat.whatsapp.com/E6BBGfsEpThDPqwUuFefWO
 
 PRE-EVENT NOTICE:
 Submissions are locked until Event Day (30 September 2026 at 9:00 AM IST). You can log in now to review your team dashboard and challenge details.
