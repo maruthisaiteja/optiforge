@@ -16,6 +16,7 @@ import {
   Check,
   CheckCircle2,
   RotateCcw,
+  ShieldAlert,
 } from "lucide-react";
 
 interface MemberForm {
@@ -33,6 +34,64 @@ const PENDING_TEAM_KEY = "optiforge_pending_team_v1";
 
 export default function RegisterPage() {
   const router = useRouter();
+
+  // Registrations are officially closed: OptiForge reached full tournament capacity (87 teams)
+  return (
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20 text-center space-y-8 animate-fade-in">
+      <div className="rounded-3xl bg-bg-card border border-navy-border/80 p-8 sm:p-12 space-y-6 shadow-2xl relative overflow-hidden">
+        {/* Glow accent */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-b-full blur-[2px]" />
+
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 mx-auto shadow-inner">
+          <ShieldAlert className="w-8 h-8" />
+        </div>
+
+        <div className="space-y-3">
+          <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full inline-block">
+            Tournament Limit Reached
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-black font-display text-brand-white">
+            Registrations Are Officially Closed
+          </h1>
+          <p className="text-sm text-brand-muted max-w-lg mx-auto leading-relaxed pt-1">
+            OptiForge 2026 has reached maximum capacity with <strong>87 registered teams</strong> (298 verified participants) across all 6 computational intelligence tracks. No additional registrations can be accepted at this time.
+          </p>
+        </div>
+
+        <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border text-xs text-brand-muted space-y-1.5 text-left sm:text-center">
+          <p className="font-bold text-brand-white">Already Registered Your Team?</p>
+          <p className="text-brand-dim">
+            Teams that have completed registration can access the Team Dashboard to review their assigned problem track, or complete pending UPI payments using their Team Code.
+          </p>
+        </div>
+
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/login"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-signature text-bg-primary font-bold text-xs shadow-glow hover:brightness-110 transition-all flex items-center justify-center gap-2"
+          >
+            <span>Team Portal Login</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+
+          <Link
+            href="/payment"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-navy-deep border border-teal-accent/30 text-teal-accent hover:bg-teal-accent/10 font-bold text-xs transition-all flex items-center justify-center gap-2"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span>Complete Pending Payment</span>
+          </Link>
+
+          <Link
+            href="/"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-bg-secondary border border-navy-border text-brand-white hover:bg-navy-deep font-semibold text-xs transition-all flex items-center justify-center"
+          >
+            Back to Home
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 
   const [teamName, setTeamName] = useState("");
   const [selectedProblem, setSelectedProblem] = useState("theme-1-biomedical-ai");

@@ -142,10 +142,10 @@ export default function Navbar() {
                 Login
               </Link>
               <Link
-                href="/register"
+                href="/login"
                 className="relative group px-4 py-2 text-xs font-semibold rounded-lg bg-gradient-signature text-bg-primary shadow-glow hover:brightness-110 transition-all flex items-center gap-1.5"
               >
-                <span>Register Team</span>
+                <span>Team Portal</span>
                 <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
@@ -232,11 +232,11 @@ export default function Navbar() {
                   Login
                 </Link>
                 <Link
-                  href="/register"
+                  href="/login"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full py-2.5 px-4 rounded-lg bg-gradient-signature text-bg-primary text-center font-semibold text-sm shadow-glow"
                 >
-                  Register Team · ₹100/person
+                  Team Portal & Login
                 </Link>
               </>
             )}

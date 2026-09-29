@@ -575,18 +575,40 @@ export default function LandingPage() {
               </div>
             </div>
 
+            {/* Official Tournament Registrations Closed Banner */}
+            <div className="max-w-2xl mx-auto mt-6 px-6 py-4 rounded-2xl bg-amber-500/10 border-2 border-amber-500/40 text-amber-950 shadow-md flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center shrink-0 font-bold text-lg">
+                🔒
+              </div>
+              <div className="space-y-0.5">
+                <div className="text-xs uppercase font-mono tracking-wider font-extrabold text-amber-800">
+                  Registrations Officially Closed · Maximum Capacity Reached
+                </div>
+                <div className="text-xs text-amber-900 leading-relaxed">
+                  OptiForge 2026 has reached full venue capacity with <strong>87 registered teams</strong> (298 participants). Thank you for the incredible response!
+                </div>
+              </div>
+            </div>
+
             {/* Hero Action Buttons */}
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-6">
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
               <Link
-                href="/register"
+                href="/login"
                 className="group relative inline-flex items-center gap-2 px-8 py-4 rounded-2xl font-bold text-sm text-white overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-lg"
                 style={{ background: $.ieeeBlue }}
               >
                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                 <span className="relative z-10 flex items-center gap-2">
-                  Register Now · ₹100/person
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  Portal Login &rarr;
                 </span>
+              </Link>
+
+              <Link
+                href="/payment"
+                className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl text-sm font-semibold transition-all hover:scale-105 hover:-translate-y-1 shadow-sm hover:shadow-md glass-card-subtle"
+                style={{ color: $.navy }}
+              >
+                <span>Verify Payment / UTR</span>
               </Link>
 
               <Link
@@ -1134,38 +1156,40 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* 7. READY TO COMPETE CTA */}
-        <section className="py-16 max-w-[1280px] mx-auto px-4 sm:px-8 text-center space-y-8">
+        {/* 7. TOURNAMENT CAPACITY REACHED */}
+        <section className="py-16 max-w-[1280px] mx-auto px-4 sm:px-8 text-center space-y-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold font-mono tracking-widest uppercase bg-amber-500/10 text-amber-700 border border-amber-500/30">
+            <span>🔒 Capacity Reached</span>
+          </div>
           <h2
             className="text-4xl sm:text-6xl font-black"
             style={{ fontFamily: "Sora, sans-serif", color: $.navy }}
           >
-            Ready to Compete?
+            Registrations Are Officially Closed
           </h2>
-          <p className="max-w-xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
-            Register your team of 2–4 members. ₹100 per participant · Online UPI Payment.
+          <p className="max-w-2xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
+            OptiForge 2026 has reached full venue capacity with <strong>87 registered teams (298 participants)</strong> across all 6 computational intelligence tracks. Thank you for the overwhelming enthusiasm! Registered teams can access their dashboard below.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-5 pt-4">
             <Link
-              href="/register"
+              href="/login"
               className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-base text-white transition-all hover:scale-105 active:scale-95 shadow-lg overflow-hidden relative"
               style={{ background: $.ieeeBlue }}
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative z-10 flex items-center gap-2">
-                Register Now · ₹100/person
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                Visit Team Dashboard &rarr;
               </span>
             </Link>
 
             <Link
-              href="/login"
+              href="/payment"
               className="group inline-flex items-center gap-2 px-8 py-5 rounded-2xl text-base font-bold transition-all hover:scale-105 shadow-sm hover:shadow-md"
               style={{ background: $.white, border: `2px solid ${$.ieeeBlue}`, color: $.ieeeBlue }}
             >
               <ExternalLink className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-              <span>Visit OptiForge Portal</span>
+              <span>Complete Payment / Submit UTR</span>
             </Link>
           </div>
         </section>

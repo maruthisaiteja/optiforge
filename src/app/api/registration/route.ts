@@ -4,8 +4,23 @@ import { hashPassword, signRegistrationToken } from "@/lib/auth";
 import { generateTeamCode } from "@/lib/utils";
 import { cookies } from "next/headers";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
+    // Official Tournament Capacity Reached: Registrations strictly closed
+    const regOpen = (await db.systemSetting.get("registrations_open", "false")) === "true";
+    if (!regOpen) {
+      return NextResponse.json(
+        {
+          error: "Registrations for OptiForge 2026 are officially closed as maximum tournament capacity (87 teams) has been reached. Thank you for the overwhelming response!",
+          isClosed: true,
+        },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const { teamName, members, selectedProblem, chosenProblem, prefTracks, skillLevel, agreedToTerms } = body;
 
