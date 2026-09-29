@@ -35,7 +35,7 @@ const PENDING_TEAM_KEY = "optiforge_pending_team_v1";
 export default function RegisterPage() {
   const router = useRouter();
 
-  // Registrations are officially closed: OptiForge reached full tournament capacity (87 teams)
+  // Registrations are officially closed: OptiForge reached full tournament capacity
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 py-20 text-center space-y-8 animate-fade-in">
       <div className="rounded-3xl bg-bg-card border border-navy-border/80 p-8 sm:p-12 space-y-6 shadow-2xl relative overflow-hidden">
@@ -54,7 +54,7 @@ export default function RegisterPage() {
             Registrations Are Officially Closed
           </h1>
           <p className="text-sm text-brand-muted max-w-lg mx-auto leading-relaxed pt-1">
-            OptiForge 2026 has reached maximum capacity with <strong>87 registered teams</strong> (298 verified participants) across all 6 computational intelligence tracks. No additional registrations can be accepted at this time.
+            OptiForge 2026 has reached maximum tournament capacity across all computational intelligence tracks. No additional registrations can be accepted at this time.
           </p>
         </div>
 

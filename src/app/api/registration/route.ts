@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     if (!regOpen) {
       return NextResponse.json(
         {
-          error: "Registrations for OptiForge 2026 are officially closed as maximum tournament capacity (87 teams) has been reached. Thank you for the overwhelming response!",
+          error: "Registrations for OptiForge 2026 are officially closed as maximum tournament capacity has been reached. Thank you for the overwhelming response!",
           isClosed: true,
         },
         { status: 403 }

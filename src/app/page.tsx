@@ -585,7 +585,7 @@ export default function LandingPage() {
                   Registrations Officially Closed · Maximum Capacity Reached
                 </div>
                 <div className="text-xs text-amber-900 leading-relaxed">
-                  OptiForge 2026 has reached full venue capacity with <strong>87 registered teams</strong> (298 participants). Thank you for the incredible response!
+                  OptiForge 2026 has reached maximum venue capacity. Thank you for the incredible response!
                 </div>
               </div>
             </div>
@@ -1168,7 +1168,7 @@ export default function LandingPage() {
             Registrations Are Officially Closed
           </h2>
           <p className="max-w-2xl mx-auto text-base leading-relaxed" style={{ color: $.slate }}>
-            OptiForge 2026 has reached full venue capacity with <strong>87 registered teams (298 participants)</strong> across all 6 computational intelligence tracks. Thank you for the overwhelming enthusiasm! Registered teams can access their dashboard below.
+            OptiForge 2026 has reached maximum venue capacity across all computational intelligence tracks. Thank you for the overwhelming enthusiasm! Registered teams can access their dashboard below.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-5 pt-4">
