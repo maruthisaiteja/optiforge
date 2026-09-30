@@ -455,6 +455,15 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
           </button>
 
           <button
+            onClick={() => window.open("/registered_teams.pdf", "_blank")}
+            className="px-3.5 py-1.5 rounded-lg bg-emerald-600/25 hover:bg-emerald-600/40 border border-emerald-500/60 text-white font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm"
+            title="Download official registered teams directory formatted with 5 teams per page in large font (PDF)"
+          >
+            <Download className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Teams Roster (PDF · 5/Page)</span>
+          </button>
+
+          <button
             onClick={handleBroadcastAllEmails}
             disabled={isBroadcastingEmails}
             className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#00629B] to-[#238B68] hover:brightness-110 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50"

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import AiEvaluationResultsModal from "@/components/AiEvaluationResultsModal";
 import LoopCodeEvaluationProgressModal from "@/components/LoopCodeEvaluationProgressModal";
+import SubmissionInstructionsModal from "@/components/SubmissionInstructionsModal";
 
 const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,6 +65,7 @@ export default function TeamDashboard() {
   // Modal inspection state
   const [activeModalSubmission, setActiveModalSubmission] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(false);
 
   // LoopCode 1-minute progressive evaluation modal states
   const [isLoopCodeModalOpen, setIsLoopCodeModalOpen] = useState(false);
@@ -540,6 +542,15 @@ export default function TeamDashboard() {
                 <span className="px-3.5 py-1.5 rounded-full bg-white border border-[#D9E6EE] text-xs font-mono text-[#102A43] shadow-xs">
                   Evaluation Attempts: <strong className="text-[#00629B]">{team?.attemptsUsed || 0} {isTestAccount ? "(Unlimited Sandbox)" : "/ 3"}</strong>
                 </span>
+                <button
+                  type="button"
+                  onClick={() => setIsInstructionsOpen(true)}
+                  className="px-3.5 py-1.5 rounded-xl bg-white hover:bg-[#F0F7FB] border border-[#00629B]/40 hover:border-[#00629B] text-[#00629B] text-xs font-semibold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                  title="View Hack2Skill Challenge Submission Rules & Evaluation Details"
+                >
+                  <Info className="w-3.5 h-3.5 text-[#00629B]" />
+                  <span>Instructions</span>
+                </button>
               </div>
             </div>
 
@@ -1223,6 +1234,12 @@ export default function TeamDashboard() {
         filename={fileName || (codeContent.trim().startsWith('{"cells"') ? "notebook.ipynb" : "solution.py")}
         isBackendReady={isBackendReady}
         onComplete={handleLoopCodeComplete}
+      />
+
+      {/* Hack2Skill-Style Submission Instructions Modal */}
+      <SubmissionInstructionsModal
+        isOpen={isInstructionsOpen}
+        onClose={() => setIsInstructionsOpen(false)}
       />
     </div>
   );
