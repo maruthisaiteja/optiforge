@@ -12,6 +12,7 @@ import {
   ArrowUpRight, ArrowDownRight, RefreshCw, AlertCircle, Info, Edit3
 } from "lucide-react";
 import AiEvaluationResultsModal from "@/components/AiEvaluationResultsModal";
+import LoopCodeEvaluationProgressModal from "@/components/LoopCodeEvaluationProgressModal";
 
 const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -64,6 +65,12 @@ export default function TeamDashboard() {
   const [activeModalSubmission, setActiveModalSubmission] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // LoopCode 1-minute progressive evaluation modal states
+  const [isLoopCodeModalOpen, setIsLoopCodeModalOpen] = useState(false);
+  const [isBackendReady, setIsBackendReady] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState<any>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+
   const populateFormFromSubmission = (sub: any, overwriteReflection = false, isTest = false) => {
     if (!sub) return;
     if (sub.problemTitle) setProblemTitle(sub.problemTitle);
@@ -104,8 +111,11 @@ export default function TeamDashboard() {
     }
   };
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = async (isSilent = false) => {
     try {
+      if (!isSilent) setLoading(true);
+      else setIsSyncing(true);
+
       const authRes = await fetch("/api/auth/me");
       const authData = await authRes.json();
 
@@ -134,8 +144,8 @@ export default function TeamDashboard() {
 
         let populated = false;
 
-        // 1. Try restoring in-progress draft from localStorage
-        if (loadedTeam?.id && typeof window !== "undefined") {
+        // 1. Try restoring in-progress draft from localStorage (only on initial load, not silent polls)
+        if (!isSilent && loadedTeam?.id && typeof window !== "undefined") {
           try {
             const rawDraft = localStorage.getItem(`optiforge_submission_draft_${loadedTeam.id}`);
             if (rawDraft) {
@@ -162,7 +172,7 @@ export default function TeamDashboard() {
         }
 
         // 2. If no local draft was restored, pre-fill from latest recorded submission
-        if (!populated && subList.length > 0) {
+        if (!populated && !isSilent && subList.length > 0) {
           const latest = subList[0];
           populateFormFromSubmission(latest, false, isTest);
           if (isTest && latest.trackId) {
@@ -170,7 +180,7 @@ export default function TeamDashboard() {
           } else if (loadedTeam?.domainId) {
             setSelectedTrackId(loadedTeam.domainId);
           }
-        } else if (!populated && loadedTeam?.domainId) {
+        } else if (!populated && !isSilent && loadedTeam?.domainId) {
           setSelectedTrackId(loadedTeam.domainId);
         }
       }
@@ -180,14 +190,28 @@ export default function TeamDashboard() {
       setAnnouncements(annData.announcements || []);
 
       setLoading(false);
+      setIsSyncing(false);
     } catch {
       setLoading(false);
+      setIsSyncing(false);
     }
   };
 
   useEffect(() => {
     loadDashboardData();
   }, []);
+
+  // Multi-device automatic synchronization: Poll every 12 seconds
+  useEffect(() => {
+    const pollInterval = setInterval(() => {
+      // Don't interrupt if team is actively submitting
+      if (!isSubmitting && !isLoopCodeModalOpen) {
+        loadDashboardData(true);
+      }
+    }, 12000);
+
+    return () => clearInterval(pollInterval);
+  }, [isSubmitting, isLoopCodeModalOpen]);
 
   // Auto-save form draft to localStorage on edits
   useEffect(() => {
@@ -262,6 +286,9 @@ export default function TeamDashboard() {
     }
 
     setIsSubmitting(true);
+    setIsBackendReady(false);
+    setPendingSubmission(null);
+    setIsLoopCodeModalOpen(true);
 
     try {
       const res = await fetch("/api/submissions", {
@@ -284,24 +311,33 @@ export default function TeamDashboard() {
 
       const data = await res.json();
       if (!res.ok) {
+        setIsLoopCodeModalOpen(false);
         setFormValidation(data.error || "Submission evaluation failed.");
         setIsSubmitting(false);
         return;
       }
 
-      // Open AI results modal immediately on success
+      // Backend evaluation succeeded! Signal backend readiness to LoopCode modal
       if (data.submission) {
-        setActiveModalSubmission(data.submission);
-        setIsModalOpen(true);
+        setPendingSubmission(data.submission);
+        setIsBackendReady(true);
+
+        // Update local state smoothly
+        setSubmissions((prev) => [data.submission, ...prev.filter((s) => s.id !== data.submission.id)]);
+        setTeam((prev: any) => ({
+          ...prev,
+          attemptsUsed: data.submission.attemptNumber,
+          bestScore: data.teamBestScore ?? Math.max(prev?.bestScore || 0, data.submission.autoScore || 0),
+        }));
+
+        setFormNotice(
+          `✓ Attempt ${data.submission.attemptNumber} evaluated successfully and stored. You can edit any fields below to submit Attempt ${data.submission.attemptNumber + 1 > 3 && !isTestAccount ? "3" : data.submission.attemptNumber + 1}.`
+        );
       }
 
       // Preserve all submitted fields in the editor so teams can easily edit and resubmit
       // Clear only the reflection note so they can write what changed for the next attempt
       setWhatChangedNotes("");
-      setIsSubmitting(false);
-      setFormNotice(
-        `✓ Attempt ${data.submission?.attemptNumber || (team?.attemptsUsed || 0) + 1} evaluated successfully and stored. You can edit any fields below to submit Attempt ${(team?.attemptsUsed || 0) + 2 > 3 && !isTestAccount ? "3" : (team?.attemptsUsed || 0) + 2}.`
-      );
 
       // Save latest submitted values into localStorage draft
       if (team?.id && typeof window !== "undefined") {
@@ -322,12 +358,21 @@ export default function TeamDashboard() {
           );
         } catch {}
       }
-
-      loadDashboardData();
     } catch {
+      setIsLoopCodeModalOpen(false);
       setFormValidation("Network error during evaluation. Please try again.");
       setIsSubmitting(false);
     }
+  };
+
+  const handleLoopCodeComplete = () => {
+    setIsLoopCodeModalOpen(false);
+    setIsSubmitting(false);
+    if (pendingSubmission) {
+      setActiveModalSubmission(pendingSubmission);
+      setIsModalOpen(true);
+    }
+    loadDashboardData(true);
   };
 
   const copyToClipboard = (text: string, type: "id" | "pass") => {
@@ -395,12 +440,24 @@ export default function TeamDashboard() {
             </span>
           </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono transition-colors flex items-center gap-2 self-start md:self-auto"
-        >
-          <LogOut className="w-4 h-4" /> Logout
-        </button>
+        <div className="flex items-center gap-2.5 self-start md:self-auto">
+          <button
+            onClick={() => loadDashboardData(true)}
+            disabled={isSyncing}
+            className="px-3.5 py-2 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-xs font-mono transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+            title="Synchronize live team status and submissions across devices"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? "animate-spin" : ""}`} />
+            <span>{isSyncing ? "Syncing..." : "Sync Team"}</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-mono transition-colors flex items-center gap-2"
+          >
+            <LogOut className="w-4 h-4" /> Logout
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1157,6 +1214,15 @@ export default function TeamDashboard() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         submission={activeModalSubmission}
+      />
+
+      {/* LoopCode Progressive 1-Minute Evaluation Progress Modal */}
+      <LoopCodeEvaluationProgressModal
+        isOpen={isLoopCodeModalOpen}
+        problemTitle={problemTitle || "OptiForge Technical Track Challenge"}
+        filename={fileName || (codeContent.trim().startsWith('{"cells"') ? "notebook.ipynb" : "solution.py")}
+        isBackendReady={isBackendReady}
+        onComplete={handleLoopCodeComplete}
       />
     </div>
   );

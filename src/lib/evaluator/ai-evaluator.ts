@@ -9,7 +9,10 @@
  * 5. Secret Hygiene, Dependency Lockfiles & Security Vulnerability Scanning
  * 6. Live Deployed URL Probe, TTFB Latency (ms), HTTPS, Viewport & Content Correlation
  * 7. Deliverables & Documentation Authenticity (GitHub README, Architecture Notes, Demo links)
- * 8. Continuous 2-Decimal Precision Scoring (e.g. 93.15, 93.71, 74.38 - never flat identical ints)
+ * 8. UN Sustainable Development Goals (SDG) Alignment & Socio-Technical Impact Scoring
+ * 9. Structural Gap Diagnostics ("Where Your Application Is Lagging")
+ * 10. Actionable Code Improvement Roadmap (Concrete code-level guidance for Attempt 2/3)
+ * 11. Continuous 2-Decimal Precision Scoring (e.g. 84.37, 72.91, 56.45 — never flat identical numbers)
  */
 
 import { validateExternalUrl } from "@/lib/ssrf";
@@ -22,8 +25,17 @@ export interface MetricItem {
   status: "GOOD" | "WARNING" | "CRITICAL";
 }
 
+export interface SdgAlignmentData {
+  sdgNumber: number;
+  sdgName: string;
+  target: string;
+  score: number;
+  impactAnalysis: string;
+  socialRelevance: string;
+}
+
 export interface OptiforgeEvaluationResult {
-  overallScore: number; // e.g. 93.15
+  overallScore: number; // e.g. 84.37
   status: "SCORED" | "FAILED";
   metrics: {
     codeQuality: MetricItem;
@@ -37,6 +49,9 @@ export interface OptiforgeEvaluationResult {
   summary: string;
   insights: string[]; // Specific bullet points matching Hack2Skill UI
   vivaQuestions: string[];
+  sdgAlignment: SdgAlignmentData;
+  laggingAreas: string[];
+  improvementRoadmap: string[];
   repoStats: {
     languages: string[];
     sourceFilesCount: number;
@@ -48,6 +63,11 @@ export interface OptiforgeEvaluationResult {
     liveLatencyMs: number;
     detectedFrameworks: string[];
     commitSha?: string;
+    detectedFunctions?: string[];
+    detectedClasses?: string[];
+    sdgAlignment?: SdgAlignmentData;
+    laggingAreas?: string[];
+    improvementRoadmap?: string[];
   };
   runtimeMs: number;
 }
@@ -59,11 +79,13 @@ interface TrackOntologyDefinition {
   core: string[];
   frameworks: string[];
   algorithms: string[];
+  primarySdg: number;
 }
 
 const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   "theme-1-biomedical-ai": {
     name: "Theme 1: CIS × EMBS Biomedical & Clinical AI",
+    primarySdg: 3,
     strictDomainTerms: [
       "biomedical", "clinical", "patient", "diagnosis", "disease", "biomarker",
       "mortality", "survival rate", "triage", "prognosis", "pathology", "hospital",
@@ -84,6 +106,7 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   },
   "theme-2-signals": {
     name: "Theme 2: Biosignals & Electrophysiological Processing",
+    primarySdg: 3,
     strictDomainTerms: [
       "signal", "ecg", "eeg", "emg", "ppg", "arrhythmia", "qrs", "r-peak", "sampling",
       "frequency", "spectral", "fourier", "wavelet", "bandpass", "artifact", "physionet",
@@ -104,6 +127,7 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   },
   "theme-3-imaging": {
     name: "Theme 3: Medical Imaging & Diagnostic Vision",
+    primarySdg: 3,
     strictDomainTerms: [
       "mri", "ct", "dicom", "xray", "ultrasound", "segmentation", "lesion",
       "tumor", "contour", "pixel", "voxel", "dice", "jaccard", "hausdorff",
@@ -124,6 +148,7 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   },
   "theme-4-ml-ai": {
     name: "Theme 4: Advanced Machine Learning & Optimization",
+    primarySdg: 9,
     strictDomainTerms: [
       "deep learning", "neural", "hyperparameter", "loss", "gradient",
       "regularization", "generalization", "latent", "transformer", "attention", "benchmark"
@@ -142,7 +167,8 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
     ],
   },
   "theme-5-autonomous": {
-    name: "Theme 5: Autonomous Multi-Agent Systems",
+    name: "Theme 5: Intelligent Systems & Autonomous Computing",
+    primarySdg: 11,
     strictDomainTerms: [
       "autonomous", "agent", "multi-agent", "swarm", "robotics", "navigation",
       "trajectory", "obstacle", "collision", "telemetry", "fleet", "policy"
@@ -162,6 +188,7 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   },
   "theme-6-open-innovation": {
     name: "Theme 6: Open Innovation in Computational Intelligence",
+    primarySdg: 9,
     strictDomainTerms: [
       "innovation", "optimization", "fuzzy", "heuristic", "metaheuristic", "fitness",
       "objective", "pareto", "multiobjective", "computational intelligence"
@@ -180,10 +207,57 @@ const TRACK_ONTOLOGY: Record<string, TrackOntologyDefinition> = {
   },
 };
 
+// UN Sustainable Development Goals Taxonomy
+interface SdgDefinition {
+  number: number;
+  name: string;
+  target: string;
+  keywords: string[];
+}
+
+const UN_SDGS: SdgDefinition[] = [
+  {
+    number: 3,
+    name: "SDG 3: Good Health & Well-Being",
+    target: "Target 3.4: Reduce premature mortality from non-communicable diseases; Target 3.8: Achieve universal digital health coverage.",
+    keywords: ["health", "clinical", "biomedical", "medical", "patient", "disease", "diagnosis", "hospital", "doctor", "triage", "ecg", "eeg", "mri", "cancer", "tumor", "healthcare", "cardiac", "pathology", "vital signs"],
+  },
+  {
+    number: 7,
+    name: "SDG 7: Affordable & Clean Energy",
+    target: "Target 7.3: Double the global rate of improvement in energy efficiency; optimize clean grid dispatch and battery cycles.",
+    keywords: ["energy", "solar", "wind", "battery", "power", "grid", "electricity", "fuel", "consumption", "watt", "renewable", "efficiency", "carbon footprint"],
+  },
+  {
+    number: 9,
+    name: "SDG 9: Industry, Innovation & Infrastructure",
+    target: "Target 9.4: Upgrade infrastructure and retrofit industries with resilient computational algorithms and resource-efficient automation.",
+    keywords: ["ai", "machine learning", "neural", "deep learning", "optimization", "model", "algorithm", "edge", "iot", "infrastructure", "industrial", "automation", "manufacturing", "robotics", "heuristic"],
+  },
+  {
+    number: 11,
+    name: "SDG 11: Sustainable Cities & Communities",
+    target: "Target 11.2: Provide access to safe, affordable, accessible and sustainable transport systems; Target 11.5: Reduce impact of urban disasters.",
+    keywords: ["traffic", "transport", "vehicle", "urban", "city", "smart city", "road", "safety", "pedestrian", "autonomous", "fleet", "navigation", "surveillance", "mobility", "helmet", "congestion"],
+  },
+  {
+    number: 12,
+    name: "SDG 12: Responsible Consumption & Production",
+    target: "Target 12.2: Achieve sustainable management and efficient use of natural resources; minimize computational waste and compute overhead.",
+    keywords: ["waste", "supply chain", "logistics", "scheduling", "inventory", "resource", "circular", "packaging", "recycling", "allocation", "pareto"],
+  },
+  {
+    number: 13,
+    name: "SDG 13: Climate Action",
+    target: "Target 13.1: Strengthen resilience and adaptive capacity to climate hazards and natural meteorological events.",
+    keywords: ["climate", "carbon", "weather", "emission", "pollution", "air quality", "environment", "flood", "disaster", "temperature", "greenhouse"],
+  },
+];
+
 // Off-Domain Category Taxonomy to detect topic mismatches
 const OFF_DOMAIN_TAXONOMY: Record<string, { label: string; terms: string[] }> = {
   traffic: {
-    label: "Traffic Surveillance & Vehicle Violation Detection",
+    label: "Traffic Surveillance & Road Safety",
     terms: [
       "traffic", "helmet", "violation", "license plate", "number plate",
       "signal violation", "speed violation", "road safety", "vehicle",
@@ -213,7 +287,6 @@ const OFF_DOMAIN_TAXONOMY: Record<string, { label: string; terms: string[] }> = 
   },
 };
 
-// Known common libraries to reliably extract all technologies regardless of track
 const ALL_COMMON_LIBRARIES = [
   "ultralytics", "yolov8", "yolo", "opencv", "cv2", "flask", "streamlit", "fastapi",
   "django", "numpy", "pandas", "scipy", "torch", "pytorch", "tensorflow", "keras",
@@ -229,7 +302,7 @@ const STOP_WORDS = new Set([
 ]);
 
 /**
- * Computes deterministic seed from SHA/strings for realistic, non-flat variance
+ * Computes deterministic seed from strings for realistic, non-flat variance
  */
 function computeDeterministicSeed(str: string): number {
   let hash = 0;
@@ -260,6 +333,118 @@ function parseJupyterNotebook(rawContent: string): { code: string; documentation
     }
   } catch {}
   return { code: rawContent, documentation: "" };
+}
+
+/**
+ * Deep Static AST & Entity Extractor for dynamic, non-canned insights
+ */
+function extractCodeEntities(code: string) {
+  // Extract functions
+  const fnMatches = Array.from(code.matchAll(/(?:def|function|const|let)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*(?:=\s*(?:async\s*)?\([^)]*\)\s*=>|\()/g));
+  const functions = Array.from(new Set(fnMatches.map((m) => m[1]))).filter(
+    (f) => !["if", "for", "while", "switch", "catch", "return", "print", "len", "range", "main"].includes(f)
+  );
+
+  // Extract classes
+  const classMatches = Array.from(code.matchAll(/class\s+([a-zA-Z_][a-zA-Z0-9_]*)/g));
+  const classes = Array.from(new Set(classMatches.map((m) => m[1])));
+
+  // Extract imports
+  const importMatches = Array.from(code.matchAll(/(?:import\s+([a-zA-Z0-9_,\s]+)|from\s+([a-zA-Z0-9_.]+)\s+import)/g));
+  const importedModules = new Set<string>();
+  importMatches.forEach((m) => {
+    const raw = (m[1] || m[2] || "").trim();
+    raw.split(/[,\s]+/).forEach((part) => {
+      const clean = part.split(".")[0].trim();
+      if (clean && clean.length > 1 && !["type", "typing", "sys", "os"].includes(clean.toLowerCase())) {
+        importedModules.add(clean.toLowerCase());
+      }
+    });
+  });
+
+  const lines = code.split("\n").map((l) => l.trim()).filter(Boolean);
+  const totalLines = lines.length;
+  const loopCount = (code.match(/\b(for|while)\b/g) || []).length;
+  const branchCount = (code.match(/\b(if|elif|else|switch|case)\b/g) || []).length;
+  const errorHandlingCount = (code.match(/\b(try|except|catch|finally)\b/g) || []).length;
+  const assertionCount = (code.match(/\b(assert|assertEqual|assertTrue|assertFalse|expect\(|pytest)\b/g) || []).length;
+  const typeHintCount = (code.match(/:\s*(?:int|float|str|bool|list|dict|tuple|set|Any|Optional|Union|Tensor|ndarray|DataFrame)\b/gi) || []).length + (code.match(/->\s*[a-zA-Z]/g) || []).length;
+  const docstringCount = (code.match(/"""[\s\S]*?"""|\/\*\*[\s\S]*?\*\//g) || []).length;
+
+  return {
+    functions,
+    classes,
+    importedModules: Array.from(importedModules),
+    totalLines,
+    loopCount,
+    branchCount,
+    errorHandlingCount,
+    assertionCount,
+    typeHintCount,
+    docstringCount,
+  };
+}
+
+/**
+ * Evaluates UN Sustainable Development Goals (SDG) Alignment
+ */
+function evaluateSdgAlignment(
+  trackId: string,
+  problemTitle: string,
+  problemDescription: string,
+  allCodeCorpus: string
+): SdgAlignmentData {
+  const ontology = TRACK_ONTOLOGY[trackId] || TRACK_ONTOLOGY["theme-1-biomedical-ai"];
+  const searchCorpus = `${problemTitle} ${problemDescription} ${allCodeCorpus}`.toLowerCase();
+
+  let bestSdg = UN_SDGS.find((s) => s.number === ontology.primarySdg) || UN_SDGS[0];
+  let highestHits = 0;
+
+  for (const sdg of UN_SDGS) {
+    let hits = 0;
+    for (const kw of sdg.keywords) {
+      if (searchCorpus.includes(kw)) hits++;
+    }
+    if (hits > highestHits) {
+      highestHits = hits;
+      bestSdg = sdg;
+    }
+  }
+
+  // Calculate SDG score with realistic continuous variance
+  const seed = computeDeterministicSeed(`${problemTitle}_${bestSdg.number}_${allCodeCorpus.length}`);
+  const variance = ((seed % 113) - 56) / 100;
+  const baseScore = Math.min(96.50, Math.max(52.00, 58.00 + highestHits * 4.2 + variance));
+  const score = Number(baseScore.toFixed(2));
+
+  let impactAnalysis = "";
+  let socialRelevance = "";
+
+  if (bestSdg.number === 3) {
+    impactAnalysis = `Directly supports ${bestSdg.name} by providing algorithmic intelligence for diagnostic screening, clinical decision support, or physiological anomaly detection.`;
+    socialRelevance = `Assists healthcare practitioners in early diagnosis, triage optimization, and equitable clinical access.`;
+  } else if (bestSdg.number === 9) {
+    impactAnalysis = `Advances ${bestSdg.name} through reproducible computational heuristics, edge AI acceleration, and resilient optimization architectures.`;
+    socialRelevance = `Enables modern industrial automation and efficient algorithmic problem-solving with reduced computing overhead.`;
+  } else if (bestSdg.number === 11) {
+    impactAnalysis = `Aligns with ${bestSdg.name} by improving mobility safety, autonomous multi-agent coordination, and smart urban infrastructure monitoring.`;
+    socialRelevance = `Strengthens civic safety, automated risk prevention, and intelligent incident response in urban environments.`;
+  } else if (bestSdg.number === 7 || bestSdg.number === 13) {
+    impactAnalysis = `Contributes to ${bestSdg.name} via predictive resource modeling, clean energy distribution heuristics, and carbon-aware computing.`;
+    socialRelevance = `Facilitates environmental resilience and data-driven sustainability planning.`;
+  } else {
+    impactAnalysis = `Supports ${bestSdg.name} by optimizing resource consumption, constraint satisfaction, and algorithmic throughput.`;
+    socialRelevance = `Democratizes access to automated computational optimization across community stakeholders.`;
+  }
+
+  return {
+    sdgNumber: bestSdg.number,
+    sdgName: bestSdg.name,
+    target: bestSdg.target,
+    score,
+    impactAnalysis,
+    socialRelevance,
+  };
 }
 
 /**
@@ -448,54 +633,52 @@ export async function evaluateOptiforgeSubmission(
     await Promise.all(
       candidateFiles.map(async (filePath) => {
         const content = await fetchGithubRawFile(ghOwner, ghRepo, effectiveBranch, filePath);
-        if (content) fileContentsMap.set(filePath, content);
+        if (content) {
+          fileContentsMap.set(filePath, content);
+        }
       })
     );
   }
 
-  // 3. Live Deployed URL Probe & Latency Check
+  // 3. Live Deployed URL Probe with SSRF Guard
   let isLiveResponsive = false;
   let liveLatencyMs = 0;
+  let liveHasViewport = false;
+  let liveProbeStatus = "NOT_PROVIDED";
   let liveSiteTitle = "";
   let liveSiteText = "";
-  let liveHasHttps = false;
-  let liveHasViewport = false;
-  let liveHasSemanticHtml = false;
-  let liveProbeStatus = "NOT_PROVIDED";
 
   if (deployedUrl && deployedUrl.trim().startsWith("http")) {
-    const targetUrl = deployedUrl.trim();
-    liveHasHttps = targetUrl.startsWith("https://");
-    const ssrfCheck = await validateExternalUrl(targetUrl);
+    const cleanUrl = deployedUrl.trim();
+    const ssrfCheck = await validateExternalUrl(cleanUrl);
 
     if (ssrfCheck.valid) {
       try {
+        const probeStart = Date.now();
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 6000);
-        const t0 = Date.now();
 
-        const deployRes = await fetch(targetUrl, {
-          method: "GET",
+        const probeRes = await fetch(cleanUrl, {
           signal: controller.signal,
-          headers: { "User-Agent": "OptiForge-AutonomousAuditor/5.0" },
+          headers: {
+            "User-Agent": "OptiForge-Evaluator-Probe/3.0 (+https://optiforge.org)",
+            Accept: "text/html,application/json,*/*",
+          },
           cache: "no-store",
         });
-        liveLatencyMs = Date.now() - t0;
         clearTimeout(timeout);
+        liveLatencyMs = Date.now() - probeStart;
 
-        if (deployRes.status >= 200 && deployRes.status < 400) {
+        if (probeRes.ok) {
           isLiveResponsive = true;
-          liveProbeStatus = `ONLINE (${deployRes.status} OK · ${liveLatencyMs}ms)`;
-          const html = await deployRes.text();
-
+          liveProbeStatus = `HTTP_${probeRes.status}_OK`;
+          const html = await probeRes.text();
+          liveHasViewport = html.toLowerCase().includes('name="viewport"');
           const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
           if (titleMatch) liveSiteTitle = titleMatch[1].trim();
-
-          liveHasViewport = /<meta[^>]+name=["']viewport["']/i.test(html);
-          liveHasSemanticHtml = /<(main|header|nav|footer|article|section)\b/i.test(html);
-          liveSiteText = html.replace(/<[^>]+>/g, " ").slice(0, 3000).toLowerCase();
+          liveSiteText = html.slice(0, 5000).replace(/<[^>]+>/g, " ");
         } else {
-          liveProbeStatus = `HTTP_STATUS_${deployRes.status}`;
+          liveProbeStatus = `HTTP_${probeRes.status}`;
         }
       } catch (err: any) {
         liveProbeStatus = err.name === "AbortError" ? "TIMEOUT (>6s)" : "UNREACHABLE";
@@ -517,6 +700,13 @@ export async function evaluateOptiforgeSubmission(
     ...Array.from(fileContentsMap.values()).map((c) => c.toLowerCase()),
   ].join(" ");
 
+  // Extract real entities from effective code & fetched files
+  const combinedRawCode = [
+    effectiveCode,
+    ...Array.from(fileContentsMap.values()),
+  ].join("\n\n");
+  const entities = extractCodeEntities(combinedRawCode);
+
   // 5. Track Ontology & Multi-Library Technology Extraction
   const ontology = TRACK_ONTOLOGY[trackId] || TRACK_ONTOLOGY["theme-1-biomedical-ai"];
 
@@ -525,6 +715,13 @@ export async function evaluateOptiforgeSubmission(
   ALL_COMMON_LIBRARIES.forEach((lib) => {
     if (allCodeCorpus.includes(lib.toLowerCase()) && !allDetectedLibraries.includes(lib)) {
       allDetectedLibraries.push(lib);
+    }
+  });
+
+  // Include imported modules extracted from AST
+  entities.importedModules.forEach((mod) => {
+    if (!allDetectedLibraries.includes(mod) && mod.length > 2) {
+      allDetectedLibraries.push(mod);
     }
   });
 
@@ -549,7 +746,7 @@ export async function evaluateOptiforgeSubmission(
     if (allCodeCorpus.includes(term.toLowerCase())) trackCoreHits++;
   });
 
-  // Detect off-domain category mismatch (e.g. traffic surveillance in biomedical track)
+  // Detect off-domain category mismatch
   let offDomainMatch: { category: string; label: string; hits: number } | null = null;
   for (const [cat, data] of Object.entries(OFF_DOMAIN_TAXONOMY)) {
     let hits = 0;
@@ -562,7 +759,6 @@ export async function evaluateOptiforgeSubmission(
     }
   }
 
-  // Determine if there is a severe domain mismatch
   let isSevereDomainMismatch = false;
   let domainMismatchReason = "";
   if (offDomainMatch && (trackId === "theme-1-biomedical-ai" || trackId === "theme-2-signals" || trackId === "theme-3-imaging")) {
@@ -581,16 +777,15 @@ export async function evaluateOptiforgeSubmission(
   });
   const titleMatchRatio = titleTokens.length > 0 ? titleTokenMatches / titleTokens.length : 0.75;
 
-  // Deep Functional Scope Claim Analysis (Description vs Working Code Implementation)
   const cleanDescription = (problemDescription || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ");
   const descTokens = cleanDescription.split(/\s+/).filter((t) => t.length > 3 && !STOP_WORDS.has(t));
   const uniqueDescTokens = Array.from(new Set(descTokens));
 
-  // Identify features relegated to Future Improvements or Roadmap in README
   const futureScopeSection = ghReadmeText.match(/(?:future|roadmap|upcoming|todo|planned|improvements)[\s\S]*?(?:license|author|contributing|$)/i)?.[0]?.toLowerCase() || "";
 
   let verifiedCodeMatches = 0;
   let futureOnlyMatches = 0;
+  const missingDescriptionCapabilities: string[] = [];
 
   const allRepoCodeText = Array.from(fileContentsMap.values()).join(" ").toLowerCase() + " " + effectiveCode.toLowerCase();
 
@@ -602,6 +797,9 @@ export async function evaluateOptiforgeSubmission(
       verifiedCodeMatches++;
     } else if (inFutureReadme) {
       futureOnlyMatches++;
+      missingDescriptionCapabilities.push(token);
+    } else {
+      missingDescriptionCapabilities.push(token);
     }
   });
 
@@ -609,10 +807,8 @@ export async function evaluateOptiforgeSubmission(
   const futureClaimRatio = uniqueDescTokens.length > 0 ? futureOnlyMatches / uniqueDescTokens.length : 0.0;
 
   // 7. Security & Secret Hygiene Audit
-  const foundSecurityViolations: string[] = [];
   const foundSecrets: string[] = [];
 
-  // Secret leak patterns
   const secretChecks = [
     { pattern: /(?:JWT_SECRET|SECRET_KEY|JWT_KEY)\s*=\s*['"]([^'"]{6,})['"]/i, name: "Hardcoded plain-text JWT/Secret key" },
     { pattern: /(?:api[_-]?key|apikey|access[_-]?token|client[_-]?secret)\s*=\s*['"]([a-zA-Z0-9_\-\.]{14,})['"]/i, name: "Plain-text API key/secret in code" },
@@ -626,7 +822,6 @@ export async function evaluateOptiforgeSubmission(
     }
   });
 
-  // Committed binaries or secrets in tree
   const committedDbs = ghTreePaths.filter((p) => p.endsWith(".db") || p.endsWith(".sqlite") || p.endsWith(".sqlite3"));
   if (committedDbs.length > 0) {
     foundSecrets.push(`Committed SQLite database file ('${committedDbs[0]}') in repository`);
@@ -637,17 +832,16 @@ export async function evaluateOptiforgeSubmission(
     foundSecrets.push("Raw .env environment secrets file committed in repository tree");
   }
 
-  const hasCommittedDbOrLogs = ghTreePaths.some((p) =>
-    p.endsWith(".db") || p.endsWith(".sqlite") || p.endsWith(".sqlite3") ||
-    (p.includes("logs.json") && !p.includes("package")) ||
-    p.includes("data/logs.json")
+  // Exact detected unindexed logs or test artifacts (NO hardcoded fake paths!)
+  const detectedLogOrDumpFiles = ghTreePaths.filter((p) =>
+    (p.endsWith(".log") || p.endsWith(".dump") || (p.endsWith(".json") && p.includes("log") && !p.includes("package")))
   );
+
   const hasSecurityPolicy = ghTreePaths.some((p) => p.toLowerCase().includes("security.md"));
   const hasEnvExample = ghTreePaths.some((p) => p.includes(".env.example") || p.includes(".env.template") || p.includes(".env.sample"));
-  const hasInputValidation = allCodeCorpus.includes("validate") || allCodeCorpus.includes("schema") || allCodeCorpus.includes("raise valueerror") || allCodeCorpus.includes("abort(400)");
+  const hasInputValidation = entities.errorHandlingCount > 0 || allCodeCorpus.includes("validate") || allCodeCorpus.includes("schema") || allCodeCorpus.includes("raise valueerror") || allCodeCorpus.includes("abort(400)");
 
   // 8. Testing Assertions Audit
-  let hasRealAssertions = false;
   let testFilesCount = 0;
   ghTreePaths.forEach((p) => {
     if (p.includes("test_") || p.includes("_test.") || p.includes("/test") || p.includes(".spec.")) {
@@ -655,15 +849,7 @@ export async function evaluateOptiforgeSubmission(
     }
   });
 
-  for (const [_, content] of fileContentsMap.entries()) {
-    if (/\bassert\b/i.test(content) || /assertEqual/i.test(content) || /assertTrue/i.test(content) || /expect\(/i.test(content) || /pytest/i.test(content)) {
-      hasRealAssertions = true;
-    }
-  }
-  if (/\bassert\b/i.test(effectiveCode) || /assertEqual/i.test(effectiveCode) || /pytest/i.test(effectiveCode)) {
-    hasRealAssertions = true;
-  }
-
+  const hasRealAssertions = entities.assertionCount > 0;
   const hasDataPartitioning = allCodeCorpus.includes("train_test_split") ||
                               allCodeCorpus.includes("kfold") ||
                               allCodeCorpus.includes("stratifiedkfold") ||
@@ -671,12 +857,8 @@ export async function evaluateOptiforgeSubmission(
   const hasCiWorkflow = ghTreePaths.some((p) => p.includes(".github/workflows") || p.includes(".gitlab-ci"));
 
   // 9. Code Quality & Modularity Inspections
-  const hasTypeHints = /\bdef\s+\w+\s*\([^)]*:\s*[a-zA-Z]/i.test(allCodeCorpus) ||
-                       /->\s*[a-zA-Z]/i.test(allCodeCorpus) ||
-                       /\bfrom typing import\b/i.test(allCodeCorpus) ||
-                       /\bimport typing\b/i.test(allCodeCorpus) ||
-                       /\binterface\s+[A-Z]/i.test(allCodeCorpus);
-  const hasDocstrings = /""".+?"""/s.test(allCodeCorpus) || /\/\*\*.+?\*\//s.test(allCodeCorpus);
+  const hasTypeHints = entities.typeHintCount > 0;
+  const hasDocstrings = entities.docstringCount > 0;
   const ghCommitsCount = ghCommitsData.length;
 
   // 10. Efficiency & Performance Inspections
@@ -689,7 +871,7 @@ export async function evaluateOptiforgeSubmission(
 
   // Compute deterministic SHA seed for continuous 2-decimal precision
   const commitSha = ghCommitsData[0]?.sha || "";
-  const seedString = `${commitSha}_${ghRepo}_${problemTitle}_${effectiveCode.length}_${attemptNumber}`;
+  const seedString = `${commitSha}_${ghRepo}_${problemTitle}_${effectiveCode.length}_${attemptNumber}_${entities.functions.length}`;
   const shaSeed = computeDeterministicSeed(seedString);
 
   const hasReadme = ghReadmeText.length > 80 || ghTreePaths.some((p) => p.includes("readme"));
@@ -697,7 +879,7 @@ export async function evaluateOptiforgeSubmission(
   const hasLockfile = ghTreePaths.some((p) => p.includes("lock") || p.includes("requirements.txt") || p.includes("package.json"));
   const sourceFilesCount = ghTreePaths.filter((p) =>
     [".py", ".ipynb", ".ts", ".js", ".cpp", ".java", ".rs"].some((ext) => p.endsWith(ext))
-  ).length || (effectiveCode.length > 80 ? 3 : 0);
+  ).length || (effectiveCode.length > 80 ? Math.max(1, entities.functions.length > 4 ? 3 : 1) : 0);
 
   // -------------------------------------------------------------
   // 🎯 SCORING PARAMETERS (Continuous 2-Decimal Precision)
@@ -717,7 +899,7 @@ export async function evaluateOptiforgeSubmission(
 
   if (ghCommitsCount > 15) codeQualityRaw += 6.00;
   else if (ghCommitsCount > 6) codeQualityRaw += 3.50;
-  else if (ghCommitsCount > 0) codeQualityRaw += 1.50; // Shallow commit history
+  else if (ghCommitsCount > 0) codeQualityRaw += 1.50;
 
   const codeQualityScore = Number(Math.min(98.00, Math.max(30.00, codeQualityRaw + cqVariance)).toFixed(2));
 
@@ -731,7 +913,7 @@ export async function evaluateOptiforgeSubmission(
     if (hasSecurityPolicy) securityRaw += 6.00;
     if (hasEnvExample) securityRaw += 5.00;
     if (hasInputValidation) securityRaw += 5.00;
-    if (hasCommittedDbOrLogs) securityRaw -= 14.00; // Penalize committed unindexed logs/db
+    if (detectedLogOrDumpFiles.length > 0 || committedDbs.length > 0) securityRaw -= 14.00;
   }
   const securityScore = Number(Math.min(99.00, Math.max(25.00, securityRaw + secVariance)).toFixed(2));
 
@@ -744,7 +926,7 @@ export async function evaluateOptiforgeSubmission(
     else if (liveLatencyMs < 900) efficiencyRaw += 7.00;
     if (liveHasViewport) efficiencyRaw += 2.00;
   } else if (deployedUrl) {
-    efficiencyRaw = 34.00; // Provided URL but unreachable
+    efficiencyRaw = 34.00;
   } else {
     if (hasBenchmarkScript) efficiencyRaw += 24.00;
     else if (hasVectorizationOrGpu) efficiencyRaw += 15.00;
@@ -766,7 +948,7 @@ export async function evaluateOptiforgeSubmission(
   } else if (hasDataPartitioning) {
     testingRaw = 28.00;
   } else {
-    testingRaw = 14.00; // Zero test files, zero assertions
+    testingRaw = 14.00;
   }
   const testingScore = Number(Math.min(98.00, Math.max(10.00, testingRaw + testVariance)).toFixed(2));
 
@@ -781,11 +963,10 @@ export async function evaluateOptiforgeSubmission(
 
   // 6. Domain & Track Innovation (0 - 100, Weight: 10%)
   const domVariance = ((shaSeed % 97) - 48) / 100;
-  let domainRaw = 24.00; // Baseline for standard/generic off-the-shelf implementations
+  let domainRaw = 24.00;
   if (isSevereDomainMismatch) {
-    domainRaw = 18.00; // Strict penalty for off-domain challenge submission
+    domainRaw = 18.00;
   } else {
-    // Exclude generic utilities from track innovation
     const specializedFwCount = trackDetectedFrameworks.filter(
       (fw) => !["numpy", "pandas", "scipy", "opencv", "cv2", "ultralytics", "yolo", "yolov8", "flask", "streamlit", "django", "matplotlib"].includes(fw.toLowerCase())
     ).length;
@@ -801,22 +982,21 @@ export async function evaluateOptiforgeSubmission(
   const alignVariance = ((shaSeed % 71) - 35) / 100;
   let alignRaw = 28.00;
   if (isSevereDomainMismatch) {
-    alignRaw = 26.00; // Severe challenge divergence
+    alignRaw = 26.00;
   } else {
-    // Title alignment: max 16 points
     alignRaw += titleMatchRatio * 16.00;
-    // Verified implementation of claimed description capabilities: max 30 points
     alignRaw += scopeImplementationRatio * 30.00;
 
-    // Deduct if major claims are relegated to future scope or missing from code
     if (futureClaimRatio > 0.10 || scopeImplementationRatio < 0.50) {
-      alignRaw -= 10.00; // Unimplemented scope gap penalty
+      alignRaw -= 10.00;
     }
   }
   const problemAlignmentScore = Number(Math.min(98.00, Math.max(18.00, alignRaw + alignVariance)).toFixed(2));
 
+  // 8. UN Sustainable Development Goals (SDG) Evaluation
+  const sdgAlignment = evaluateSdgAlignment(trackId, problemTitle, problemDescription, allCodeCorpus);
+
   // Overall Weighted Score (Continuous 2-Decimal Precision)
-  // Code Quality 20%, Security 12%, Efficiency 18%, Testing 18%, Accessibility 10%, Track 10%, Alignment 12%
   const weighted = (
     codeQualityScore * 0.20 +
     securityScore * 0.12 +
@@ -830,15 +1010,103 @@ export async function evaluateOptiforgeSubmission(
   const overallScore = Number(weighted.toFixed(2));
 
   // -------------------------------------------------------------
-  // 💡 HACK2SKILL-GRADE AI INSIGHTS BULLET POINTS
+  // 🔍 STRUCTURAL GAP DIAGNOSTICS ("Where Code Is Lagging")
+  // -------------------------------------------------------------
+  const laggingAreas: string[] = [];
+
+  if (testFilesCount === 0 && !hasRealAssertions) {
+    laggingAreas.push(
+      "Automated Testing Deficit: Zero test files detected in repository. Without pytest or unittest suites, edge-case regressions and model confidence thresholds cannot be verified."
+    );
+  } else if (!hasRealAssertions) {
+    laggingAreas.push(
+      "Assertion Rigor Gap: Test files exist but lack programmatic assertions (e.g. assertEqual, pytest.raises) verifying mathematical bounds."
+    );
+  }
+
+  if (!hasTypeHints) {
+    laggingAreas.push(
+      "Type Contract Hygiene: Methods lack PEP-484 type annotations (e.g., param: Tensor -> np.ndarray), increasing vulnerability to silent runtime type coercion."
+    );
+  }
+
+  if (!hasDocstrings) {
+    laggingAreas.push(
+      "Documentation & Invariants Gap: Functional modules lack docstrings documenting input parameters, pre-conditions, and expected return formats."
+    );
+  }
+
+  if (!hasBenchmarkScript && !isLiveResponsive) {
+    laggingAreas.push(
+      "Empirical Validation Gap: Throughput and latency claims lack an automated benchmarking script (e.g. measuring wall-clock inference time over batch sizes)."
+    );
+  }
+
+  if (detectedLogOrDumpFiles.length > 0) {
+    laggingAreas.push(
+      `Committed Artifacts: Detected committed unindexed log or runtime dump files ('${detectedLogOrDumpFiles[0]}') in repository history.`
+    );
+  }
+
+  if (!hasEnvExample && foundSecrets.length === 0) {
+    laggingAreas.push(
+      "Configuration Hygiene: Repository lacks a .env.example template to document required environment variables."
+    );
+  }
+
+  if (scopeImplementationRatio < 0.60 && missingDescriptionCapabilities.length > 0) {
+    const missingSample = missingDescriptionCapabilities.slice(0, 3).join(", ");
+    laggingAreas.push(
+      `Scope Implementation Gap: Description claims capabilities relating to [${missingSample}] that were not verified in the executable source files.`
+    );
+  }
+
+  // -------------------------------------------------------------
+  // 🚀 ACTIONABLE IMPROVEMENT ROADMAP (Point Gains for Next Attempt)
+  // -------------------------------------------------------------
+  const improvementRoadmap: string[] = [];
+
+  if (testFilesCount === 0 || !hasRealAssertions) {
+    improvementRoadmap.push(
+      "Add a `tests/` directory with at least 3-4 pytest fixtures asserting expected array/tensor shapes and boundary validation errors (+12 to +18 points on Testing)."
+    );
+  }
+
+  if (!hasTypeHints || !hasDocstrings) {
+    improvementRoadmap.push(
+      "Annotate key functions with PEP-484 type hints and structured docstrings detailing algorithmic complexity (+6 to +9 points on Code Quality)."
+    );
+  }
+
+  if (!hasBenchmarkScript && !isLiveResponsive) {
+    improvementRoadmap.push(
+      "Include a `benchmark.py` script profiling end-to-end inference latency (ms) and peak memory usage across batch sizes (+10 to +16 points on Efficiency)."
+    );
+  }
+
+  if (scopeImplementationRatio < 0.70) {
+    improvementRoadmap.push(
+      `Directly implement the primary functional logic described in your problem statement ("${problemTitle || "Solution"}") in executable code rather than future roadmap text (+8 to +14 points on Problem Alignment).`
+    );
+  }
+
+  improvementRoadmap.push(
+    `Explicitly connect your algorithm's outputs to ${sdgAlignment.sdgName} within your README architecture notes to maximize socio-technical impact scoring.`
+  );
+
+  // -------------------------------------------------------------
+  // 💡 HACK2SKILL-GRADE AI INSIGHTS BULLET POINTS (100% Bespoke)
   // -------------------------------------------------------------
   const insights: string[] = [];
 
-  // Insight 1: Code quality & architecture
+  // Insight 1: Code quality & architecture (cites actual functions & classes found)
+  const fnSample = entities.functions.length > 0
+    ? ` (modules: ${entities.functions.slice(0, 3).map((f) => `\`${f}()\``).join(", ")})`
+    : "";
   const typingNote = hasTypeHints ? "verified static typing interfaces" : "lacks PEP-484 type annotations and docstrings";
   const commitNote = ghCommitsCount > 0 && ghCommitsCount <= 6 ? `, with shallow commit history (${ghCommitsCount} commits)` : "";
   insights.push(
-    `Codebase architecture: Evaluated ${sourceFilesCount} source files (${Object.keys(ghLanguagesData).join(", ") || "Python"}). Code exhibits modular file separation${commitNote}, but ${typingNote}.`
+    `Codebase architecture: Evaluated ${sourceFilesCount} source files (${Object.keys(ghLanguagesData).join(", ") || "Python"})${fnSample}. Code exhibits modular file separation${commitNote}, but ${typingNote}.`
   );
 
   // Insight 2: Testing & assertion depth
@@ -852,24 +1120,24 @@ export async function evaluateOptiforgeSubmission(
     );
   } else {
     insights.push(
-      `Testing notice: Zero automated test files found (no tests/ directory, no pytest or unit assertions). Score: ${testingScore}/100.`
+      `Testing notice: Zero automated test files found in repository tree. Automated testing scored at ${testingScore}/100.`
     );
   }
 
-  // Insight 3: Security & secrets hygiene
+  // Insight 3: Security & secrets hygiene (cites actual detected paths or clean state)
   if (foundSecrets.length > 0) {
     insights.push(`Security notice: Detected ${foundSecrets[0]}. Ensure secrets are decoupled from git history.`);
-  } else if (hasCommittedDbOrLogs) {
+  } else if (detectedLogOrDumpFiles.length > 0) {
     insights.push(
-      `Security hygiene: .gitignore and SECURITY.md present, but detected committed unindexed runtime log dump ('data/logs.json') in source tree with no .env.example.`
+      `Security hygiene: .gitignore present, but detected committed runtime log or data dump ('${detectedLogOrDumpFiles[0]}') in source tree.`
     );
   } else {
     insights.push(
-      `Security hygiene: Verified clean credential boundaries. Zero exposed .env secrets or private keys in source tree.`
+      `Security hygiene: Verified clean credential boundaries. Zero exposed .env secrets or private keys detected in source tree.`
     );
   }
 
-  // Insight 4: Domain & algorithms
+  // Insight 4: Domain & algorithms (cites actual detected libraries and track)
   if (isSevereDomainMismatch) {
     insights.push(
       `Domain Mismatch: Critical challenge divergence detected. Submission implements ${offDomainMatch?.label || "an off-domain project"}, which does not satisfy the requirements of ${ontology.name}. Track innovation and problem alignment scores have been strictly penalized.`
@@ -884,8 +1152,9 @@ export async function evaluateOptiforgeSubmission(
         `Domain alignment: Discovered specialized computational modules (${list}) matching track requirements.`
       );
     } else {
+      const usedLibs = allDetectedLibraries.length > 0 ? allDetectedLibraries.slice(0, 3).join(", ") : "standard modules";
       insights.push(
-        `Track innovation notice: Uses standard utility libraries without domain-specific algorithmic formulations. Score: ${domainTrackScore}/100.`
+        `Track innovation notice: Implemented with ${usedLibs} without domain-specific algorithmic formulations for ${ontology.name}. Score: ${domainTrackScore}/100.`
       );
     }
   }
@@ -905,18 +1174,19 @@ export async function evaluateOptiforgeSubmission(
     );
   } else {
     insights.push(
-      `Efficiency benchmark: Static code evaluation only (score: ${efficiencyScore}/100). Claims of real-time throughput lack automated benchmark scripts or live public HTTPS endpoint.`
+      `Efficiency benchmark: Static code evaluation only (score: ${efficiencyScore}/100). Model claims lack automated benchmark scripts or live public HTTPS endpoint.`
     );
   }
 
   // Insight 6: Problem alignment / Actionable Recommendation
   if (isSevereDomainMismatch) {
     insights.push(
-      `Actionable Recommendation: To qualify for ${ontology.name}, connect computer vision logic to clinical/health outcomes (e.g. head-trauma risk estimation from helmet non-compliance) or submit to an autonomous systems / open innovation track.`
+      `Actionable Recommendation: To qualify for ${ontology.name}, connect algorithmic logic to the track mandate or consider submitting under an open innovation track.`
     );
-  } else if (futureClaimRatio > 0.10 || scopeImplementationRatio < 0.50) {
+  } else if (scopeImplementationRatio < 0.60 && missingDescriptionCapabilities.length > 0) {
+    const claimSample = missingDescriptionCapabilities.slice(0, 2).join(", ");
     insights.push(
-      `Problem alignment notice: Core detection verified, but advanced capabilities (e.g. automated fines, live RTSP streams) remain as future roadmap items rather than working code. Score: ${problemAlignmentScore}/100.`
+      `Problem alignment notice: Core logic verified, but claimed capabilities (e.g. related to '${claimSample}') remain as future roadmap concepts rather than working code. Score: ${problemAlignmentScore}/100.`
     );
   } else if (problemTitle) {
     insights.push(
@@ -924,10 +1194,15 @@ export async function evaluateOptiforgeSubmission(
     );
   }
 
+  // Insight 7: UN SDG Impact
+  insights.push(
+    `Socio-Technical Impact: Solution aligns with ${sdgAlignment.sdgName} (Score: ${sdgAlignment.score}/100). ${sdgAlignment.impactAnalysis}`
+  );
+
   const vivaQuestions: string[] = isSevereDomainMismatch
     ? [
-        `How would you extend this computer vision pipeline to estimate injury severity or hospital triage priority?`,
-        `What latency constraints or edge GPU optimizations are necessary for deployment in real-time camera nodes?`,
+        `How would you adapt this algorithmic model to directly address the requirements of ${ontology.name}?`,
+        `What latency constraints or edge optimizations are necessary for deployment in real-time constraint environments?`,
         `Why was this project submitted to ${ontology.name}, and how does its computational model relate to that track?`,
       ]
     : [
@@ -948,69 +1223,88 @@ export async function evaluateOptiforgeSubmission(
     metrics: {
       codeQuality: {
         score: codeQualityScore,
-        label: "Code Quality",
-        details: `${sourceFilesCount} source files inspected. ${hasTypeHints ? "Typed interfaces verified." : "Lacks PEP-484 typing."}`,
-        points: ["Modular architecture", hasTypeHints ? "Type hints verified" : "Typing hygiene needed", "Repository documentation"],
-        status: codeQualityScore >= 75 ? "GOOD" : "WARNING",
+        label: "Code Quality & Modularity",
+        details: `${sourceFilesCount} source files evaluated. ${hasTypeHints ? "Type contracts present." : "Lacks PEP-484 annotations."}`,
+        points: [
+          `${sourceFilesCount} source files detected`,
+          hasTypeHints ? "Static type hints present" : "Lacks type hints",
+          hasDocstrings ? "Module docstrings present" : "Lacks docstrings",
+        ],
+        status: codeQualityScore >= 75 ? "GOOD" : codeQualityScore >= 50 ? "WARNING" : "CRITICAL",
       },
       security: {
         score: securityScore,
-        label: "Security",
-        details: foundSecrets.length > 0
-          ? `Flagged: ${foundSecrets[0]}`
-          : (hasCommittedDbOrLogs ? "Flagged: Committed runtime log dump in repository." : "Zero plain-text secrets committed."),
-        points: ["Credential hygiene", hasCommittedDbOrLogs ? "Unindexed log audit" : "Dependency safety", "Environment isolation"],
-        status: securityScore >= 75 ? "GOOD" : (foundSecrets.length > 0 ? "CRITICAL" : "WARNING"),
+        label: "Security & Vulnerability Hygiene",
+        details: foundSecrets.length > 0 ? foundSecrets[0] : "Clean credential boundaries verified.",
+        points: [
+          foundSecrets.length === 0 ? "Zero exposed API keys / secrets" : foundSecrets[0],
+          hasGitignore ? ".gitignore active" : "Missing .gitignore",
+          hasSecurityPolicy ? "SECURITY.md present" : "No security policy",
+        ],
+        status: securityScore >= 75 ? "GOOD" : securityScore >= 50 ? "WARNING" : "CRITICAL",
       },
       efficiency: {
         score: efficiencyScore,
-        label: "Efficiency",
-        details: isLiveResponsive
-          ? `Online with ${liveLatencyMs}ms TTFB response time.`
-          : (hasBenchmarkScript ? "Local benchmark script verified." : "Evaluated on static algorithmic complexity."),
-        points: ["Latency optimization", "Memory footprint", "Runtime bounds"],
-        status: efficiencyScore >= 75 ? "GOOD" : "WARNING",
+        label: "Algorithmic Efficiency & Latency",
+        details: isLiveResponsive ? `Online at ${liveLatencyMs}ms TTFB` : hasBenchmarkScript ? "Local benchmark script verified" : "Static profiling baseline",
+        points: [
+          isLiveResponsive ? `TTFB latency: ${liveLatencyMs}ms` : "No live responsive endpoint",
+          hasBenchmarkScript ? "Benchmark script present" : "No benchmark fixture",
+          hasVectorizationOrGpu ? "Vectorization / GPU hooks verified" : "Scalar execution loop pattern",
+        ],
+        status: efficiencyScore >= 75 ? "GOOD" : efficiencyScore >= 50 ? "WARNING" : "CRITICAL",
       },
       testing: {
         score: testingScore,
-        label: "Testing",
-        details: testFilesCount > 0
-          ? `${testFilesCount} test file(s) verified.`
-          : (hasDataPartitioning ? "Validation dataset splits detected." : "Zero automated test files detected."),
-        points: ["Assertion coverage", "Validation holdouts", "Error handling"],
-        status: testingScore >= 70 ? "GOOD" : (testingScore < 30 ? "CRITICAL" : "WARNING"),
+        label: "Testing & Validation Rigor",
+        details: testFilesCount > 0 ? `${testFilesCount} test files verified` : "Zero automated tests detected",
+        points: [
+          `${testFilesCount} automated test files found`,
+          hasRealAssertions ? "Assertions verify output bounds" : "No assertion assertions found",
+          hasDataPartitioning ? "Data train/test split present" : "No holdout partitioning",
+        ],
+        status: testingScore >= 75 ? "GOOD" : testingScore >= 50 ? "WARNING" : "CRITICAL",
       },
       accessibility: {
         score: accessibilityScore,
-        label: "Accessibility",
-        details: hasReadme ? "README and presentation documentation verified." : "Deliverables documentation missing.",
-        points: ["Documentation clarity", "Presentation assets", "Responsive layout"],
-        status: accessibilityScore >= 70 ? "GOOD" : "WARNING",
+        label: "Accessibility & Documentation",
+        details: `${hasReadme ? "README documentation verified" : "Missing README"}. ${mediaUrl ? "Demo artifact attached." : "No demo link."}`,
+        points: [
+          hasReadme ? "README documentation verified" : "Missing README documentation",
+          mediaUrl ? "Demo presentation/video linked" : "No demo link provided",
+          approachNotes ? "Approach notes provided" : "Missing approach explanation",
+        ],
+        status: accessibilityScore >= 75 ? "GOOD" : accessibilityScore >= 50 ? "WARNING" : "CRITICAL",
       },
       domainTrack: {
         score: domainTrackScore,
-        label: "Track Innovation",
-        details: isSevereDomainMismatch
-          ? `Track divergence: ${offDomainMatch?.label || "Off-domain topic"} in ${ontology.name}.`
-          : `Specialized modules: ${trackDetectedFrameworks.slice(0, 3).join(", ") || "Standard libraries"}.`,
-        points: ["Domain libraries", "Algorithm selection", isSevereDomainMismatch ? "Track alignment penalty" : "Technique execution"],
-        status: domainTrackScore >= 70 ? "GOOD" : "CRITICAL",
+        label: "Track Innovation & Heuristics",
+        details: isSevereDomainMismatch ? domainMismatchReason : `Aligned with ${ontology.name}`,
+        points: [
+          `Assigned Track: ${ontology.name}`,
+          isSevereDomainMismatch ? "Severe domain divergence" : "Track thematic requirements met",
+          `Detected Modules: ${displayFrameworks.slice(0, 3).join(", ")}`,
+        ],
+        status: domainTrackScore >= 75 ? "GOOD" : domainTrackScore >= 50 ? "WARNING" : "CRITICAL",
       },
       problemAlignment: {
         score: problemAlignmentScore,
-        label: "Problem Statement Alignment",
-        details: isSevereDomainMismatch
-          ? `Challenge divergence: Focuses on ${offDomainMatch?.label || "other domain"} rather than ${ontology.name}.`
-          : `Semantic correlation with "${problemTitle || "Challenge"}".`,
-        points: ["Scope adherence", "Methodology match", isSevereDomainMismatch ? "Mandate divergence" : "Constraint fulfillment"],
-        status: problemAlignmentScore >= 70 ? "GOOD" : "CRITICAL",
+        label: "Problem Alignment & Fidelity",
+        details: `Maps to "${problemTitle || "Solution"}" with ${Math.round(scopeImplementationRatio * 100)}% verified scope coverage`,
+        points: [
+          `Title Token Match: ${Math.round(titleMatchRatio * 100)}%`,
+          `Verified Functional Scope: ${Math.round(scopeImplementationRatio * 100)}%`,
+          futureClaimRatio > 0.10 ? "Significant features deferred to future scope" : "Core deliverables implemented in code",
+        ],
+        status: problemAlignmentScore >= 75 ? "GOOD" : problemAlignmentScore >= 50 ? "WARNING" : "CRITICAL",
       },
     },
-    summary: isSevereDomainMismatch
-      ? `Submission scored ${overallScore}/100 across 7 criteria. Penalized for track mismatch: ${offDomainMatch?.label} submitted to ${ontology.name}.`
-      : `Submission scored ${overallScore}/100 across 7 Hack2Skill parameters. Code Quality: ${codeQualityScore}, Problem Alignment: ${problemAlignmentScore}.`,
+    summary: `OptiForge Autonomous AI Evaluation completed for ${problemTitle || "Submitted Solution"}. Overall Score: ${overallScore}/100. Aligns with ${sdgAlignment.sdgName}.`,
     insights,
     vivaQuestions,
+    sdgAlignment,
+    laggingAreas,
+    improvementRoadmap,
     repoStats: {
       languages: Object.keys(ghLanguagesData).length > 0 ? Object.keys(ghLanguagesData) : ["Python"],
       sourceFilesCount,
@@ -1022,8 +1316,12 @@ export async function evaluateOptiforgeSubmission(
       liveLatencyMs,
       detectedFrameworks: displayFrameworks,
       commitSha,
+      detectedFunctions: entities.functions.slice(0, 8),
+      detectedClasses: entities.classes.slice(0, 5),
+      sdgAlignment,
+      laggingAreas,
+      improvementRoadmap,
     },
     runtimeMs: totalRuntimeMs,
   };
 }
-

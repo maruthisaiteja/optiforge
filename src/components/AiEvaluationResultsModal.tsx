@@ -16,6 +16,9 @@ import {
   FileCheck,
   Server,
   Activity,
+  Globe2,
+  Compass,
+  TrendingDown,
 } from "lucide-react";
 
 const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
@@ -24,6 +27,15 @@ const GithubIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
     <path d="M9 18c-4.51 2-5-2-7-2" />
   </svg>
 );
+
+export interface SdgAlignmentData {
+  sdgNumber: number;
+  sdgName: string;
+  target: string;
+  score: number;
+  impactAnalysis: string;
+  socialRelevance: string;
+}
 
 interface MetricData {
   score: number;
@@ -53,7 +65,7 @@ interface AiEvaluationModalProps {
     domainTrackScore?: number;
     problemAlignmentScore?: number;
     aiInsights?: string[];
-    metricsBreakdown?: Record<string, MetricData>;
+    metricsBreakdown?: Record<string, any>;
     repoStats?: {
       languages?: string[];
       sourceFilesCount?: number;
@@ -64,7 +76,13 @@ interface AiEvaluationModalProps {
       liveLatencyMs?: number;
       detectedFrameworks?: string[];
       commitSha?: string;
+      sdgAlignment?: SdgAlignmentData;
+      laggingAreas?: string[];
+      improvementRoadmap?: string[];
     };
+    sdgAlignment?: SdgAlignmentData;
+    laggingAreas?: string[];
+    improvementRoadmap?: string[];
   } | null;
 }
 
@@ -115,8 +133,28 @@ export default function AiEvaluationResultsModal({
 
   const repoStats = submission.repoStats;
 
+  // SDG Alignment Data
+  const sdgData: SdgAlignmentData | undefined =
+    submission.sdgAlignment ||
+    submission.metricsBreakdown?.sdgAlignment ||
+    submission.repoStats?.sdgAlignment;
+
+  // Structural Lagging Areas (Diagnostics)
+  const laggingAreas: string[] =
+    submission.laggingAreas ||
+    submission.metricsBreakdown?.laggingAreas ||
+    submission.repoStats?.laggingAreas ||
+    [];
+
+  // Actionable Improvement Roadmap
+  const improvementRoadmap: string[] =
+    submission.improvementRoadmap ||
+    submission.metricsBreakdown?.improvementRoadmap ||
+    submission.repoStats?.improvementRoadmap ||
+    [];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md animate-fade-in">
       <div className="w-full max-w-4xl max-h-[92vh] flex flex-col rounded-3xl bg-[#0B1528] border border-cyan-500/30 shadow-[0_0_50px_rgba(6,182,212,0.15)] overflow-hidden">
         
         {/* Header Bar */}
@@ -128,7 +166,7 @@ export default function AiEvaluationResultsModal({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-display font-bold text-base sm:text-lg text-white">
-                  AI Evaluation Results
+                  LoopCode Evaluation Results
                 </h2>
                 <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-[11px] font-mono font-semibold">
                   Attempt #{submission.attemptNumber}
@@ -252,11 +290,102 @@ export default function AiEvaluationResultsModal({
 
           </div>
 
-          {/* Middle Section: AI Evaluation Insights */}
+          {/* UN Sustainable Development Goals (SDG) Alignment Section */}
+          {sdgData && (
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-[#061D28] to-[#0A263B] border border-cyan-500/30 space-y-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-300">
+                    <Globe2 className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-wider block">
+                      UN Sustainable Development Goal Alignment
+                    </span>
+                    <h4 className="font-display font-bold text-sm text-white">
+                      SDG {sdgData.sdgNumber}: {sdgData.sdgName}
+                    </h4>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 text-xs font-mono font-semibold">
+                    Target {sdgData.target}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-semibold">
+                    Social Impact: {sdgData.score.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                <div className="p-3.5 rounded-xl bg-[#04121B] border border-cyan-950 text-xs text-slate-300 leading-relaxed">
+                  <span className="font-semibold text-cyan-300 block mb-1">Impact Analysis:</span>
+                  {sdgData.impactAnalysis}
+                </div>
+                <div className="p-3.5 rounded-xl bg-[#04121B] border border-cyan-950 text-xs text-slate-300 leading-relaxed">
+                  <span className="font-semibold text-emerald-300 block mb-1">Societal Relevance:</span>
+                  {sdgData.socialRelevance}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Diagnostic Gap Analysis: Where Your Code Is Lagging */}
+          {laggingAreas.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-display font-bold text-sm text-white flex items-center gap-2">
+                <TrendingDown className="w-4 h-4 text-amber-400" />
+                Where Your Code Is Lagging (Structural Gap Analysis)
+              </h4>
+
+              <div className="p-4 rounded-2xl bg-[#1C1308]/60 border border-amber-500/30 space-y-2.5">
+                <p className="text-xs text-amber-200/80 mb-2">
+                  The LoopCode engine identified the following architectural bottlenecks in your current submission:
+                </p>
+                <div className="space-y-2">
+                  {laggingAreas.map((lag, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                      <span>{lag}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Actionable Improvement Roadmap for Next Attempt */}
+          {improvementRoadmap.length > 0 && (
+            <div className="space-y-3">
+              <h4 className="font-display font-bold text-sm text-white flex items-center gap-2">
+                <Compass className="w-4 h-4 text-emerald-400" />
+                Actionable Improvement Roadmap (How to Gain Points on Next Attempt)
+              </h4>
+
+              <div className="p-4 rounded-2xl bg-[#06181A]/70 border border-emerald-500/30 space-y-2.5">
+                <p className="text-xs text-emerald-200/80 mb-2">
+                  Follow these concrete code improvements to maximize your score in the subsequent attempt:
+                </p>
+                <div className="space-y-2">
+                  {improvementRoadmap.map((step, idx) => (
+                    <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
+                      <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-mono shrink-0 mt-0.5 font-bold">
+                        {idx + 1}
+                      </div>
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Granular AI Evaluation Insights */}
           <div className="space-y-3">
             <h4 className="font-display font-bold text-sm text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-cyan-400" />
-              AI Evaluation Insights
+              Granular Inspection Insights
             </h4>
 
             <div className="p-5 rounded-2xl bg-[#091122] border border-slate-800/80 divide-y divide-slate-800/60">
@@ -358,11 +487,11 @@ export default function AiEvaluationResultsModal({
         {/* Footer */}
         <div className="px-6 py-4 border-t border-slate-700/60 bg-[#0F1E36] flex items-center justify-between">
           <span className="text-[11px] text-slate-400 font-mono">
-            OptiForge 2026 · IEEE EMBS × IEEE CIS Computational Intelligence Evaluation
+            OptiForge 2026 · LoopCode Autonomous Evaluation Matrix · UN SDGs
           </span>
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors shadow-sm"
+            className="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-colors shadow-sm cursor-pointer"
           >
             Close Results
           </button>

@@ -7,6 +7,9 @@ import { computeCodeSimilarity } from "@/lib/evaluator/similarity";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+// In-memory set to prevent concurrent simultaneous submissions from the same team
+const activeTeamSubmissions = new Set<string>();
+
 export async function GET(req: Request) {
   try {
     const session = await getServerSession();
@@ -34,6 +37,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  let activeTeamId: string | null = null;
   try {
     const session = await getServerSession();
     if (!session || session.role !== "TEAM") {
@@ -51,6 +55,43 @@ export async function POST(req: Request) {
     if (team.isDisqualified) {
       return NextResponse.json({ error: "Team has been disqualified." }, { status: 403 });
     }
+
+    const isTestTeam =
+      team.teamCode === "OPT-26-TEST" ||
+      team.teamCode?.includes("TEST") ||
+      team.leaderEmail === "test@optiforge.internal";
+
+    // Concurrency protection: If another member of the same team clicked submit, block duplicate execution
+    if (activeTeamSubmissions.has(team.id)) {
+      return NextResponse.json(
+        {
+          error:
+            "A submission from your team is currently being evaluated by the LoopCode Engine. Please wait a moment for results to sync.",
+        },
+        { status: 429 }
+      );
+    }
+
+    // Rate-limiting rapid double-clicks (within 8 seconds)
+    if (!isTestTeam) {
+      const recentSubs = await db.submission.findMany({
+        where: { teamId: team.id },
+        orderBy: { submittedAt: "desc" },
+      });
+      if (recentSubs.length > 0) {
+        const lastSubmittedMs = new Date(recentSubs[0].submittedAt).getTime();
+        if (Date.now() - lastSubmittedMs < 8000) {
+          return NextResponse.json(
+            { error: "A submission was just recorded for your team. Please wait a few seconds before submitting again." },
+            { status: 429 }
+          );
+        }
+      }
+    }
+
+    // Acquire lock
+    activeTeamSubmissions.add(team.id);
+    activeTeamId = team.id;
 
     const body = await req.json();
     const {
@@ -79,14 +120,13 @@ export async function POST(req: Request) {
 
     let currentAttempt: number;
 
-    const isTestTeam = team.teamCode === "OPT-26-TEST" || team.teamCode?.includes("TEST") || team.leaderEmail === "test@optiforge.internal";
-
     // Pre-event submission lock: Locked until Event Day (Sept 30, 2026 9:00 AM) unless test team
     const submissionsLocked = (await db.systemSetting.get("submissions_locked")) !== "false";
     if (submissionsLocked && !isTestTeam) {
       return NextResponse.json(
         {
-          error: "Submissions are currently locked. The evaluation portal opens on Event Day (September 30, 2026 at 9:00 AM IST). You can review your problem track and prepare your repository.",
+          error:
+            "Submissions are currently locked. The evaluation portal opens on Event Day (September 30, 2026 at 9:00 AM IST). You can review your problem track and prepare your repository.",
         },
         { status: 403 }
       );
@@ -161,7 +201,7 @@ export async function POST(req: Request) {
     const priorSubs = await db.submission.findMany({ where: { teamId: team.id } });
     const priorScores = priorSubs.map((s) => s.autoScore);
 
-    // 3. Execute Autonomous Hack2Skill AI Evaluator Model
+    // 3. Execute Autonomous LoopCode AI Evaluator Model
     const evalResult = await evaluateOptiforgeSubmission({
       trackId,
       problemTitle: problemTitle || "",
@@ -177,7 +217,21 @@ export async function POST(req: Request) {
       priorScores,
     });
 
-    // 4. Save Submission Record with Full 7-Parameter Breakdown & AI Insights
+    const enrichedMetricsBreakdown = {
+      ...evalResult.metrics,
+      sdgAlignment: evalResult.sdgAlignment,
+      laggingAreas: evalResult.laggingAreas,
+      improvementRoadmap: evalResult.improvementRoadmap,
+    };
+
+    const enrichedRepoStats = {
+      ...evalResult.repoStats,
+      sdgAlignment: evalResult.sdgAlignment,
+      laggingAreas: evalResult.laggingAreas,
+      improvementRoadmap: evalResult.improvementRoadmap,
+    };
+
+    // 4. Save Submission Record with Full 7-Parameter Breakdown, SDG & AI Insights
     const defaultFilename = isLivePatch ? "live_patch_solution.py" : `attempt_${currentAttempt}.py`;
     const submission = await db.submission.create({
       data: {
@@ -202,7 +256,7 @@ export async function POST(req: Request) {
         similarityScore: maxSimilarity,
         similarityFlag: isSimilarityFlagged,
 
-        // Hack2Skill Extended Fields
+        // Extended Fields
         problemTitle: problemTitle?.trim() || null,
         problemDescription: problemDescription?.trim() || null,
         githubUrl: githubUrl?.trim() || null,
@@ -216,8 +270,8 @@ export async function POST(req: Request) {
         domainTrackScore: evalResult.metrics.domainTrack.score,
         problemAlignmentScore: evalResult.metrics.problemAlignment.score,
         aiInsights: evalResult.insights,
-        metricsBreakdown: evalResult.metrics,
-        repoStats: evalResult.repoStats,
+        metricsBreakdown: enrichedMetricsBreakdown,
+        repoStats: enrichedRepoStats,
       },
     });
 
@@ -247,7 +301,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      submission,
+      submission: {
+        ...submission,
+        sdgAlignment: evalResult.sdgAlignment,
+        laggingAreas: evalResult.laggingAreas,
+        improvementRoadmap: evalResult.improvementRoadmap,
+      },
       evalResult,
       attemptsRemaining: isLivePatch ? 3 - team.attemptsUsed : 3 - currentAttempt,
       teamBestScore: updatedTeam.bestScore,
@@ -258,5 +317,9 @@ export async function POST(req: Request) {
       { error: "Server error executing submission evaluation: " + (error?.message || "Unknown error") },
       { status: 500 }
     );
+  } finally {
+    if (activeTeamId) {
+      activeTeamSubmissions.delete(activeTeamId);
+    }
   }
 }
