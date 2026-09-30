@@ -291,6 +291,14 @@ async function ensureDb(): Promise<DatabaseSchema> {
             version INT DEFAULT 1
           );
         `;
+        await sql`
+          CREATE TABLE IF NOT EXISTS optiforge_submissions (
+            id TEXT PRIMARY KEY,
+            team_id TEXT NOT NULL,
+            data JSONB NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT NOW()
+          );
+        `;
         try {
           await sql`ALTER TABLE optiforge_store ADD COLUMN IF NOT EXISTS version INT DEFAULT 1;`;
         } catch {}
