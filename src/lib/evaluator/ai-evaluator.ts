@@ -420,7 +420,9 @@ function extractCodeEntities(code: string) {
     "abc", "types", "enum", "dataclasses", "contextlib", "gc", "warnings", "traceback",
     "base64", "hashlib", "hmac", "secrets", "uuid", "urllib", "http", "socket", "ssl",
     "as", "from", "import", "src", "_root", "test", "tests", "utils", "config", "models",
-    "common", "core", "app", "main", "api", "image", "st", "st_", "dot", "env", "dotenv"
+    "common", "core", "app", "main", "api", "image", "st", "st_", "dot", "env", "dotenv",
+    "list", "dict", "set", "tuple", "optional", "any", "union", "callable", "httpexception",
+    "response", "request", "basemodel", "field", "depends"
   ]);
 
   const fromMatches = Array.from(code.matchAll(/^\s*from\s+([a-zA-Z0-9_]+)(?:\.[a-zA-Z0-9_]+)*\s+import/gm));
@@ -431,7 +433,8 @@ function extractCodeEntities(code: string) {
     }
   });
 
-  const directImportMatches = Array.from(code.matchAll(/^\s*import\s+([a-zA-Z0-9_,\s]+)/gm));
+  // Use horizontal whitespace only ([^\S\r\n] or [\t ]) so regex never bleeds into subsequent lines
+  const directImportMatches = Array.from(code.matchAll(/^\s*import\s+([a-zA-Z0-9_,\t ]+)/gm));
   directImportMatches.forEach((m) => {
     const raw = m[1] || "";
     raw.split(",").forEach((item) => {
@@ -565,11 +568,11 @@ function evaluateSemanticConsistency(
     : 1.0;
 
   // Severe Divergence Condition:
-  // Declared problem has substantive tokens (>= 4), but less than 28% match actual code
+  // Declared problem has substantive tokens (>= 4), but less than 32% match actual code
   let isDivergence = false;
   let divergenceReason = "";
 
-  if (declaredConcepts.length >= 4 && consistencyRatio < 0.28) {
+  if (declaredConcepts.length >= 4 && consistencyRatio < 0.32) {
     isDivergence = true;
     const missingSample = declaredConcepts.filter((c) => !matchedConcepts.includes(c)).slice(0, 4).join(", ");
     divergenceReason = `Declared problem specifies capabilities related to [${missingSample}], but the repository source files do not implement these components.`;
@@ -800,7 +803,7 @@ export async function evaluateOptiforgeSubmission(
 
     // Inspect critical source and test files directly from repository
     if (ghTreePaths.length > 0) {
-      // Prioritize manifests, test files, and primary pipeline files
+      // Prioritize manifests, test files, benchmarks, and primary pipeline files
       const prioritizedFiles = ghTreePaths.filter((p) =>
         p.endsWith("requirements.txt") ||
         p.endsWith("package.json") ||
@@ -812,11 +815,24 @@ export async function evaluateOptiforgeSubmission(
         p.includes("model") ||
         p.includes("main.py") ||
         p.includes("app.py") ||
+        p.includes("benchmark") ||
+        p.includes("profile") ||
         p.includes("train")
-      ).slice(0, 16);
+      );
+
+      // If we have remaining budget, fetch other source files (.py, .ts, .js)
+      if (prioritizedFiles.length < 16) {
+        const otherSourceFiles = ghTreePaths.filter((p) =>
+          (p.endsWith(".py") || p.endsWith(".ts") || p.endsWith(".js")) &&
+          !prioritizedFiles.includes(p) &&
+          !p.includes("node_modules") &&
+          !p.includes(".git")
+        );
+        prioritizedFiles.push(...otherSourceFiles.slice(0, 16 - prioritizedFiles.length));
+      }
 
       await Promise.all(
-        prioritizedFiles.map(async (filePath) => {
+        prioritizedFiles.slice(0, 16).map(async (filePath) => {
           const content = await fetchGithubRawFile(ghOwner, ghRepo, effectiveBranch, filePath);
           if (content) fileContentsMap.set(filePath, content);
         })
@@ -825,7 +841,7 @@ export async function evaluateOptiforgeSubmission(
       // Direct raw probe of standard files if tree API was blocked
       const standardCandidates = [
         "requirements.txt", "package.json", "main.py", "app.py",
-        "tests/test_main.py", "tests/test_model.py", "model.py", "pipeline.py"
+        "tests/test_main.py", "tests/test_model.py", "model.py", "pipeline.py", "benchmark.py"
       ];
       await Promise.all(
         standardCandidates.map(async (filePath) => {
@@ -854,13 +870,22 @@ export async function evaluateOptiforgeSubmission(
   // 3. Sanitized Documentation (Anti-Gaming Shield)
   const sanitizedReadme = sanitizeReadmeDocumentation(ghReadmeText);
 
-  // 4. Pure Raw Executable Code Corpus (Excludes all Markdown & Text to prevent gaming)
-  const rawExecutableCode = [
-    effectiveCode,
-    ...Array.from(fileContentsMap.values()),
-  ].join("\n\n");
+  // 4. Authoritative Source Selection (Dual-Source Contamination Guard)
+  // When a valid GitHub repository URL is provided and source files are fetched,
+  // the repository source tree is the strict ground truth.
+  // Foreign or leftover pasted code in the textarea must NOT contaminate the repository's
+  // AST framework extraction, test suite analysis, or secret checks.
+  const repoCodeCorpus = Array.from(fileContentsMap.values()).join("\n\n");
+  const isRepoAuthoritative = Boolean(hasGithub && (fileContentsMap.size > 0 || ghTreePaths.length > 0));
 
-  // Extract real code entities from executable code AST
+  // Authoritative executable code corpus:
+  // If repository source files are available, use repository exclusively.
+  // Only fall back to effectiveCode if no repository files were retrievable.
+  const rawExecutableCode = (isRepoAuthoritative && repoCodeCorpus.trim().length > 0)
+    ? repoCodeCorpus
+    : effectiveCode;
+
+  // Extract real code entities from authoritative executable code AST
   const entities = extractCodeEntities(rawExecutableCode);
 
   // 5. Test Suites, Test Cases & Assertions Deep Count
@@ -1055,111 +1080,134 @@ export async function evaluateOptiforgeSubmission(
 
   // 1. Code Quality (0 - 100, Weight: 20%)
   const cqVariance = ((shaSeed % 113) - 56) / 100;
-  let codeQualityRaw = 42.00;
-  if (sourceFilesCount >= 6) codeQualityRaw += 12.00;
-  else if (sourceFilesCount >= 3) codeQualityRaw += 8.00;
-  else if (sourceFilesCount >= 1) codeQualityRaw += 4.00;
+  let codeQualityRaw = 32.00;
+  if (sourceFilesCount >= 6) codeQualityRaw += 16.00;
+  else if (sourceFilesCount >= 3) codeQualityRaw += 10.00;
+  else if (sourceFilesCount >= 2) codeQualityRaw += 5.00;
 
-  if (hasTypeHints) codeQualityRaw += 9.00;
-  if (hasDocstrings) codeQualityRaw += 5.00;
-  if (hasLockfile) codeQualityRaw += 4.00;
-  if (hasReadme) codeQualityRaw += Math.min(5.00, 2.00 + (sanitizedReadme.length / 1200));
+  if (hasTypeHints) codeQualityRaw += 12.00;
+  if (hasDocstrings) codeQualityRaw += 8.00;
+  if (hasLockfile) codeQualityRaw += 6.00;
+  if (hasReadme) codeQualityRaw += Math.min(8.00, 3.00 + (sanitizedReadme.length / 1000));
 
-  if (ghCommitsCount > 15) codeQualityRaw += 6.00;
-  else if (ghCommitsCount > 6) codeQualityRaw += 3.50;
-  else if (ghCommitsCount > 0) codeQualityRaw += 1.50;
+  if (ghCommitsCount > 15) codeQualityRaw += 8.00;
+  else if (ghCommitsCount > 6) codeQualityRaw += 5.00;
+  else if (ghCommitsCount > 0) codeQualityRaw += 2.00;
 
-  const codeQualityScore = Number(Math.min(98.00, Math.max(30.00, codeQualityRaw + cqVariance)).toFixed(2));
+  if (sourceFilesCount <= 1) {
+    codeQualityRaw = Math.min(56.00, codeQualityRaw);
+  }
+  if (!hasTypeHints && !hasDocstrings) {
+    codeQualityRaw = Math.min(65.00, codeQualityRaw);
+  }
+
+  const codeQualityScore = Number(Math.min(96.00, Math.max(25.00, codeQualityRaw + cqVariance)).toFixed(2));
 
   // 2. Security (0 - 100, Weight: 12%)
   const secVariance = ((shaSeed % 89) - 44) / 100;
-  let securityRaw = 55.00;
+  let securityRaw = 48.00;
   if (foundSecrets.length > 0) {
-    securityRaw = 30.00; // Critical secret leak
+    securityRaw = 22.00; // Critical secret leak
   } else {
-    if (hasGitignore) securityRaw += 8.00;
+    if (hasGitignore) securityRaw += 12.00;
+    if (hasInputValidation) securityRaw += 10.00;
+    if (hasEnvExample) securityRaw += 8.00;
     if (hasSecurityPolicy) securityRaw += 6.00;
-    if (hasEnvExample) securityRaw += 5.00;
-    if (hasInputValidation) securityRaw += 5.00;
-    if (detectedLogOrDumpFiles.length > 0 || committedDbs.length > 0) securityRaw -= 14.00;
+    securityRaw += 8.00; // Verified clean credential boundaries
+    if (detectedLogOrDumpFiles.length > 0 || committedDbs.length > 0) securityRaw -= 16.00;
   }
-  const securityScore = Number(Math.min(99.00, Math.max(25.00, securityRaw + secVariance)).toFixed(2));
+  const securityScore = Number(Math.min(98.00, Math.max(20.00, securityRaw + secVariance)).toFixed(2));
 
   // 3. Efficiency (0 - 100, Weight: 18%)
   const effVariance = ((shaSeed % 79) - 39) / 100;
-  let efficiencyRaw = 44.00;
+  let efficiencyRaw = 28.00;
   if (isLiveResponsive) {
-    efficiencyRaw = 84.00;
-    if (liveLatencyMs > 0 && liveLatencyMs < 350) efficiencyRaw += 12.00;
-    else if (liveLatencyMs < 900) efficiencyRaw += 7.00;
-    if (liveHasViewport) efficiencyRaw += 2.00;
-  } else if (deployedUrl) {
-    efficiencyRaw = 34.00;
+    efficiencyRaw = 72.00;
+    if (liveLatencyMs > 0 && liveLatencyMs < 300) efficiencyRaw += 16.00;
+    else if (liveLatencyMs < 800) efficiencyRaw += 10.00;
+    else if (liveLatencyMs < 2000) efficiencyRaw += 5.00;
+    if (liveHasViewport) efficiencyRaw += 3.00;
+  } else if (deployedUrl && deployedUrl.trim().startsWith("http")) {
+    efficiencyRaw = 22.00; // Broken / unreachable deployment penalty
   } else {
-    if (hasBenchmarkScript) efficiencyRaw += 24.00;
-    else if (hasVectorizationOrGpu) efficiencyRaw += 15.00;
-    else efficiencyRaw += 6.00;
+    // Static code evaluation only (Strict Hackathon Curve)
+    efficiencyRaw = 28.00;
+    if (hasBenchmarkScript) {
+      efficiencyRaw += 26.00; // Empirical benchmark provided: reaches 54-58
+      if (hasVectorizationOrGpu) efficiencyRaw += 8.00; // Reaches 62-66
+    } else if (hasVectorizationOrGpu) {
+      efficiencyRaw += 12.00; // Vectorized static code only: strictly capped at ~40
+    }
   }
-  const efficiencyScore = Number(Math.min(99.00, Math.max(25.00, efficiencyRaw + effVariance)).toFixed(2));
+  const efficiencyScore = Number(Math.min(96.00, Math.max(18.00, efficiencyRaw + effVariance)).toFixed(2));
 
   // 4. Testing (0 - 100, Weight: 18%)
   const testVariance = ((shaSeed % 101) - 50) / 100;
   let testingRaw = 12.00;
-  if (testFilesCount > 0 && hasRealAssertions) {
-    testingRaw = 74.00 + Math.min(18.00, testFilesCount * 2.5 + verifiedTestCases * 0.4);
-    if (hasCiWorkflow) testingRaw += 6.00;
-  } else if (testFilesCount > 0) {
-    testingRaw = 62.00;
-    if (hasCiWorkflow) testingRaw += 6.00;
-  } else if (hasRealAssertions) {
-    testingRaw = 38.00;
+  if (testFilesCount === 0 && !hasRealAssertions) {
+    testingRaw = 12.00;
+  } else if (testFilesCount === 0 && hasRealAssertions) {
+    testingRaw = Math.min(32.00, 20.00 + Math.min(12.00, verifiedAssertions * 1.2));
   } else {
-    testingRaw = 14.00;
+    let suiteBase = 40.00;
+    const fileBonus = Math.min(18.00, testFilesCount * 3.0);
+    const caseBonus = Math.min(20.00, verifiedTestCases * 0.65);
+    const assertionBonus = Math.min(12.00, verifiedAssertions * 0.20);
+    const ciBonus = hasCiWorkflow ? 5.00 : 0.00;
+
+    testingRaw = suiteBase + fileBonus + caseBonus + assertionBonus + ciBonus;
   }
-  const testingScore = Number(Math.min(98.50, Math.max(10.00, testingRaw + testVariance)).toFixed(2));
+  const testingScore = Number(Math.min(96.00, Math.max(10.00, testingRaw + testVariance)).toFixed(2));
 
   // 5. Accessibility & Presentation (0 - 100, Weight: 10%)
   const accVariance = ((shaSeed % 83) - 41) / 100;
-  let accessibilityRaw = 44.00;
+  let accessibilityRaw = 22.00;
+  if (hasReadme) {
+    accessibilityRaw += Math.min(36.00, 18.00 + (sanitizedReadme.length / 500));
+  }
   if (mediaUrl && mediaUrl.startsWith("http")) accessibilityRaw += 16.00;
-  if (hasReadme) accessibilityRaw += Math.min(16.00, 6.00 + (sanitizedReadme.length / 600));
-  if (isLiveResponsive && liveHasViewport) accessibilityRaw += 10.00;
+  if (isLiveResponsive && liveHasViewport) accessibilityRaw += 12.00;
   if (approachNotes && approachNotes.length > 50) accessibilityRaw += 6.00;
-  const accessibilityScore = Number(Math.min(99.00, Math.max(35.00, accessibilityRaw + accVariance)).toFixed(2));
+
+  if (!hasReadme) {
+    accessibilityRaw = Math.min(32.00, accessibilityRaw);
+  }
+  const accessibilityScore = Number(Math.min(96.00, Math.max(20.00, accessibilityRaw + accVariance)).toFixed(2));
 
   // 6. Domain & Track Innovation (0 - 100, Weight: 10%)
   const domVariance = ((shaSeed % 97) - 48) / 100;
-  let domainRaw = 26.00;
-  if (isSevereDomainMismatch) {
-    domainRaw = 18.00;
+  let domainRaw = 25.00;
+  if (semanticConsistency.isDivergence || isSevereDomainMismatch) {
+    domainRaw = Math.min(25.00, Math.max(14.00, 15.00 + semanticConsistency.consistencyRatio * 20.00));
   } else {
+    domainRaw = 28.00;
     const specializedFwCount = detectedFrameworks.filter(
       (fw) => !["NumPy", "Pandas", "SciPy", "OpenCV (cv2)", "Flask", "Streamlit", "Django", "matplotlib"].includes(fw)
     ).length;
     const specializedAlgoCount = detectedAlgorithms.length;
 
-    if (specializedFwCount > 0) domainRaw += Math.min(26.00, specializedFwCount * 7.5);
-    if (specializedAlgoCount > 0) domainRaw += Math.min(28.00, specializedAlgoCount * 8.0);
-    if (detectedFrameworks.length > 0) domainRaw += 8.00;
+    if (specializedFwCount > 0) domainRaw += Math.min(25.00, specializedFwCount * 7.0);
+    if (specializedAlgoCount > 0) domainRaw += Math.min(26.00, specializedAlgoCount * 8.0);
+    if (detectedFrameworks.length > 0) domainRaw += 6.00;
   }
-  const domainTrackScore = Number(Math.min(98.00, Math.max(18.00, domainRaw + domVariance)).toFixed(2));
+  const domainTrackScore = Number(Math.min(96.00, Math.max(16.00, domainRaw + domVariance)).toFixed(2));
 
   // 7. Problem Statement Alignment (0 - 100, Weight: 12%)
   const alignVariance = ((shaSeed % 71) - 35) / 100;
-  let alignRaw = 30.00;
+  let alignRaw = 0.00;
 
   if (semanticConsistency.isDivergence) {
-    // Severe Cross-Artifact Divergence Penalty:
-    // When declared problem does not match the actual codebase implementation
-    alignRaw = Math.min(34.00, 22.00 + semanticConsistency.consistencyRatio * 32.00);
+    alignRaw = Math.min(26.00, Math.max(14.00, 14.00 + semanticConsistency.consistencyRatio * 35.00));
   } else if (isSevereDomainMismatch) {
-    alignRaw = 26.00;
+    alignRaw = 18.00;
+  } else if (semanticConsistency.declaredConcepts.length < 4) {
+    alignRaw = 36.00 + semanticConsistency.consistencyRatio * 15.00;
   } else {
-    alignRaw += semanticConsistency.consistencyRatio * 42.00;
-    if (detectedAlgorithms.length > 0) alignRaw += 14.00;
-    if (sourceFilesCount >= 3) alignRaw += 6.00;
+    // Pure mathematical proportionality to verified concept coverage:
+    // If 71.1% of declared concepts are verified in the codebase, score is directly ~71.10
+    alignRaw = semanticConsistency.consistencyRatio * 100.00;
   }
-  const problemAlignmentScore = Number(Math.min(98.00, Math.max(18.00, alignRaw + alignVariance)).toFixed(2));
+  const problemAlignmentScore = Number(Math.min(96.00, Math.max(14.00, alignRaw + alignVariance)).toFixed(2));
 
   // 8. UN Sustainable Development Goals (SDG) Evaluation
   const sdgAlignment = evaluateSdgAlignment(trackId, problemTitle, problemDescription, rawExecutableCode);
@@ -1213,7 +1261,14 @@ export async function evaluateOptiforgeSubmission(
 
   if (!hasBenchmarkScript && !isLiveResponsive) {
     laggingAreas.push(
-      "Empirical Validation Gap: Throughput and latency claims lack an automated benchmarking script (e.g. measuring wall-clock inference time over batch sizes)."
+      "Empirical Efficiency Gap: Model throughput and latency claims lack an automated benchmarking script (e.g. `benchmark.py` measuring inference time over batch sizes) or a live responsive endpoint. Efficiency score is strictly capped at static levels."
+    );
+  }
+
+  if (!semanticConsistency.isDivergence && semanticConsistency.consistencyRatio < 0.75 && semanticConsistency.declaredConcepts.length >= 4) {
+    const missingCount = semanticConsistency.declaredConcepts.length - semanticConsistency.matchedConcepts.length;
+    laggingAreas.push(
+      `Partial Problem Coverage: Codebase implements ${(semanticConsistency.consistencyRatio * 100).toFixed(1)}% of declared problem concepts (${missingCount} declared terms unverified in code modules).`
     );
   }
 
@@ -1242,7 +1297,7 @@ export async function evaluateOptiforgeSubmission(
 
   if (testFilesCount === 0 || !hasRealAssertions) {
     improvementRoadmap.push(
-      "Add a `tests/` directory with at least 3-4 pytest fixtures asserting expected array/tensor shapes and boundary validation errors (+12 to +18 points on Testing)."
+      "Add a `tests/` directory with at least 3-4 pytest fixtures asserting expected array/tensor shapes and boundary validation errors (+30 to +48 points on Testing)."
     );
   }
 
@@ -1254,7 +1309,13 @@ export async function evaluateOptiforgeSubmission(
 
   if (!hasBenchmarkScript && !isLiveResponsive) {
     improvementRoadmap.push(
-      "Include a `benchmark.py` script profiling end-to-end inference latency (ms) and peak memory usage across batch sizes (+10 to +16 points on Efficiency)."
+      "Include a `benchmark.py` script profiling end-to-end inference latency (ms) and peak memory usage across batch sizes, or provide a live HTTPS demo endpoint (+18 to +26 points on Efficiency)."
+    );
+  }
+
+  if (!semanticConsistency.isDivergence && semanticConsistency.consistencyRatio < 0.85) {
+    improvementRoadmap.push(
+      "Align codebase naming and domain models closer to your declared problem statement to achieve 90%+ semantic correlation (+10 to +18 points on Problem Alignment)."
     );
   }
 
