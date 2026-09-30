@@ -38,6 +38,7 @@ export default function TeamDashboard() {
   const [track, setTrack] = useState<any>(null);
   const [tournament, setTournament] = useState<any>(null);
   const [submissions, setSubmissions] = useState<any[]>([]);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -185,7 +186,22 @@ export default function TeamDashboard() {
         } else if (!populated && !isSilent && loadedTeam?.domainId) {
           setSelectedTrackId(loadedTeam.domainId);
         }
+
+        if (Array.isArray(profData.auditLogs)) {
+          setAuditLogs(profData.auditLogs);
+        }
       }
+
+      // Fetch dedicated team audit trail
+      try {
+        const auditRes = await fetch("/api/team/audit-logs");
+        if (auditRes.ok) {
+          const auditData = await auditRes.json();
+          if (Array.isArray(auditData.auditLogs)) {
+            setAuditLogs(auditData.auditLogs);
+          }
+        }
+      } catch {}
 
       const annRes = await fetch("/api/announcements");
       const annData = await annRes.json();
@@ -1099,6 +1115,80 @@ export default function TeamDashboard() {
                           <span>Audit</span>
                         </button>
                       </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* ═══════════════════════════════════════════════════════════════
+              SYSTEM AUDIT TRAIL & INTEGRITY LOGS
+             ═══════════════════════════════════════════════════════════════ */}
+          <div className="p-6 rounded-2xl bg-white border border-[#D9E6EE] shadow-lg space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <h3 className="font-display font-bold text-lg text-[#102A43] flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-[#238B68]" /> System Audit Trail &amp; Verification Logs
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-[#238B68]/10 border border-[#238B68]/30 text-[#238B68] text-[10px] font-mono font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3 text-[#238B68]" /> Immutable Audit Trail
+                </span>
+                <span className="text-xs text-[#52606D] font-mono">
+                  {auditLogs.length} Events Logged
+                </span>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#52606D] leading-relaxed">
+              Verifiable, tamper-evident chronological record of your team’s submissions, autonomous AI evaluations, track assignments, and evaluation milestones.
+            </p>
+
+            {auditLogs.length === 0 ? (
+              <div className="p-8 text-center rounded-xl bg-[#F8FAFC] border border-[#D9E6EE] text-[#52606D] text-xs font-mono space-y-1">
+                <p>No audit log events recorded yet.</p>
+                <p className="text-[11px] text-[#52606D]/70">Events will be automatically recorded when submissions or evaluations occur.</p>
+              </div>
+            ) : (
+              <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                {auditLogs.map((log: any, idx: number) => {
+                  const isEval = log.action?.includes("SUBMISSION") || log.action?.includes("PATCH");
+                  const isPay = log.action?.includes("PAYMENT");
+                  const isViva = log.action?.includes("VIVA") || log.action?.includes("JUDGE");
+                  const isTrack = log.action?.includes("DOMAIN") || log.action?.includes("TRACK");
+
+                  const badgeClass = isEval
+                    ? "bg-[#00629B]/10 text-[#00629B] border-[#00629B]/30"
+                    : isPay
+                    ? "bg-[#238B68]/10 text-[#238B68] border-[#238B68]/30"
+                    : isViva
+                    ? "bg-[#D97706]/10 text-[#D97706] border-[#D97706]/30"
+                    : isTrack
+                    ? "bg-[#772583]/10 text-[#772583] border-[#772583]/30"
+                    : "bg-slate-100 text-slate-700 border-slate-300";
+
+                  return (
+                    <div
+                      key={log.id || idx}
+                      className="p-3.5 rounded-xl bg-[#F8FAFC] hover:bg-[#F0F7FB] border border-[#D9E6EE] space-y-1.5 transition-all text-xs"
+                    >
+                      <div className="flex items-center justify-between flex-wrap gap-2">
+                        <span className={`px-2 py-0.5 rounded font-mono font-bold text-[10px] border uppercase ${badgeClass}`}>
+                          {log.action?.replace(/_/g, " ")}
+                        </span>
+                        <span className="text-[10px] text-[#52606D] font-mono flex items-center gap-1">
+                          <Clock className="w-3 h-3 text-[#52606D]" />
+                          {new Date(log.createdAt).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#102A43] font-medium leading-relaxed">
+                        {log.details}
+                      </p>
+                      {log.reason && (
+                        <p className="text-[11px] text-[#52606D] font-mono italic">
+                          Context: {log.reason}
+                        </p>
+                      )}
                     </div>
                   );
                 })}

@@ -18,20 +18,34 @@ export async function GET(req: Request) {
     }
 
     const { searchParams } = new URL(req.url);
-    const targetTeamId = searchParams.get("teamId") || session.id;
+    const requestedTeamId = searchParams.get("teamId");
 
-    // Only Admin and Judge can view other teams' submissions
-    if (targetTeamId !== session.id && session.role !== "ADMIN" && session.role !== "JUDGE") {
+    let queryTeamId = session.id;
+
+    if (session.role === "TEAM") {
+      // Team can only view their own submissions. Allow session.id or session.code
+      if (
+        requestedTeamId &&
+        requestedTeamId !== session.id &&
+        (!session.code || requestedTeamId.toUpperCase() !== session.code.toUpperCase())
+      ) {
+        return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+      }
+      queryTeamId = requestedTeamId || session.id;
+    } else if (session.role === "ADMIN" || session.role === "JUDGE") {
+      queryTeamId = requestedTeamId || "";
+    } else {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
     }
 
     const submissions = await db.submission.findMany({
-      where: { teamId: targetTeamId },
+      where: queryTeamId ? { teamId: queryTeamId } : undefined,
       orderBy: { submittedAt: "desc" },
     });
 
     return NextResponse.json({ submissions });
-  } catch {
+  } catch (err) {
+    console.error("GET /api/submissions error:", err);
     return NextResponse.json({ error: "Error retrieving submissions." }, { status: 500 });
   }
 }
@@ -44,9 +58,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized: Team login required." }, { status: 401 });
     }
 
-    const team = await db.team.findUnique({
+    let team = await db.team.findUnique({
       where: { id: session.id },
     });
+    if (!team && session.code) {
+      team = await db.team.findUnique({
+        where: { teamCode: session.code },
+      });
+    }
 
     if (!team) {
       return NextResponse.json({ error: "Team not found." }, { status: 404 });

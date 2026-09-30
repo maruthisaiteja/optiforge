@@ -12,9 +12,14 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized: Team login required." }, { status: 401 });
     }
 
-    const team = await db.team.findUnique({
+    let team = await db.team.findUnique({
       where: { id: session.id },
     });
+    if (!team && session.code) {
+      team = await db.team.findUnique({
+        where: { teamCode: session.code },
+      });
+    }
 
     if (!team) {
       return NextResponse.json({ error: "Team record not found." }, { status: 404 });
@@ -104,6 +109,7 @@ export async function GET() {
         livePatchDuration,
         submissionsLocked,
       },
+      auditLogs: await db.auditLog.findManyForTeam(team.teamCode || team.id),
     });
   } catch {
     return NextResponse.json({ error: "Failed to load team profile." }, { status: 500 });
@@ -117,9 +123,14 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: "Unauthorized: Team login required." }, { status: 401 });
     }
 
-    const team = await db.team.findUnique({
+    let team = await db.team.findUnique({
       where: { id: session.id },
     });
+    if (!team && session.code) {
+      team = await db.team.findUnique({
+        where: { teamCode: session.code },
+      });
+    }
 
     if (!team) {
       return NextResponse.json({ error: "Team not found." }, { status: 404 });

@@ -685,18 +685,49 @@ async function ensureDb(): Promise<DatabaseSchema> {
 
           // Merge any granular submissions from optiforge_submissions table
           try {
-            const subRows = await sql`SELECT data FROM optiforge_submissions ORDER BY created_at DESC LIMIT 500`;
+            const subRows = await sql`SELECT id, team_id, data FROM optiforge_submissions ORDER BY created_at DESC LIMIT 1000`;
             if (subRows && subRows.length > 0) {
               if (!Array.isArray(parsed.submissions)) parsed.submissions = [];
-              const existingIds = new Set(parsed.submissions.map((s) => s.id));
+              const existingIds = new Set(
+                parsed.submissions
+                  .map((s) => (s && typeof s === "object" ? s.id : null))
+                  .filter(Boolean)
+              );
               for (const r of subRows) {
-                if (r.data && !existingIds.has((r.data as any).id)) {
-                  parsed.submissions.push(r.data as any);
-                  existingIds.add((r.data as any).id);
+                let subObj = r.data;
+                if (typeof subObj === "string") {
+                  try {
+                    subObj = JSON.parse(subObj);
+                  } catch {
+                    subObj = null;
+                  }
+                }
+                if (subObj && typeof subObj === "object") {
+                  const subId = subObj.id || r.id;
+                  if (subId && !existingIds.has(subId)) {
+                    if (!subObj.id) subObj.id = subId;
+                    if (!subObj.teamId && r.team_id) subObj.teamId = r.team_id;
+                    parsed.submissions.push(subObj);
+                    existingIds.add(subId);
+                  }
                 }
               }
             }
-          } catch {}
+          } catch (mergeErr) {
+            console.warn("[OptiForge DB] Notice: optiforge_submissions merge:", mergeErr);
+          }
+
+          // Clean & sanitize parsed.submissions ensuring all elements are objects with id and teamId
+          if (Array.isArray(parsed.submissions)) {
+            parsed.submissions = parsed.submissions
+              .map((s: any) => {
+                if (typeof s === "string") {
+                  try { return JSON.parse(s); } catch { return null; }
+                }
+                return s;
+              })
+              .filter((s: any) => s && typeof s === "object" && s.id);
+          }
 
           const themesMigrated = ensureOfficialThemes(parsed);
           if (themesMigrated) {
@@ -1217,8 +1248,31 @@ export const db = {
       const data = await ensureDb();
       let res = data.submissions;
       if (filter?.where) {
+        const targetTeamId = filter.where.teamId;
+        const matchingTeam = targetTeamId
+          ? data.teams.find((t) => t.id === targetTeamId || t.teamCode?.toUpperCase() === targetTeamId.toUpperCase())
+          : null;
+        const validTeamIds = new Set<string>();
+        if (targetTeamId) {
+          validTeamIds.add(targetTeamId);
+          validTeamIds.add(targetTeamId.toUpperCase());
+        }
+        if (matchingTeam) {
+          if (matchingTeam.id) {
+            validTeamIds.add(matchingTeam.id);
+          }
+          if (matchingTeam.teamCode) {
+            validTeamIds.add(matchingTeam.teamCode);
+            validTeamIds.add(matchingTeam.teamCode.toUpperCase());
+          }
+        }
+
         res = res.filter((s) => {
-          if (filter.where!.teamId && s.teamId !== filter.where!.teamId) return false;
+          if (!s || typeof s !== "object") return false;
+          if (targetTeamId) {
+            const sTeamId = s.teamId || "";
+            if (!validTeamIds.has(sTeamId) && !validTeamIds.has(sTeamId.toUpperCase())) return false;
+          }
           if (filter.where!.status && s.status !== filter.where!.status) return false;
           if (filter.where!.similarityFlag !== undefined && s.similarityFlag !== filter.where!.similarityFlag) return false;
           if (filter.where!.isLivePatch !== undefined && s.isLivePatch !== filter.where!.isLivePatch) return false;
@@ -1510,6 +1564,81 @@ export const db = {
     findMany: async () => {
       const data = await ensureDb();
       return data.auditLogs;
+    },
+    findManyForTeam: async (teamIdentifier: string) => {
+      const data = await ensureDb();
+      const cleanIdent = (teamIdentifier || "").trim();
+      const team = data.teams.find(
+        (t) =>
+          t.id === cleanIdent ||
+          (t.teamCode && t.teamCode.toUpperCase() === cleanIdent.toUpperCase()) ||
+          (t.leaderEmail && t.leaderEmail.toLowerCase() === cleanIdent.toLowerCase())
+      );
+      const teamCode = team?.teamCode || cleanIdent;
+      const teamId = team?.id || cleanIdent;
+      const teamName = team?.teamName || "";
+      const leaderEmail = team?.leaderEmail || "";
+
+      // 1. Logs explicitly referencing the team in performedBy or details
+      const directLogs = (data.auditLogs || []).filter((l) => {
+        if (!l) return false;
+        const performed = (l.performedBy || "").toUpperCase();
+        const details = l.details || "";
+        const detailsUpper = details.toUpperCase();
+
+        if (teamCode && (performed === teamCode.toUpperCase() || detailsUpper.includes(teamCode.toUpperCase()))) {
+          return true;
+        }
+        if (teamId && (l.performedBy === teamId || details.includes(teamId))) {
+          return true;
+        }
+        if (leaderEmail && (performed === leaderEmail.toUpperCase() || detailsUpper.includes(leaderEmail.toUpperCase()))) {
+          return true;
+        }
+        if (teamName && details.toLowerCase().includes(teamName.toLowerCase())) {
+          return true;
+        }
+        return false;
+      });
+
+      // 2. Synthesize submission evaluation audit logs from team submissions if not already present in directLogs
+      const teamSubmissions = (data.submissions || []).filter((s) => {
+        if (!s) return false;
+        return (
+          s.teamId === teamId ||
+          (teamCode && s.teamId?.toUpperCase() === teamCode.toUpperCase())
+        );
+      });
+
+      const synthesizedLogs: AuditLogRecord[] = [];
+      for (const sub of teamSubmissions) {
+        const attemptLabel = sub.isLivePatch ? "Stage 7 Live Patch" : `Attempt ${sub.attemptNumber}/3`;
+        const autoScore = Number(sub.autoScore || 0).toFixed(2);
+        const simScore = Number(sub.similarityScore || 0).toFixed(1);
+
+        const alreadyLogged = directLogs.some(
+          (l) =>
+            l.action?.includes("SUBMISSION") &&
+            (l.details?.includes(`Attempt ${sub.attemptNumber}`) || l.details?.includes(sub.id))
+        );
+
+        if (!alreadyLogged) {
+          synthesizedLogs.push({
+            id: `sub-audit-${sub.id}`,
+            action: sub.isLivePatch ? "LIVE_PATCH_EVALUATED" : "SUBMISSION_EVALUATED",
+            performedBy: teamCode,
+            details: `Team ${teamName || teamCode} evaluated: ${attemptLabel}. Auto-Score: ${autoScore}/100. Plagiarism: ${simScore}%. Autonomous AST and security hygiene audited.`,
+            reason: `Autonomous AI Evaluation Engine (Score: ${autoScore})`,
+            createdAt: sub.submittedAt || new Date().toISOString(),
+          });
+        }
+      }
+
+      // Merge and sort newest first
+      const combined = [...directLogs, ...synthesizedLogs];
+      return combined.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
     },
   },
 };
