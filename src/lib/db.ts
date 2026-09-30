@@ -1389,6 +1389,79 @@ export const db = {
         return db.submission.create({ data: create });
       }
     },
+    resetForTeam: async (teamIdentifier: string): Promise<{
+      team: TeamRecord;
+      deletedSubmissionsCount: number;
+      deletedEvaluationsCount: number;
+    }> => {
+      return withDbLock(async () => {
+        const data = await ensureDb();
+        const cleanId = (teamIdentifier || "").trim();
+        const teamIdx = data.teams.findIndex(
+          (t) => t.id === cleanId || t.teamCode?.toUpperCase() === cleanId.toUpperCase()
+        );
+        if (teamIdx === -1) {
+          throw new Error("Team not found");
+        }
+
+        const targetTeam = data.teams[teamIdx];
+        const validTeamIds = new Set<string>();
+        if (targetTeam.id) validTeamIds.add(targetTeam.id);
+        if (targetTeam.teamCode) {
+          validTeamIds.add(targetTeam.teamCode);
+          validTeamIds.add(targetTeam.teamCode.toUpperCase());
+        }
+
+        // Count and remove ONLY this team's submissions
+        const subsBefore = data.submissions.length;
+        data.submissions = data.submissions.filter((s) => {
+          if (!s || typeof s !== "object") return true;
+          const sId = s.teamId || "";
+          return !validTeamIds.has(sId) && !validTeamIds.has(sId.toUpperCase());
+        });
+        const deletedSubmissionsCount = subsBefore - data.submissions.length;
+
+        // Count and remove linked judge evaluations for this team
+        const evalsBefore = (data.judgeEvaluations || []).length;
+        data.judgeEvaluations = (data.judgeEvaluations || []).filter((e) => {
+          if (!e) return true;
+          const eId = e.teamId || "";
+          return !validTeamIds.has(eId) && !validTeamIds.has(eId.toUpperCase());
+        });
+        const deletedEvaluationsCount = evalsBefore - (data.judgeEvaluations || []).length;
+
+        // Reset team attempts and scores
+        data.teams[teamIdx] = {
+          ...data.teams[teamIdx],
+          attemptsUsed: 0,
+          bestScore: 0,
+          finalJudgeScore: null,
+          finalCombinedScore: null,
+          updatedAt: new Date().toISOString(),
+        };
+
+        await saveDb(data);
+
+        // Atomic deletion in Postgres optiforge_submissions
+        const sql = getPostgresClient();
+        if (sql) {
+          try {
+            await sql`
+              DELETE FROM optiforge_submissions
+              WHERE team_id = ${targetTeam.id} OR team_id = ${targetTeam.teamCode};
+            `;
+          } catch (pgErr) {
+            console.warn("[OptiForge DB] Notice: optiforge_submissions granular deletion:", pgErr);
+          }
+        }
+
+        return {
+          team: data.teams[teamIdx],
+          deletedSubmissionsCount,
+          deletedEvaluationsCount,
+        };
+      });
+    },
   },
 
   // Judge Evaluations

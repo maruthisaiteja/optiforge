@@ -31,6 +31,7 @@ import {
   Copy,
   Lock,
   Mail,
+  RotateCcw,
 } from "lucide-react";
 import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
 import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
@@ -76,6 +77,11 @@ export default function AdminPortal() {
   const [generatedCred, setGeneratedCred] = useState<any>(null);
   const [sendingModalEmail, setSendingModalEmail] = useState(false);
   const [modalEmailNotice, setModalEmailNotice] = useState<string | null>(null);
+
+  // Reset team submissions state
+  const [resetSubModal, setResetSubModal] = useState<any>(null);
+  const [resetSubReason, setResetSubReason] = useState("");
+  const [resettingSub, setResettingSub] = useState(false);
 
   const fetchAdminData = async () => {
     try {
@@ -171,6 +177,23 @@ export default function AdminPortal() {
       reason: "Payment failed - auto-disqualified",
     });
     setPaymentModal(null);
+  };
+
+  const executeResetSubmissions = async () => {
+    if (!resetSubModal) return;
+    setResettingSub(true);
+    try {
+      await handleAdminAction("RESET_TEAM_SUBMISSIONS", {
+        teamCode: resetSubModal.teamCode,
+        reason: resetSubReason || "Admin granted fresh submission attempts",
+      });
+      setResetSubModal(null);
+      setResetSubReason("");
+      await fetchAdminData();
+    } catch {
+      alert("Failed to reset submissions.");
+    }
+    setResettingSub(false);
   };
 
   const exportTeamsCsv = () => {
@@ -722,6 +745,19 @@ export default function AdminPortal() {
                           title="Override Score"
                         >
                           Score
+                        </button>
+
+                        {/* Reset Submissions & Attempts */}
+                        <button
+                          onClick={() => {
+                            setResetSubModal(t);
+                            setResetSubReason("");
+                          }}
+                          className="px-2.5 py-2 rounded-xl bg-bg-secondary hover:bg-amber-950/40 border border-navy-border hover:border-amber-600/50 text-brand-muted hover:text-amber-400 text-xs font-mono transition-colors flex items-center gap-1"
+                          title={`Reset Submissions & Attempts (${t.attemptsUsed || 0}/3 used)`}
+                        >
+                          <RotateCcw className="w-3 h-3 text-amber-400" />
+                          <span>Reset ({t.attemptsUsed || 0}/3)</span>
                         </button>
 
                         {/* 4. Disqualify / Reinstate */}
@@ -1856,6 +1892,89 @@ Vardhaman College of Engineering`;
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: RESET TEAM SUBMISSIONS & ATTEMPTS */}
+      {resetSubModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-2xl bg-bg-card border border-amber-500/60 shadow-2xl p-6 sm:p-8 space-y-5 relative">
+            <button
+              onClick={() => setResetSubModal(null)}
+              className="absolute top-4 right-4 p-2 text-brand-muted hover:text-brand-white transition-colors"
+            >
+              <span className="text-lg">✕</span>
+            </button>
+
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0">
+                <RotateCcw className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-lg text-amber-400">
+                  Reset Team Submissions
+                </h3>
+                <p className="text-xs text-brand-muted mt-1">
+                  Team: <strong className="text-brand-white">{resetSubModal.teamName}</strong> ({resetSubModal.teamCode})
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-300 space-y-1.5 leading-relaxed">
+              <p className="font-bold flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" /> What will happen:
+              </p>
+              <ul className="space-y-1 ml-4 list-disc text-[11px] text-amber-200/90 font-mono">
+                <li>Attempts counter reset from <strong>{resetSubModal.attemptsUsed || 0}/3</strong> to <strong>0/3</strong>.</li>
+                <li>Current Best Score (<strong>{Number(resetSubModal.bestScore || 0).toFixed(2)}</strong>) reset to <strong>0.00</strong>.</li>
+                <li>All past submissions &amp; evaluation logs for this team removed.</li>
+                <li>Team can immediately submit fresh solutions from Attempt 1.</li>
+                <li className="text-emerald-400">Team registration, members, passwords, domain, and venue are PRESERVED.</li>
+                <li className="text-emerald-400">All other teams&apos; live data is 100% UNTOUCHED and PRESERVED.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-brand-white">
+                Audit Reason / Note (Optional):
+              </label>
+              <textarea
+                value={resetSubReason}
+                onChange={(e) => setResetSubReason(e.target.value)}
+                rows={2}
+                placeholder="e.g., Code corrupted during upload, accidental file, granted jury retry..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-amber-500 resize-none font-sans"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setResetSubModal(null)}
+                className="px-4 py-2 rounded-xl text-xs text-brand-muted hover:text-brand-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={executeResetSubmissions}
+                disabled={resettingSub}
+                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-amber-500/20"
+              >
+                {resettingSub ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    <span>Resetting...</span>
+                  </>
+                ) : (
+                  <>
+                    <RotateCcw className="w-4 h-4" />
+                    <span>Confirm Reset Submissions</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

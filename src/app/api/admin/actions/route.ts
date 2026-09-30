@@ -543,6 +543,42 @@ export async function POST(req: Request) {
         });
       }
 
+      case "RESET_TEAM_SUBMISSIONS": {
+        const { teamCode, reason } = payload;
+        if (!teamCode) {
+          return NextResponse.json({ error: "Team ID or code is required." }, { status: 400 });
+        }
+
+        const team =
+          (await db.team.findUnique({ where: { teamCode } })) ||
+          (await db.team.findUnique({ where: { id: teamCode } }));
+
+        if (!team) {
+          return NextResponse.json({ error: "Team not found." }, { status: 404 });
+        }
+
+        const result = await db.submission.resetForTeam(team.teamCode || team.id);
+
+        try {
+          await db.auditLog.create({
+            data: {
+              action: "TEAM_SUBMISSIONS_RESET",
+              performedBy: session.name || "ADMIN",
+              details: `Admin reset submissions and attempts for Team ${team.teamName} (${team.teamCode}). Removed ${result.deletedSubmissionsCount} submission(s) and ${result.deletedEvaluationsCount} evaluation(s). Attempts reset to 0/3, best score reset to 0.00.`,
+              reason: reason || "Admin granted fresh submission attempts",
+            },
+          });
+        } catch {}
+
+        return NextResponse.json({
+          success: true,
+          message: `Submissions reset for Team ${team.teamCode} (${team.teamName}). ${result.deletedSubmissionsCount} submission(s) removed. Attempts counter reset to 0/3.`,
+          team: result.team,
+          deletedSubmissionsCount: result.deletedSubmissionsCount,
+          deletedEvaluationsCount: result.deletedEvaluationsCount,
+        });
+      }
+
       case "RESET_TEAM_PASSWORD": {
         const { teamCode, reason } = payload;
         if (!teamCode) {

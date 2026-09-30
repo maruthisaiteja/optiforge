@@ -31,6 +31,7 @@ import {
   Sparkles,
   RefreshCw,
   Plus,
+  RotateCcw,
 } from "lucide-react";
 import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
 
@@ -98,6 +99,11 @@ export default function TeamManagementTab({ teams: initialTeams, tracks = [], ju
   const [resetReason, setResetReason] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [resetResult, setResetResult] = useState<string | null>(null);
+
+  // Reset Submissions state
+  const [resetSubmissionsTarget, setResetSubmissionsTarget] = useState<any>(null);
+  const [resetSubmissionsReason, setResetSubmissionsReason] = useState("");
+  const [isResettingSubmissions, setIsResettingSubmissions] = useState(false);
 
   // Add Team Modal State
   const [showAddTeamModal, setShowAddTeamModal] = useState(false);
@@ -644,6 +650,37 @@ export default function TeamManagementTab({ teams: initialTeams, tracks = [], ju
     setIsResetting(false);
   };
 
+  // Reset team submissions handler
+  const handleResetSubmissions = async () => {
+    if (!resetSubmissionsTarget) return;
+    setIsResettingSubmissions(true);
+    try {
+      const res = await fetch("/api/admin/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "RESET_TEAM_SUBMISSIONS",
+          payload: {
+            teamCode: resetSubmissionsTarget.teamCode,
+            reason: resetSubmissionsReason || "Admin requested fresh submission attempts",
+          },
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(data.message || `Submissions reset for ${resetSubmissionsTarget.teamName}`);
+        setResetSubmissionsTarget(null);
+        setResetSubmissionsReason("");
+        onRefresh();
+      } else {
+        alert(data.error || "Failed to reset submissions.");
+      }
+    } catch {
+      alert("Network error resetting submissions. Please try again.");
+    }
+    setIsResettingSubmissions(false);
+  };
+
   const SortButton = ({ field, label }: { field: SortField; label: string }) => (
     <button
       onClick={() => toggleSort(field)}
@@ -1089,6 +1126,16 @@ export default function TeamManagementTab({ teams: initialTeams, tracks = [], ju
                         </button>
                         <button
                           onClick={() => {
+                            setResetSubmissionsTarget(t);
+                            setResetSubmissionsReason("");
+                          }}
+                          className="p-1.5 rounded-lg bg-bg-secondary hover:bg-amber-950/40 border border-navy-border hover:border-amber-600/60 text-brand-muted hover:text-amber-400 transition-colors"
+                          title={`Reset Submissions & Attempts (${t.attemptsUsed || 0}/3 used)`}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
                             setDeleteTarget(t);
                             setDeleteConfirmCode("");
                             setDeleteReason("");
@@ -1329,6 +1376,108 @@ export default function TeamManagementTab({ teams: initialTeams, tracks = [], ju
                   <>
                     <Mail className="w-3.5 h-3.5" />
                     <span>Send Official Credentials Email to All Members</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* Quick Action: Reset Submissions & Attempts */}
+            <div className="p-4 rounded-xl bg-bg-secondary border border-amber-500/30 space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-mono text-brand-dim uppercase text-[10px]">Submission Attempts</span>
+                <span className="font-mono font-bold text-amber-400">{selectedTeam.attemptsUsed || 0} / 3 Attempts Used</span>
+              </div>
+              <button
+                onClick={() => {
+                  setResetSubmissionsTarget(selectedTeam);
+                  setResetSubmissionsReason("");
+                  setSelectedTeam(null);
+                }}
+                className="w-full py-2.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <RotateCcw className="w-4 h-4" />
+                <span>Reset Team Submissions &amp; Attempts (0/3)</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== RESET TEAM SUBMISSIONS CONFIRMATION DIALOG ===== */}
+      {resetSubmissionsTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-2xl bg-bg-card border border-amber-500/60 shadow-2xl p-6 sm:p-8 space-y-5 relative">
+            <button
+              onClick={() => setResetSubmissionsTarget(null)}
+              className="absolute top-4 right-4 p-2 text-brand-muted hover:text-brand-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-amber-500/15 border border-amber-500/30 text-amber-400 shrink-0">
+                <RotateCcw className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-display font-bold text-lg text-amber-400">
+                  Reset Team Submissions
+                </h3>
+                <p className="text-xs text-brand-muted mt-1">
+                  Team: <strong className="text-brand-white">{resetSubmissionsTarget.teamName}</strong> ({resetSubmissionsTarget.teamCode})
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-300 space-y-1.5 leading-relaxed">
+              <p className="font-bold flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5" /> What will happen:
+              </p>
+              <ul className="space-y-1 ml-4 list-disc text-[11px] text-amber-200/90 font-mono">
+                <li>Attempts counter reset from <strong>{resetSubmissionsTarget.attemptsUsed || 0}/3</strong> to <strong>0/3</strong>.</li>
+                <li>Current Best Score (<strong>{Number(resetSubmissionsTarget.bestScore || 0).toFixed(2)}</strong>) reset to <strong>0.00</strong>.</li>
+                <li>All past code submissions &amp; evaluation logs for this team removed.</li>
+                <li>Team can immediately submit fresh solutions from Attempt 1.</li>
+                <li className="text-emerald-400">Team registration, members, passwords, domain, and venue are PRESERVED.</li>
+                <li className="text-emerald-400">All other teams&apos; live data is 100% UNTOUCHED and PRESERVED.</li>
+              </ul>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold text-brand-white">
+                Audit Reason / Note (Optional):
+              </label>
+              <textarea
+                value={resetSubmissionsReason}
+                onChange={(e) => setResetSubmissionsReason(e.target.value)}
+                rows={2}
+                placeholder="e.g., Code corrupted during upload, accidental file, granted jury retry..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-bg-secondary border border-navy-border text-xs text-brand-white placeholder:text-brand-dim focus:outline-none focus:border-amber-500 resize-none font-sans"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setResetSubmissionsTarget(null)}
+                className="px-4 py-2 rounded-xl text-xs text-brand-muted hover:text-brand-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleResetSubmissions}
+                disabled={isResettingSubmissions}
+                className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg shadow-amber-500/20"
+              >
+                {isResettingSubmissions ? (
+                  <>
+                    <div className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                    <span>Resetting...</span>
+                  </>
+                ) : (
+                  <>
+                    <RotateCcw className="w-4 h-4" />
+                    <span>Confirm Reset Submissions</span>
                   </>
                 )}
               </button>
