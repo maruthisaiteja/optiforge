@@ -44,10 +44,39 @@ interface TeamManagementTabProps {
 
 const ITEMS_PER_PAGE = 10;
 
+export const OFFICIAL_INNOVATION_DOMAINS = [
+  { id: "theme-1-biomedical-ai", code: "01", name: "Biomedical Artificial Intelligence", shortName: "01: Biomedical AI", society: "IEEE EMBS × CIS" },
+  { id: "theme-2-signals", code: "02", name: "Biomedical Signals & Intelligent Systems", shortName: "02: Biomedical Signals", society: "IEEE EMBS" },
+  { id: "theme-3-imaging", code: "03", name: "Medical Imaging & Computer Vision", shortName: "03: Medical Imaging", society: "IEEE EMBS" },
+  { id: "theme-4-ml-ai", code: "04", name: "Machine Learning & Artificial Intelligence", shortName: "04: ML & Artificial Intelligence", society: "IEEE CIS" },
+  { id: "theme-5-autonomous", code: "05", name: "Intelligent Systems & Autonomous Computing", shortName: "05: Autonomous Systems", society: "IEEE CIS" },
+  { id: "theme-6-open-innovation", code: "06", name: "Open Innovation: CIS × EMBS", shortName: "06: Open Innovation", society: "IEEE EMBS × CIS" },
+];
+
+export const normalizeDomainId = (domainId?: string | null): string => {
+  if (!domainId) return "theme-1-biomedical-ai";
+  const legacyMap: Record<string, string> = {
+    "p1-hospital-scheduling": "theme-1-biomedical-ai",
+    "p2-drone-delivery": "theme-2-signals",
+    "p3-emergency-hospital": "theme-3-imaging",
+    "p4-blood-inventory": "theme-4-ml-ai",
+    "p5-search-and-rescue": "theme-5-autonomous",
+    "p6-fuzzy-triage": "theme-6-open-innovation",
+  };
+  return legacyMap[domainId] || domainId;
+};
+
 type SortField = "teamCode" | "teamName" | "createdAt" | "paymentStatus" | "venue";
 type SortDirection = "asc" | "desc";
 
-export default function TeamManagementTab({ teams, tracks = [], judges = [], onAdminAction, onRefresh }: TeamManagementTabProps) {
+export default function TeamManagementTab({ teams: initialTeams, tracks = [], judges = [], onAdminAction, onRefresh }: TeamManagementTabProps) {
+  // Local state to support optimistic updates for immediate UI feedback
+  const [teams, setTeams] = useState<any[]>(initialTeams);
+  const [updatingDomainCode, setUpdatingDomainCode] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    setTeams(initialTeams);
+  }, [initialTeams]);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [venueFilter, setVenueFilter] = useState("ALL");
@@ -205,31 +234,46 @@ export default function TeamManagementTab({ teams, tracks = [], judges = [], onA
 
   // Reassign Venue Handler
   const handleAssignVenue = async (teamCode: string, venue: string) => {
+    setTeams((prev) =>
+      prev.map((tm) => (tm.teamCode === teamCode ? { ...tm, venue } : tm))
+    );
     try {
       await onAdminAction("ASSIGN_VENUE", { teamCode, venue });
       onRefresh();
     } catch {
       alert("Failed to reassign venue.");
+      onRefresh();
     }
   };
 
-  // Reassign Domain Handler
+  // Reassign Domain Handler with optimistic update
   const handleAssignDomain = async (teamCode: string, domainId: string) => {
+    setTeams((prev) =>
+      prev.map((tm) => (tm.teamCode === teamCode ? { ...tm, domainId } : tm))
+    );
+    setUpdatingDomainCode(teamCode);
     try {
       await onAdminAction("ASSIGN_DOMAIN", { teamCode, domainId });
       onRefresh();
     } catch {
       alert("Failed to reassign domain.");
+      onRefresh();
+    } finally {
+      setUpdatingDomainCode(null);
     }
   };
 
   // Assign Judge Handler
   const handleAssignJudge = async (teamCode: string, judgeId: string) => {
+    setTeams((prev) =>
+      prev.map((tm) => (tm.teamCode === teamCode ? { ...tm, assignedJudgeId: judgeId } : tm))
+    );
     try {
       await onAdminAction("ASSIGN_JUDGE", { teamCode, judgeId });
       onRefresh();
     } catch {
       alert("Failed to assign judge.");
+      onRefresh();
     }
   };
 
@@ -939,22 +983,28 @@ export default function TeamManagementTab({ teams, tracks = [], judges = [], onA
                     </td>
                     {/* Domain Track Dropdown (Admin can change on the fly) */}
                     <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
-                      <select
-                        value={t.domainId || ""}
-                        onChange={(e) => handleAssignDomain(t.teamCode, e.target.value)}
-                        className="bg-bg-secondary border border-teal-accent/40 text-teal-accent font-semibold rounded-lg px-2 py-1 text-xs focus:ring-1 focus:ring-teal-accent focus:outline-none max-w-[140px] truncate"
-                        title="Change Innovation Domain Track"
-                      >
-                        {tracks && tracks.length > 0 ? (
-                          tracks.map((tr: any) => (
-                            <option key={tr.id} value={tr.id} className="bg-bg-primary text-white">
-                              {tr.shortName || tr.name}
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={normalizeDomainId(t.domainId)}
+                          onChange={(e) => handleAssignDomain(t.teamCode, e.target.value)}
+                          disabled={updatingDomainCode === t.teamCode}
+                          className="bg-[#0b1728] border border-teal-500/50 hover:border-teal-400 text-teal-300 font-semibold rounded-lg px-2.5 py-1.5 text-xs focus:ring-1 focus:ring-teal-400 focus:outline-none min-w-[200px] max-w-[250px] cursor-pointer shadow-xs disabled:opacity-50"
+                          title="Change Innovation Domain Track for this specific team"
+                        >
+                          {OFFICIAL_INNOVATION_DOMAINS.map((domain) => (
+                            <option
+                              key={domain.id}
+                              value={domain.id}
+                              className="bg-[#0b1728] text-white py-1 font-sans"
+                            >
+                              {domain.shortName}
                             </option>
-                          ))
-                        ) : (
-                          <option value={t.domainId || ""}>{t.track?.shortName || t.domainId || "Select Domain"}</option>
+                          ))}
+                        </select>
+                        {updatingDomainCode === t.teamCode && (
+                          <div className="w-3.5 h-3.5 border-2 border-teal-accent border-t-transparent rounded-full animate-spin shrink-0" />
                         )}
-                      </select>
+                      </div>
                     </td>
 
                     {/* Venue Dropdown (1011, 1019, 1020) */}
@@ -1208,7 +1258,7 @@ export default function TeamManagementTab({ teams, tracks = [], judges = [], onA
               <DetailField label="Team ID" value={selectedTeam.teamCode} copyable />
               <DetailField label="Leader Email" value={selectedTeam.leaderEmail} copyable />
               <DetailField label="Leader Phone" value={selectedTeam.leaderPhone} />
-              <DetailField label="Domain" value={selectedTeam.track?.shortName || selectedTeam.domainId || "—"} />
+              <DetailField label="Domain" value={OFFICIAL_INNOVATION_DOMAINS.find(d => d.id === normalizeDomainId(selectedTeam.domainId))?.name || selectedTeam.track?.name || selectedTeam.domainId || "—"} />
               <DetailField label="Payment Status" value={selectedTeam.paymentStatus} />
               <DetailField label="Payment Amount" value={`₹${selectedTeam.paymentAmount}`} />
               <DetailField label="Attempts Used" value={`${selectedTeam.attemptsUsed} / 3`} />
@@ -1628,9 +1678,9 @@ export default function TeamManagementTab({ teams, tracks = [], judges = [], onA
                     onChange={(e) => setNewTeamData({ ...newTeamData, domainId: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-bg-secondary border border-navy-border text-teal-accent text-xs focus:ring-1 focus:ring-teal-accent focus:outline-none"
                   >
-                    {tracks.map((tr: any) => (
-                      <option key={tr.id} value={tr.id} className="bg-bg-primary text-white">
-                        {tr.shortName || tr.name}
+                    {OFFICIAL_INNOVATION_DOMAINS.map((domain) => (
+                      <option key={domain.id} value={domain.id} className="bg-[#0b1728] text-white">
+                        {domain.name} ({domain.code})
                       </option>
                     ))}
                   </select>

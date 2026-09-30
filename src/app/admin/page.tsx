@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { downloadSingleCertificate, downloadAllTeamCertificates } from "@/lib/certificateGenerator";
 import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
-import TeamManagementTab from "@/components/admin/TeamManagementTab";
+import TeamManagementTab, { OFFICIAL_INNOVATION_DOMAINS, normalizeDomainId } from "@/components/admin/TeamManagementTab";
 import AuditLogsTab from "@/components/admin/AuditLogsTab";
 
 export default function AdminPortal() {
@@ -179,7 +179,7 @@ export default function AdminPortal() {
     const rows = data.teams
       .map(
         (t: any) =>
-          `"${t.teamCode}","${t.teamName}","${t.track?.shortName || t.domainId}","${t.leaderEmail}","${t.leaderPhone}",${t.members?.length || 0},"${t.paymentStatus}",${t.attemptsUsed},${t.bestScore}`
+          `"${t.teamCode}","${t.teamName}","${OFFICIAL_INNOVATION_DOMAINS.find(d => d.id === normalizeDomainId(t.domainId))?.shortName || t.track?.shortName || t.domainId}","${t.leaderEmail}","${t.leaderPhone}",${t.members?.length || 0},"${t.paymentStatus}",${t.attemptsUsed},${t.bestScore}`
       )
       .join("\n");
     const blob = new Blob([headers + rows], { type: "text/csv" });
@@ -611,7 +611,7 @@ export default function AdminPortal() {
                           {t.teamName}
                         </div>
                         <div className="text-xs text-brand-muted font-mono">
-                          Theme: <span className="text-brand-white">{t.track?.shortName || t.domainId || "Unassigned"}</span>
+                          Theme: <span className="text-teal-300 font-semibold">{OFFICIAL_INNOVATION_DOMAINS.find(d => d.id === normalizeDomainId(t.domainId))?.shortName || t.track?.shortName || t.domainId || "Unassigned"}</span>
                         </div>
                       </div>
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, OFFICIAL_INNOVATION_THEMES } from "@/lib/db";
 import { getServerSession } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -65,7 +65,7 @@ export async function GET() {
         rank: idx + 1,
         teamCode: t.teamCode,
         teamName: t.teamName,
-        trackName: trackMap.get(t.domainId || "") || "Innovation Theme",
+        trackName: OFFICIAL_INNOVATION_THEMES.find((ot) => ot.id === t.domainId)?.shortName || trackMap.get(t.domainId || "") || "Innovation Theme",
         trackId: t.domainId || "theme-1-biomedical-ai",
         attemptsUsed: t.attemptsUsed,
         bestScore: t.bestScore,

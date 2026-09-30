@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, OFFICIAL_INNOVATION_THEMES } from "@/lib/db";
 import { getServerSession } from "@/lib/auth";
 
 export async function GET() {
@@ -175,7 +175,7 @@ const VIVA_QUESTIONS: Record<string, string[]> = {
         teamName: team.teamName, // Real team names
         venue: team.venue || "1011",
         trackId: team.domainId,
-        trackName: team.track?.shortName || "Track",
+        trackName: OFFICIAL_INNOVATION_THEMES.find((ot) => ot.id === team.domainId)?.shortName || team.track?.shortName || "Track",
         attemptsUsed: team.attemptsUsed,
         bestScore: team.bestScore,
         submissions: subs,

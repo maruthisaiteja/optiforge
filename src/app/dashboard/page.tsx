@@ -436,7 +436,7 @@ export default function TeamDashboard() {
             <span>
               Track:{" "}
               <strong className="text-teal-accent">
-                {INNOVATION_THEMES.find((t) => t.id === selectedTrackId)?.label?.split(":")[1]?.trim() || track?.shortName || track?.name || "Biomedical AI"}
+                {INNOVATION_THEMES.find((t) => t.id === (team?.domainId || selectedTrackId))?.label || track?.name || "Biomedical Artificial Intelligence"}
               </strong>
               {isTestAccount && <span className="ml-1.5 text-[10px] text-purple-300 font-mono">(Sandbox)</span>}
             </span>

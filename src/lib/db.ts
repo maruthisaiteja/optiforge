@@ -305,10 +305,334 @@ export function ensureJudgeAccounts(data: DatabaseSchema): DatabaseSchema {
   return data;
 }
 
+export const OFFICIAL_INNOVATION_THEMES: ProblemTrackRecord[] = [
+  {
+    id: "theme-1-biomedical-ai",
+    name: "Biomedical Artificial Intelligence",
+    shortName: "01: Biomedical AI",
+    society: "IEEE EMBS × IEEE CIS",
+    difficulty: "Advanced",
+    technique: "Evolutionary Neural Architecture Search & Hybrid GA-ML",
+    context: "Clinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.",
+    coreChallenge: "Design an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.",
+    hardConstraints: [
+      "Sensitivity for life-critical conditions must meet clinical safety minimum (>98%)",
+      "Feature selection must respect clinical interpretability and causal plausibility",
+      "Algorithm must output calibrated diagnostic confidence and uncertainty intervals",
+      "Execution latency per patient record cannot exceed operational clinical SLA",
+      "Model must not collapse under missing or asynchronously sampled clinical inputs"
+    ],
+    optimizationObjectives: [
+      "Maximize diagnostic ROC-AUC and high-risk case recall",
+      "Minimize false alarms and unnecessary clinical interventions",
+      "Minimize computational complexity for edge clinical deployment",
+      "Maximize stability and consistency across multi-center demographic shifts"
+    ],
+    hiddenTestNote: "Hidden test cases inject rare co-morbidities and 20% corrupted sensor telemetry. The model must preserve life-critical sensitivity.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "Develop AI and machine-learning solutions for healthcare, including disease prediction, clinical decision support, and personalized medicine.",
+    statementMarkdown: "### Theme 1 — Biomedical Artificial Intelligence\\n\\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Evolutionary Neural Architecture Search & Hybrid GA-ML\\n\\n#### Context\\nClinical healthcare pipelines generate vast multi-modal patient telemetry, electronic health records, genomic biomarkers, and pathology features. Medical practitioners require explainable AI models capable of predictive risk stratification while respecting strict sensitivity constraints.\\n\\n#### Core Challenge\\nDesign an evolutionary optimization algorithm to search high-dimensional biomedical feature spaces and optimize hybrid clinical decision boundaries, maximizing sensitivity for rare critical pathologies while minimizing false positive alerts under real-world clinical noise.",
+    starterNotebookUrl: "/starter/starter_p1_scheduling.py",
+    benchmarkType: "BIOMEDICAL_AI_EVOLUTIONARY",
+    hiddenShiftAttempt2: "Demographic perturbation: Patient age and comorbid distributions shifted by 35% with missing laboratory markers.",
+    hiddenShiftAttempt3: "Adversarial clinical noise: 20% of continuous ICU vitals perturbed with Gaussian sensor drift.",
+    livePatchSurprise: "One urgent biomarker feature is rendered unavailable; algorithm must dynamically re-evaluate confidence without retraining from scratch.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  },
+  {
+    id: "theme-2-signals",
+    name: "Biomedical Signals & Intelligent Systems",
+    shortName: "02: Biomedical Signals",
+    society: "IEEE EMBS",
+    difficulty: "Advanced",
+    technique: "Fuzzy Inference Systems + Evolutionary Signal Decomposition",
+    context: "Continuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.",
+    coreChallenge: "Formulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.",
+    hardConstraints: [
+      "Real-time streaming throughput must match patient monitor sampling rates (>500 Hz)",
+      "Critical cardiac events (ventricular fibrillation, asystole) must trigger alerts within 2 seconds",
+      "Fuzzy membership rules must adhere to established clinical cardiology guidelines",
+      "Processing pipeline must preserve morphological diagnostic peaks (QRS complexes, P waves)",
+      "Filter coefficients must maintain phase linearity without introducing latency distortion"
+    ],
+    optimizationObjectives: [
+      "Minimize ICU monitor false alarm rate by >70% while preserving 100% true event sensitivity",
+      "Maximize signal-to-noise ratio (SNR) improvement across noisy leads",
+      "Minimize computational footprint for wearable battery-powered cardiac patches",
+      "Maximize adaptability across diverse baseline physiological variations"
+    ],
+    hiddenTestNote: "Hidden test cases inject severe electrosurgical cautery bursts and motion-induced baseline wandering.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "Apply intelligent algorithms to ECG, EEG, EMG, and PPG for signal processing, anomaly detection, and physiological monitoring.",
+    statementMarkdown: "### Theme 2 — Biomedical Signals & Intelligent Systems\\n\\n**Society:** IEEE EMBS | **Track:** Advanced | **Technique:** Fuzzy Inference Systems + Evolutionary Signal Decomposition\\n\\n#### Context\\nContinuous physiological monitoring in Intensive Care Units captures streaming ECG, EMG, and photoplethysmography (PPG) waveforms subject to severe motion artifacts and baseline wandering.\\n\\n#### Core Challenge\\nFormulate an evolutionary fuzzy system that filters non-stationary artifacts, extracts morphological signal components, and detects acute cardiac or neurological events with high fidelity and ultra-low latency.",
+    starterNotebookUrl: "/starter/starter_p6_triage.py",
+    benchmarkType: "BIOMEDICAL_SIGNALS_EVOLUTIONARY_FUZZY",
+    hiddenShiftAttempt2: "Motion artifact injection: High-amplitude respiratory baseline wander superimposed on Lead II.",
+    hiddenShiftAttempt3: "Ectopic beat clustering: Premature ventricular contractions (PVCs) occurring in rapid trigeminy bursts.",
+    livePatchSurprise: "One lead disconnects entirely; system must reconstruct cardiac rhythm from single remaining PPG sensor.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  },
+  {
+    id: "theme-3-imaging",
+    name: "Medical Imaging & Computer Vision",
+    shortName: "03: Medical Imaging",
+    society: "IEEE EMBS",
+    difficulty: "Advanced",
+    technique: "Genetic Algorithms + Heuristic Feature Space Search",
+    context: "Clinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.",
+    coreChallenge: "Engineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.",
+    hardConstraints: [
+      "False negative rate on malignant findings must remain below clinical safety limits",
+      "Geometric contours must maintain anatomical boundary continuity and smoothness",
+      "Volumetric reconstruction must execute within clinical emergency turnaround budgets",
+      "Algorithm must demonstrate invariance to scan orientation and slice thickness variations",
+      "All segmentations must generate pixel-level confidence maps for radiologist review"
+    ],
+    optimizationObjectives: [
+      "Maximize Dice similarity coefficient and IoU on lesion target regions",
+      "Minimize boundary Hausdorff distance and false positive segmentations",
+      "Minimize computational runtime and peak memory usage",
+      "Maximize robustness against motion blur, metallic artifacts, and low SNR"
+    ],
+    hiddenTestNote: "Hidden test cases introduce low-dose ultra-noisy scans and small boundary-adjacent micro-calcifications.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "Develop intelligent systems for MRI, CT, ultrasound, and histopathological image analysis, segmentation, and automated interpretation.",
+    statementMarkdown: "### Theme 3 — Medical Imaging & Computer Vision\\n\\n**Society:** IEEE EMBS | **Track:** Advanced | **Technique:** Genetic Algorithms + Heuristic Feature Space Search\\n\\n#### Context\\nClinical diagnosis from MRI, CT, and histological scans is hindered by low contrast, sensor noise, and artifact occlusions. Accurate boundary delineation of pathological lesions is vital.\\n\\n#### Core Challenge\\nEngineer a genetic heuristic that optimizes multi-scale feature filters, deformable contour boundaries, and spatial segmentation masks to maximize lesion detection precision under severe class imbalance and scan noise.",
+    starterNotebookUrl: "/starter/starter_p5_swarm.py",
+    benchmarkType: "MEDICAL_IMAGING_HEURISTIC_SEARCH",
+    hiddenShiftAttempt2: "Low-dose scan noise: SNR reduced by 50% with metallic dental implant streak artifacts.",
+    hiddenShiftAttempt3: "Micro-lesion challenge: Target pathology diameter reduced to sub-voxel resolution (<3mm).",
+    livePatchSurprise: "Slice thickness increased by 4x; algorithm must infer 3D contours without volumetric slice re-interpolation.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  },
+  {
+    id: "theme-4-ml-ai",
+    name: "Machine Learning & Artificial Intelligence",
+    shortName: "04: ML & Artificial Intelligence",
+    society: "IEEE CIS",
+    difficulty: "Intermediate–Advanced",
+    technique: "Multi-Objective Heuristics + Deep Evolutionary Networks",
+    context: "Intelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.",
+    coreChallenge: "Design a high-performance machine learning optimization model combining automated hyperparameter search with robust loss regularization to generalize across non-stationary distributions.",
+    hardConstraints: [
+      "Generalization bounds must hold across out-of-distribution validation sets",
+      "Optimization trajectory must converge deterministically without gradient explosion",
+      "Model parameter efficiency must adhere to runtime deployment budgets",
+      "Decision outputs must satisfy fair calibration across heterogeneous sub-populations"
+    ],
+    optimizationObjectives: [
+      "Maximize multi-metric validation accuracy and generalized predictive capability",
+      "Minimize loss variance and over-fitting penalty across unseen held-out splits",
+      "Minimize inference latency and computational overhead",
+      "Maximize explainability and architectural stability"
+    ],
+    hiddenTestNote: "Hidden scenarios test generalization across non-stationary dataset drift and noisy label corruptions.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "Explore machine learning, deep learning, generative AI, and intelligent algorithms for solving complex real-world problems.",
+    statementMarkdown: "### Theme 4 — Machine Learning & Artificial Intelligence\\n\\n**Society:** IEEE CIS | **Track:** Intermediate–Advanced | **Technique:** Multi-Objective Heuristics + Deep Evolutionary Networks\\n\\n#### Context\\nIntelligent systems operating in dynamic real-world environments require adaptive learning models capable of solving complex multi-modal classification, continuous regression, and generative modeling tasks.\\n\\n#### Core Challenge\\nDesign a high-performance machine learning optimization model combining automated hyperparameter search with robust loss regularization to generalize across non-stationary distributions.",
+    starterNotebookUrl: "/starter/starter_p2_drone.py",
+    benchmarkType: "EDTECH_KNOWLEDGE_SPACE_GA",
+    hiddenShiftAttempt2: "Non-stationary distribution shift: 35% covariate drift injected into held-out evaluation splits.",
+    hiddenShiftAttempt3: "Adversarial noise injection: Feature space perturbed with high-frequency noise bursts.",
+    livePatchSurprise: "Regularization penalty doubled; model must maintain generalization without retraining from scratch.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  },
+  {
+    id: "theme-5-autonomous",
+    name: "Intelligent Systems & Autonomous Computing",
+    shortName: "05: Autonomous Systems",
+    society: "IEEE CIS",
+    difficulty: "Advanced",
+    technique: "Swarm Intelligence + Adaptive Multi-Agent Heuristics",
+    context: "Decentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.",
+    coreChallenge: "Engineer a multi-agent autonomous decision-making engine that coordinates agent trajectories, resolves resource contention, and dynamically plans pathing under real-time environmental perturbations.",
+    hardConstraints: [
+      "Agents must guarantee collision-free trajectories and safe operational margins",
+      "Decision latency per simulation tick must stay strictly within real-time budget",
+      "Coordination protocol must operate without centralized single-point-of-failure bottlenecks",
+      "Dynamic environment changes must trigger sub-second trajectory recalibration"
+    ],
+    optimizationObjectives: [
+      "Maximize collective swarm task throughput and coverage velocity",
+      "Minimize cumulative collision risk and coordination deadlocks",
+      "Minimize energy consumption and path trajectory length",
+      "Maximize resilience against individual agent failures or communication dropouts"
+    ],
+    hiddenTestNote: "Hidden evaluation scenarios introduce corridor blockages and sudden network communication dropouts.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "Develop autonomous, adaptive, and multi-agent systems capable of intelligent decision-making, learning, and real-time operation.",
+    statementMarkdown: "### Theme 5 — Intelligent Systems & Autonomous Computing\\n\\n**Society:** IEEE CIS | **Track:** Advanced | **Technique:** Swarm Intelligence + Adaptive Multi-Agent Heuristics\\n\\n#### Context\\nDecentralized autonomous agents operating in shared environments must coordinate navigation, resource allocation, and distributed task execution under communication constraints and unpredictable hazards.\\n\\n#### Core Challenge\\nEngineer a multi-agent autonomous decision-making engine that coordinates agent trajectories, resolves resource contention, and dynamically plans pathing under real-time environmental perturbations.",
+    starterNotebookUrl: "/starter/starter_p4_grid.py",
+    benchmarkType: "HEALTHCARE_ROBOTICS_SWARM",
+    hiddenShiftAttempt2: "Network drop: 30% of multi-agent communication links intermittently disrupted.",
+    hiddenShiftAttempt3: "Corridor blockade: Primary throughput corridors obstructed by dynamic hazard objects.",
+    livePatchSurprise: "Agent battery speed clamped to 50%; swarm must recalibrate rendezvous points within 15 minutes.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  },
+  {
+    id: "theme-6-open-innovation",
+    name: "Open Innovation: CIS × EMBS",
+    shortName: "06: Open Innovation",
+    society: "IEEE EMBS × IEEE CIS",
+    difficulty: "Advanced",
+    technique: "Hybrid Computational Intelligence & Novel Metaheuristics",
+    context: "The frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.",
+    coreChallenge: "Architect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
+    hardConstraints: [
+      "Proposed algorithmic architecture must combine both EMBS and CIS core tenets",
+      "Solutions must be accompanied by rigorous mathematical formulation and code harness",
+      "Computational complexity must scale tractably with real-world clinical datasets",
+      "All third-party scientific baselines and data sources must be credited and reproducible"
+    ],
+    optimizationObjectives: [
+      "Maximize algorithmic novelty, cross-domain ingenuity, and mathematical elegance",
+      "Maximize empirical performance gain over standard industry benchmark baselines",
+      "Maximize clinical applicability and translational potential in healthcare settings",
+      "Maximize computational execution efficiency and parameter sensitivity robustness"
+    ],
+    hiddenTestNote: "Judges evaluate algorithmic robustness against custom unannounced perturbation test suites.",
+    expectedOutputChecklist: [
+      "Algorithm implementation (submitted notebook/script)",
+      "Parameter configuration used, clearly stated",
+      "Final objective/score for each attempt",
+      "Convergence or iteration evidence (a plot or log showing the algorithm improving over iterations)",
+      "A short written explanation covering: representation used, operators/rules chosen, how constraints were handled, and why the selected CI technique fits this problem",
+      "A one-line 'what changed and why' note with every attempt after the first"
+    ],
+    description: "An interdisciplinary track for novel solutions combining computational intelligence with biomedical engineering and healthcare challenges.",
+    statementMarkdown: "### Theme 6 — Open Innovation: CIS × EMBS\\n\\n**Society:** IEEE EMBS × IEEE CIS | **Track:** Advanced | **Technique:** Hybrid Computational Intelligence & Novel Metaheuristics\\n\\n#### Context\\nThe frontier of medical technology demands unconventional computational intelligence methodologies uniting biological modeling with cutting-edge algorithmic optimization.\\n\\n#### Core Challenge\\nArchitect an original computational intelligence solution solving an unaddressed cross-disciplinary challenge spanning biomedical engineering and computational intelligence theory.",
+    starterNotebookUrl: "/starter/starter_p3_hospital.py",
+    benchmarkType: "OPEN_INNOVATION_CIS_EMBS",
+    hiddenShiftAttempt2: "Sensor noise injection: Vital readings have random Gaussian noise and 15% missing telemetry.",
+    hiddenShiftAttempt3: "Conflicting vitals: A set of high-risk edge cases present with normal blood pressure but critical hypoxia.",
+    livePatchSurprise: "A patient presents with a rare combination of vitals that contradicts two rules simultaneously.",
+    createdAt: "2026-09-23T16:08:26.523Z",
+    updatedAt: "2026-09-30T12:00:00.000Z"
+  }
+];
+
+export function ensureOfficialThemes(data: DatabaseSchema): boolean {
+  if (!data || !Array.isArray(data.problemTracks)) return false;
+  let modified = false;
+
+  const trackMap = new Map<string, ProblemTrackRecord>();
+  for (const t of data.problemTracks) {
+    trackMap.set(t.id, t);
+  }
+
+  const updatedTracks: ProblemTrackRecord[] = [];
+  for (const official of OFFICIAL_INNOVATION_THEMES) {
+    const existing = trackMap.get(official.id);
+    if (!existing) {
+      updatedTracks.push({ ...official });
+      modified = true;
+    } else {
+      if (
+        existing.name !== official.name ||
+        existing.shortName !== official.shortName ||
+        existing.society !== official.society ||
+        existing.technique !== official.technique ||
+        existing.description !== official.description ||
+        existing.statementMarkdown !== official.statementMarkdown
+      ) {
+        Object.assign(existing, {
+          name: official.name,
+          shortName: official.shortName,
+          society: official.society,
+          difficulty: official.difficulty,
+          technique: official.technique,
+          description: official.description,
+          statementMarkdown: official.statementMarkdown,
+          benchmarkType: official.benchmarkType,
+        });
+        modified = true;
+      }
+      updatedTracks.push(existing);
+      trackMap.delete(official.id);
+    }
+  }
+
+  if (data.problemTracks.length !== updatedTracks.length) {
+    modified = true;
+  }
+  data.problemTracks = updatedTracks;
+
+  // Preserve locked registration domains and map any legacy codes
+  const validTrackIds = new Set(OFFICIAL_INNOVATION_THEMES.map((t) => t.id));
+  const legacyMapping: Record<string, string> = {
+    "p1-hospital-scheduling": "theme-1-biomedical-ai",
+    "p2-drone-delivery": "theme-2-signals",
+    "p3-emergency-hospital": "theme-3-imaging",
+    "p4-blood-inventory": "theme-4-ml-ai",
+    "p5-search-and-rescue": "theme-5-autonomous",
+    "p6-fuzzy-triage": "theme-6-open-innovation",
+  };
+
+  if (Array.isArray(data.teams)) {
+    for (const team of data.teams) {
+      if (team.domainId && legacyMapping[team.domainId]) {
+        team.domainId = legacyMapping[team.domainId];
+        modified = true;
+      }
+      if (!team.domainId && team.prefTrack1 && validTrackIds.has(team.prefTrack1)) {
+        team.domainId = team.prefTrack1;
+        modified = true;
+      }
+      if (!team.domainId || !validTrackIds.has(team.domainId)) {
+        team.domainId = "theme-1-biomedical-ai";
+        modified = true;
+      }
+    }
+  }
+
+  return modified;
+}
+
 function filterTestTeams(data: DatabaseSchema): DatabaseSchema {
   // Preserve all real participant registrations and ensure test sandbox account exists
   ensureTestAccount(data);
   ensureJudgeAccounts(data);
+  ensureOfficialThemes(data);
   return data;
 }
 
@@ -373,6 +697,19 @@ async function ensureDb(): Promise<DatabaseSchema> {
               }
             }
           } catch {}
+
+          const themesMigrated = ensureOfficialThemes(parsed);
+          if (themesMigrated) {
+            try {
+              await sql`
+                UPDATE optiforge_store
+                SET data = ${JSON.stringify(parsed)}, updated_at = NOW(), version = version + 1
+                WHERE id = 'main';
+              `;
+            } catch (syncErr) {
+              console.warn("[OptiForge DB] Failed to auto-persist updated themes to Postgres:", syncErr);
+            }
+          }
 
           try {
             if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });

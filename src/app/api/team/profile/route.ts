@@ -26,9 +26,12 @@ export async function GET() {
     const livePatchDuration = (await db.systemSetting.get("live_patch_duration_mins")) || "20";
     const submissionsLocked = (await db.systemSetting.get("submissions_locked")) !== "false";
 
-    const rawTrack = team.domainId
+    let rawTrack = team.domainId
       ? await db.problemTrack.findUnique({ where: { id: team.domainId } })
       : null;
+    if (!rawTrack) {
+      rawTrack = await db.problemTrack.findUnique({ where: { id: "theme-1-biomedical-ai" } });
+    }
 
     let sanitizedTrack = null;
     if (rawTrack) {
