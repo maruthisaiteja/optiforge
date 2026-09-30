@@ -176,26 +176,39 @@ export async function POST(req: Request) {
       });
     }
 
-    // 1. Plagiarism / Similarity Check across submissions in same track
+    // 1. Plagiarism & Integrity Cross-Check across all teams in the same track
+    const normalizedGithubUrl = githubUrl ? githubUrl.trim().toLowerCase().replace(/\/+$/, "").replace(/\.git$/, "") : "";
     let maxSimilarity = 0;
+    let plagiarismDetails = "";
     const allTrackTeams = await db.team.findMany({
       where: { domainId: trackId },
     });
     const trackTeamIds = allTrackTeams.map((t) => t.id).filter((id) => id !== team.id);
 
-    if (hasCode) {
-      for (const otherId of trackTeamIds) {
-        const otherSubs = await db.submission.findMany({ where: { teamId: otherId } });
-        for (const otherSub of otherSubs) {
-          if (otherSub.codeContent) {
-            const sim = computeCodeSimilarity(codeContent, otherSub.codeContent);
-            if (sim > maxSimilarity) maxSimilarity = sim;
+    for (const otherId of trackTeamIds) {
+      const otherSubs = await db.submission.findMany({ where: { teamId: otherId } });
+      for (const otherSub of otherSubs) {
+        // A. Exact duplicate GitHub repository URL check
+        if (normalizedGithubUrl && otherSub.githubUrl) {
+          const otherNormGh = otherSub.githubUrl.trim().toLowerCase().replace(/\/+$/, "").replace(/\.git$/, "");
+          if (normalizedGithubUrl === otherNormGh) {
+            maxSimilarity = 100;
+            plagiarismDetails = "Exact duplicate GitHub repository submitted by another registered team.";
+            break;
+          }
+        }
+
+        // B. Code content similarity check
+        if (hasCode && otherSub.codeContent && !otherSub.codeContent.startsWith("[GitHub Repository Submission:")) {
+          const sim = computeCodeSimilarity(codeContent, otherSub.codeContent);
+          if (sim > maxSimilarity) {
+            maxSimilarity = sim;
+            if (sim >= 80) plagiarismDetails = `High code similarity (${sim}%) detected against another submission.`;
           }
         }
       }
+      if (maxSimilarity === 100) break;
     }
-
-    const isSimilarityFlagged = maxSimilarity >= 80;
 
     // 2. Fetch prior attempt scores for consistency metric
     const priorSubs = await db.submission.findMany({ where: { teamId: team.id } });
@@ -216,6 +229,26 @@ export async function POST(req: Request) {
       attemptNumber: currentAttempt,
       priorScores,
     });
+
+    // C. Check identical commit SHA across other teams
+    if (evalResult.repoStats?.commitSha && maxSimilarity < 100) {
+      for (const otherId of trackTeamIds) {
+        const otherSubs = await db.submission.findMany({ where: { teamId: otherId } });
+        for (const otherSub of otherSubs) {
+          if (otherSub.repoStats?.commitSha && otherSub.repoStats.commitSha === evalResult.repoStats.commitSha) {
+            maxSimilarity = 100;
+            plagiarismDetails = "Identical Git commit hash submitted by another registered team.";
+            break;
+          }
+        }
+        if (maxSimilarity === 100) break;
+      }
+    }
+
+    const isSimilarityFlagged = maxSimilarity >= 80;
+    if (isSimilarityFlagged && plagiarismDetails) {
+      evalResult.insights.unshift(`Integrity Alert: ${plagiarismDetails}`);
+    }
 
     const enrichedMetricsBreakdown = {
       ...evalResult.metrics,

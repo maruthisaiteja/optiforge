@@ -70,6 +70,8 @@ interface AiEvaluationModalProps {
       languages?: string[];
       sourceFilesCount?: number;
       testFilesCount?: number;
+      testCasesCount?: number;
+      assertionsCount?: number;
       hasReadme?: boolean;
       hasGitignore?: boolean;
       isLiveResponsive?: boolean;
@@ -414,7 +416,9 @@ export default function AiEvaluationResultsModal({
                 {repoStats?.sourceFilesCount !== undefined ? repoStats.sourceFilesCount : (submission.filename ? 1 : 0)} Source Files
               </div>
               <div className="text-[11px] text-slate-400 font-mono">
-                {repoStats?.languages?.join(", ") || "Python"}
+                {repoStats?.testCasesCount
+                  ? `${repoStats.testFilesCount || 0} Test Suites · ${repoStats.testCasesCount} Tests`
+                  : (repoStats?.testFilesCount ? `${repoStats.testFilesCount} Test Files` : (repoStats?.languages?.join(", ") || "Python"))}
               </div>
               {submission.githubUrl && (
                 <a
