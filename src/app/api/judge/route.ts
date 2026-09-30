@@ -9,10 +9,19 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized: Judge login required." }, { status: 401 });
     }
 
-    const assignedTrack = session.domainId;
-    const allTeams = await db.team.findMany({
-      where: assignedTrack ? { domainId: assignedTrack } : undefined,
-    });
+    let allTeams = await db.team.findMany();
+
+    // If logged in as JUDGE:
+    // 1. First priority: Check if teams are specifically assigned to this judge ID
+    if (session.role === "JUDGE") {
+      const assignedToMe = allTeams.filter((t: any) => t.assignedJudgeId === session.id);
+      if (assignedToMe.length > 0) {
+        allTeams = assignedToMe;
+      } else if (session.domainId) {
+        // Fallback to domain track if assigned
+        allTeams = allTeams.filter((t: any) => t.domainId === session.domainId);
+      }
+    }
 
     const evaluations = await db.judgeEvaluation.findMany({
       where: session.role === "JUDGE" ? { judgeId: session.id } : undefined,
@@ -164,6 +173,7 @@ const VIVA_QUESTIONS: Record<string, string[]> = {
         teamId: team.id,
         teamCode: team.teamCode,
         teamName: team.teamName, // Real team names
+        venue: team.venue || "1011",
         trackId: team.domainId,
         trackName: team.track?.shortName || "Track",
         attemptsUsed: team.attemptsUsed,
@@ -178,7 +188,7 @@ const VIVA_QUESTIONS: Record<string, string[]> = {
 
     return NextResponse.json({
       judgeName: session.name,
-      assignedTrack: assignedTrack || "ALL_TRACKS",
+      assignedTrack: (session as any).domainId || "ALL_TRACKS",
       queue,
     });
   } catch (err) {
@@ -200,13 +210,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Submission ID and Team ID are required." }, { status: 400 });
     }
 
-    // Clamp rubric values
+    // Calibrated 4-Pillar Rubric (Total: 100)
+    // 1. Technical & Algorithmic Rigor: 30 pts max
+    // 2. Code Quality & Architecture: 25 pts max
+    // 3. Innovation & Real-World Viability: 25 pts max
+    // 4. Oral Defense & Viva Voce: 20 pts max
+    const qReasoning = Math.min(30, Math.max(0, Number(algorithmicReasoning) || 0));
     const qCode = Math.min(25, Math.max(0, Number(codeQuality) || 0));
-    const qReasoning = Math.min(35, Math.max(0, Number(algorithmicReasoning) || 0));
+    const qInnovation = Math.min(25, Math.max(0, Number(innovation) || 0));
     const qInterpretation = Math.min(20, Math.max(0, Number(resultInterpretation) || 0));
-    const qInnovation = Math.min(20, Math.max(0, Number(innovation) || 0));
 
-    const totalJudgeScore = Math.round((qCode + qReasoning + qInterpretation + qInnovation) * 10) / 10;
+    const totalJudgeScore = Math.round((qReasoning + qCode + qInnovation + qInterpretation) * 10) / 10;
 
     // Save evaluation
     const evaluation = await db.judgeEvaluation.upsert({

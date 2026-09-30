@@ -1411,6 +1411,8 @@ export default function AdminPortal() {
       {activeTab === "TEAM_MGMT" && (
         <TeamManagementTab
           teams={data?.teams || []}
+          tracks={data?.tracks || []}
+          judges={data?.judges || []}
           onAdminAction={handleAdminAction}
           onRefresh={fetchAdminData}
         />

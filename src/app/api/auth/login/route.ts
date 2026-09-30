@@ -101,7 +101,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid username or credentials." }, { status: 401 });
     }
 
-    const isValid = await comparePassword(password, user.password);
+    let isValid = await comparePassword(password, user.password);
+    if (!isValid && (user as any).rawPassword && password === (user as any).rawPassword) {
+      isValid = true;
+    }
     if (!isValid) {
       return NextResponse.json({ error: "Invalid password." }, { status: 401 });
     }

@@ -24,23 +24,33 @@ import {
   Filter,
   Download,
   FileCheck,
+  UserPlus,
+  Building2,
+  Gavel,
+  CheckCircle2,
+  Sparkles,
+  RefreshCw,
+  Plus,
 } from "lucide-react";
 import { generateAttendanceSheetPdf, generateCredentialsSheetPdf } from "@/lib/pdfReportGenerator";
 
 interface TeamManagementTabProps {
   teams: any[];
+  tracks?: any[];
+  judges?: any[];
   onAdminAction: (action: string, payload: any) => Promise<void>;
   onRefresh: () => void;
 }
 
 const ITEMS_PER_PAGE = 10;
 
-type SortField = "teamCode" | "teamName" | "createdAt" | "paymentStatus";
+type SortField = "teamCode" | "teamName" | "createdAt" | "paymentStatus" | "venue";
 type SortDirection = "asc" | "desc";
 
-export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: TeamManagementTabProps) {
+export default function TeamManagementTab({ teams, tracks = [], judges = [], onAdminAction, onRefresh }: TeamManagementTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [venueFilter, setVenueFilter] = useState("ALL");
   const [sortField, setSortField] = useState<SortField>("createdAt");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -59,6 +69,209 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
   const [resetReason, setResetReason] = useState("");
   const [isResetting, setIsResetting] = useState(false);
   const [resetResult, setResetResult] = useState<string | null>(null);
+
+  // Add Team Modal State
+  const [showAddTeamModal, setShowAddTeamModal] = useState(false);
+  const [newTeamData, setNewTeamData] = useState({
+    teamName: "",
+    domainId: (tracks && tracks[0]?.id) || "theme-1-biomedical-ai",
+    venue: "1011",
+    leaderName: "",
+    leaderEmail: "",
+    leaderPhone: "",
+    collegeName: "Vardhaman College of Engineering",
+    members: [] as any[],
+    customTeamCode: "",
+    customPassword: "",
+  });
+  const [isAddingTeam, setIsAddingTeam] = useState(false);
+  const [addTeamError, setAddTeamError] = useState<string | null>(null);
+  const [createdCredentialsModal, setCreatedCredentialsModal] = useState<any>(null);
+
+  // Judge Allocation & Venue Assignment State
+  const [showJudgeModal, setShowJudgeModal] = useState(false);
+  const [isAutoAssigningJudges, setIsAutoAssigningJudges] = useState(false);
+  const [isAutoAssigningVenues, setIsAutoAssigningVenues] = useState(false);
+  const [judgeCopiedSuccess, setJudgeCopiedSuccess] = useState(false);
+
+  // Handlers for dynamic member adding
+  const handleAddMemberSlot = () => {
+    if (newTeamData.members.length >= 3) return; // max 4 total including leader
+    setNewTeamData((prev) => ({
+      ...prev,
+      members: [
+        ...prev.members,
+        {
+          name: "",
+          rollNumber: "",
+          branch: "CSE",
+          year: "3rd Year",
+          email: "",
+          phone: "",
+          collegeName: prev.collegeName || "Vardhaman College of Engineering",
+        },
+      ],
+    }));
+  };
+
+  const handleRemoveMemberSlot = (index: number) => {
+    setNewTeamData((prev) => ({
+      ...prev,
+      members: prev.members.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleMemberChange = (index: number, field: string, value: string) => {
+    setNewTeamData((prev) => {
+      const updated = [...prev.members];
+      updated[index] = { ...updated[index], [field]: value };
+      return { ...prev, members: updated };
+    });
+  };
+
+  // Submit manual team onboarding
+  const handleCreateTeam = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTeamData.teamName.trim()) {
+      setAddTeamError("Team Name is required.");
+      return;
+    }
+    if (!newTeamData.leaderEmail.trim()) {
+      setAddTeamError("Leader Email is required.");
+      return;
+    }
+    if (!newTeamData.leaderPhone.trim()) {
+      setAddTeamError("Leader Phone is required.");
+      return;
+    }
+
+    setIsAddingTeam(true);
+    setAddTeamError(null);
+
+    try {
+      const res = await fetch("/api/admin/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "ADD_TEAM",
+          payload: {
+            ...newTeamData,
+            domainId: newTeamData.domainId || (tracks && tracks[0]?.id) || "theme-1-biomedical-ai",
+            venue: newTeamData.venue || "1011",
+            members: [
+              {
+                name: newTeamData.leaderName || "Team Leader",
+                rollNumber: "ROLL01",
+                branch: "CSE",
+                year: "3rd Year",
+                email: newTeamData.leaderEmail.trim().toLowerCase(),
+                phone: newTeamData.leaderPhone.trim(),
+                collegeName: newTeamData.collegeName || "Vardhaman College of Engineering",
+              },
+              ...newTeamData.members.filter((m) => m.name && m.name.trim()),
+            ],
+          },
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setAddTeamError(data.error || "Failed to create team.");
+        setIsAddingTeam(false);
+        return;
+      }
+
+      setShowAddTeamModal(false);
+      setCreatedCredentialsModal(data.team);
+      setNewTeamData({
+        teamName: "",
+        domainId: (tracks && tracks[0]?.id) || "theme-1-biomedical-ai",
+        venue: "1011",
+        leaderName: "",
+        leaderEmail: "",
+        leaderPhone: "",
+        collegeName: "Vardhaman College of Engineering",
+        members: [],
+        customTeamCode: "",
+        customPassword: "",
+      });
+      onRefresh();
+    } catch {
+      setAddTeamError("Network error while onboarding team.");
+    } finally {
+      setIsAddingTeam(false);
+    }
+  };
+
+  // Reassign Venue Handler
+  const handleAssignVenue = async (teamCode: string, venue: string) => {
+    try {
+      await onAdminAction("ASSIGN_VENUE", { teamCode, venue });
+      onRefresh();
+    } catch {
+      alert("Failed to reassign venue.");
+    }
+  };
+
+  // Reassign Domain Handler
+  const handleAssignDomain = async (teamCode: string, domainId: string) => {
+    try {
+      await onAdminAction("ASSIGN_DOMAIN", { teamCode, domainId });
+      onRefresh();
+    } catch {
+      alert("Failed to reassign domain.");
+    }
+  };
+
+  // Assign Judge Handler
+  const handleAssignJudge = async (teamCode: string, judgeId: string) => {
+    try {
+      await onAdminAction("ASSIGN_JUDGE", { teamCode, judgeId });
+      onRefresh();
+    } catch {
+      alert("Failed to assign judge.");
+    }
+  };
+
+  // Auto-Assign Venues
+  const handleAutoAssignVenues = async () => {
+    if (!confirm("Auto-distribute all teams evenly across Venues 1011, 1019, and 1020?")) return;
+    setIsAutoAssigningVenues(true);
+    try {
+      await onAdminAction("AUTO_ASSIGN_VENUES", {});
+      onRefresh();
+    } catch {
+      alert("Failed to auto-distribute venues.");
+    } finally {
+      setIsAutoAssigningVenues(false);
+    }
+  };
+
+  // Auto-Assign Judges
+  const handleAutoAssignJudges = async () => {
+    if (!confirm("Auto-distribute all teams evenly across the 10 Judges?")) return;
+    setIsAutoAssigningJudges(true);
+    try {
+      await onAdminAction("AUTO_ASSIGN_JUDGES", {});
+      onRefresh();
+    } catch {
+      alert("Failed to auto-distribute judges.");
+    } finally {
+      setIsAutoAssigningJudges(false);
+    }
+  };
+
+  // Copy All Judge Credentials
+  const handleCopyJudgeCredentials = () => {
+    const list = (judges && judges.length > 0 ? judges : []).map((j: any, idx: number) => {
+      const raw = j.rawPassword || `OptiForge#Judge0${idx + 1}!`;
+      return `Judge ${idx + 1}:\nUsername: ${j.username}\nPassword: ${raw}\nVenue: ${j.assignedVenue || "1011"}\nName: ${j.name}`;
+    }).join("\n\n---\n\n");
+
+    navigator.clipboard.writeText(list);
+    setJudgeCopiedSuccess(true);
+    setTimeout(() => setJudgeCopiedSuccess(false), 3000);
+  };
 
   // Export Complete Team Details modal state
   const [showExportModal, setShowExportModal] = useState(false);
@@ -282,6 +495,11 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
       );
     }
 
+    // Apply venue filter
+    if (venueFilter !== "ALL") {
+      filtered = filtered.filter((t: any) => t.venue === venueFilter);
+    }
+
     // Apply sort
     filtered.sort((a: any, b: any) => {
       let cmp = 0;
@@ -291,6 +509,9 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
           break;
         case "teamName":
           cmp = (a.teamName || "").localeCompare(b.teamName || "");
+          break;
+        case "venue":
+          cmp = (a.venue || "").localeCompare(b.venue || "");
           break;
         case "createdAt":
           cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -303,7 +524,7 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
     });
 
     return filtered;
-  }, [teams, searchQuery, statusFilter, sortField, sortDirection]);
+  }, [teams, searchQuery, statusFilter, venueFilter, sortField, sortDirection]);
 
   // Pagination
   const totalPages = Math.max(1, Math.ceil(processedTeams.length / ITEMS_PER_PAGE));
@@ -409,6 +630,7 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
         </div>
 
         <div className="flex items-center gap-3 text-xs font-mono flex-wrap">
+          {/* Status Filter */}
           <div className="flex items-center gap-1.5">
             <Filter className="w-3.5 h-3.5 text-brand-muted" />
             <select
@@ -416,13 +638,65 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
               onChange={(e) => handleFilterChange(e.target.value)}
               className="px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-brand-white text-xs"
             >
-              <option value="ALL">All Teams ({teams?.length || 0})</option>
+              <option value="ALL">All Statuses ({teams?.length || 0})</option>
               <option value="CONFIRMED">Registered (Paid)</option>
               <option value="PENDING">Pending Payment</option>
               <option value="COMPLETE">Complete Teams</option>
               <option value="INCOMPLETE">Incomplete Teams</option>
             </select>
           </div>
+
+          {/* Venue Filter (1011, 1019, 1020) */}
+          <div className="flex items-center gap-1.5">
+            <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+            <select
+              value={venueFilter}
+              onChange={(e) => {
+                setVenueFilter(e.target.value);
+                setCurrentPage(1);
+              }}
+              className="px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-emerald-400 font-bold text-xs"
+            >
+              <option value="ALL">All Venues</option>
+              <option value="1011">Venue 1011</option>
+              <option value="1019">Venue 1019</option>
+              <option value="1020">Venue 1020</option>
+            </select>
+          </div>
+
+          {/* + Add Team Button */}
+          <button
+            onClick={() => {
+              setShowAddTeamModal(true);
+              setAddTeamError(null);
+            }}
+            className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-bold text-xs transition-all flex items-center gap-1.5 shadow-md"
+            title="Manually register an unregistered team with immediate login access"
+          >
+            <UserPlus className="w-3.5 h-3.5" />
+            <span>+ Add Team</span>
+          </button>
+
+          {/* Auto-Assign Venues */}
+          <button
+            onClick={handleAutoAssignVenues}
+            disabled={isAutoAssigningVenues}
+            className="px-3 py-1.5 rounded-lg bg-bg-secondary hover:bg-navy-deep border border-emerald-500/40 text-emerald-400 font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+            title="Auto-distribute all teams evenly across Venues 1011, 1019, 1020"
+          >
+            <Building2 className="w-3.5 h-3.5" />
+            <span>{isAutoAssigningVenues ? "Distributing..." : "Auto-Distribute Venues"}</span>
+          </button>
+
+          {/* 10 Judges Matrix */}
+          <button
+            onClick={() => setShowJudgeModal(true)}
+            className="px-3 py-1.5 rounded-lg bg-[#772583]/30 hover:bg-[#772583]/50 border border-purple-500/60 text-purple-300 font-semibold text-xs transition-all flex items-center gap-1.5 shadow-sm"
+            title="Open 10 Judges evaluation allocation matrix & credential directory"
+          >
+            <Gavel className="w-3.5 h-3.5 text-purple-400" />
+            <span>10 Judges Matrix</span>
+          </button>
 
           <button
             onClick={() => setShowCredentialsMode(!showCredentialsMode)}
@@ -566,7 +840,11 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                 <th className="py-3.5 px-4">Leader / Email</th>
                 {showCredentialsMode && <th className="py-3.5 px-4">Password</th>}
                 <th className="py-3.5 px-4">Members</th>
-                <th className="py-3.5 px-4">Domain</th>
+                <th className="py-3.5 px-4">Domain (Editable)</th>
+                <th className="py-3.5 px-4">
+                  <SortButton field="venue" label="Venue" />
+                </th>
+                <th className="py-3.5 px-4">Assigned Judge</th>
                 <th className="py-3.5 px-4">
                   <SortButton field="paymentStatus" label="Status" />
                 </th>
@@ -659,8 +937,55 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                         {t.members?.length || 0}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-brand-muted text-[11px]">
-                      {t.track?.shortName || t.domainId || "—"}
+                    {/* Domain Track Dropdown (Admin can change on the fly) */}
+                    <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={t.domainId || ""}
+                        onChange={(e) => handleAssignDomain(t.teamCode, e.target.value)}
+                        className="bg-bg-secondary border border-teal-accent/40 text-teal-accent font-semibold rounded-lg px-2 py-1 text-xs focus:ring-1 focus:ring-teal-accent focus:outline-none max-w-[140px] truncate"
+                        title="Change Innovation Domain Track"
+                      >
+                        {tracks && tracks.length > 0 ? (
+                          tracks.map((tr: any) => (
+                            <option key={tr.id} value={tr.id} className="bg-bg-primary text-white">
+                              {tr.shortName || tr.name}
+                            </option>
+                          ))
+                        ) : (
+                          <option value={t.domainId || ""}>{t.track?.shortName || t.domainId || "Select Domain"}</option>
+                        )}
+                      </select>
+                    </td>
+
+                    {/* Venue Dropdown (1011, 1019, 1020) */}
+                    <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={t.venue || "1011"}
+                        onChange={(e) => handleAssignVenue(t.teamCode, e.target.value)}
+                        className="bg-bg-secondary border border-emerald-500/40 text-emerald-400 font-bold rounded-lg px-2 py-1 text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                        title="Assign to Laboratory Room (1011, 1019, 1020)"
+                      >
+                        <option value="1011" className="bg-bg-primary text-white">1011</option>
+                        <option value="1019" className="bg-bg-primary text-white">1019</option>
+                        <option value="1020" className="bg-bg-primary text-white">1020</option>
+                      </select>
+                    </td>
+
+                    {/* Assigned Judge Dropdown */}
+                    <td className="py-3.5 px-4" onClick={(e) => e.stopPropagation()}>
+                      <select
+                        value={t.assignedJudgeId || ""}
+                        onChange={(e) => handleAssignJudge(t.teamCode, e.target.value)}
+                        className="bg-bg-secondary border border-purple-500/40 text-purple-300 font-medium rounded-lg px-2 py-1 text-xs focus:ring-1 focus:ring-purple-500 focus:outline-none max-w-[125px] truncate"
+                        title="Assign Specific Evaluator Judge"
+                      >
+                        <option value="" className="bg-bg-primary text-brand-dim">Unassigned</option>
+                        {judges && judges.map((j: any) => (
+                          <option key={j.id} value={j.id} className="bg-bg-primary text-white">
+                            {j.username}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                     <td className="py-3.5 px-4">
                       {t.paymentStatus === "CONFIRMED" ? (
@@ -1245,6 +1570,397 @@ export default function TeamManagementTab({ teams, onAdminAction, onRefresh }: T
                   )}
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL: MANUAL TEAM ONBOARDING (+ Add Team) ===== */}
+      {showAddTeamModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-2xl rounded-3xl bg-bg-card border border-teal-accent/50 p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[92vh]">
+            <div className="flex items-center justify-between border-b border-navy-border/60 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-accent/20 border border-teal-accent/40 flex items-center justify-center text-teal-accent">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-brand-white">
+                    Onboard Unregistered Team
+                  </h3>
+                  <p className="text-xs text-brand-muted font-mono">
+                    Instant access &amp; pre-verified registration
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowAddTeamModal(false)}
+                className="p-1 rounded-lg text-brand-muted hover:text-brand-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {addTeamError && (
+              <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-300 text-xs font-mono">
+                {addTeamError}
+              </div>
+            )}
+
+            <form onSubmit={handleCreateTeam} className="space-y-4 text-xs font-mono">
+              {/* Row 1: Team Name, Track, Venue */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="space-y-1">
+                  <label className="text-brand-dim uppercase text-[10px] block">Team Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newTeamData.teamName}
+                    onChange={(e) => setNewTeamData({ ...newTeamData, teamName: e.target.value })}
+                    placeholder="e.g. SwarmIntelligence"
+                    className="w-full px-3 py-2 rounded-xl bg-bg-secondary border border-navy-border text-brand-white text-xs focus:ring-1 focus:ring-teal-accent focus:outline-none"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-brand-dim uppercase text-[10px] block">Domain Track *</label>
+                  <select
+                    value={newTeamData.domainId}
+                    onChange={(e) => setNewTeamData({ ...newTeamData, domainId: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-bg-secondary border border-navy-border text-teal-accent text-xs focus:ring-1 focus:ring-teal-accent focus:outline-none"
+                  >
+                    {tracks.map((tr: any) => (
+                      <option key={tr.id} value={tr.id} className="bg-bg-primary text-white">
+                        {tr.shortName || tr.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-brand-dim uppercase text-[10px] block">Venue *</label>
+                  <select
+                    value={newTeamData.venue}
+                    onChange={(e) => setNewTeamData({ ...newTeamData, venue: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-bg-secondary border border-navy-border text-emerald-400 font-bold text-xs focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                  >
+                    <option value="1011">Venue 1011</option>
+                    <option value="1019">Venue 1019</option>
+                    <option value="1020">Venue 1020</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 2: Team Leader Details */}
+              <div className="p-3.5 rounded-2xl bg-bg-secondary/60 border border-navy-border/60 space-y-3">
+                <span className="text-teal-accent font-bold text-[11px] block uppercase">
+                  1. Team Leader (Primary Contact)
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-brand-dim text-[10px] block mb-1">Leader Full Name</label>
+                    <input
+                      type="text"
+                      value={newTeamData.leaderName}
+                      onChange={(e) => setNewTeamData({ ...newTeamData, leaderName: e.target.value })}
+                      placeholder="Full Name"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-white text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-brand-dim text-[10px] block mb-1">Leader Email *</label>
+                    <input
+                      type="email"
+                      required
+                      value={newTeamData.leaderEmail}
+                      onChange={(e) => setNewTeamData({ ...newTeamData, leaderEmail: e.target.value })}
+                      placeholder="leader@vce.ac.in"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-white text-xs"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-brand-dim text-[10px] block mb-1">Leader Phone *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={newTeamData.leaderPhone}
+                      onChange={(e) => setNewTeamData({ ...newTeamData, leaderPhone: e.target.value })}
+                      placeholder="10-digit Mobile"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-white text-xs"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 3: Additional Members */}
+              <div className="p-3.5 rounded-2xl bg-bg-secondary/60 border border-navy-border/60 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-brand-white font-bold text-[11px] uppercase">
+                    Additional Team Members ({newTeamData.members.length} / 3)
+                  </span>
+                  {newTeamData.members.length < 3 && (
+                    <button
+                      type="button"
+                      onClick={handleAddMemberSlot}
+                      className="px-2.5 py-1 rounded-lg bg-teal-accent/20 border border-teal-accent/40 text-teal-accent text-xs font-bold hover:bg-teal-accent/30 flex items-center gap-1"
+                    >
+                      <Plus className="w-3 h-3" />
+                      <span>Add Member</span>
+                    </button>
+                  )}
+                </div>
+
+                {newTeamData.members.map((mem, mIdx) => (
+                  <div key={mIdx} className="p-2.5 rounded-xl bg-bg-card border border-navy-border/60 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] text-brand-dim">
+                      <span>Member #{mIdx + 2}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMemberSlot(mIdx)}
+                        className="text-red-400 hover:text-red-300 text-[10px]"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={mem.name}
+                        onChange={(e) => handleMemberChange(mIdx, "name", e.target.value)}
+                        className="px-2 py-1 rounded bg-bg-secondary border border-navy-border text-white text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Roll No"
+                        value={mem.rollNumber}
+                        onChange={(e) => handleMemberChange(mIdx, "rollNumber", e.target.value)}
+                        className="px-2 py-1 rounded bg-bg-secondary border border-navy-border text-white text-xs"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Branch"
+                        value={mem.branch}
+                        onChange={(e) => handleMemberChange(mIdx, "branch", e.target.value)}
+                        className="px-2 py-1 rounded bg-bg-secondary border border-navy-border text-white text-xs"
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email"
+                        value={mem.email}
+                        onChange={(e) => handleMemberChange(mIdx, "email", e.target.value)}
+                        className="px-2 py-1 rounded bg-bg-secondary border border-navy-border text-white text-xs"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Row 4: Custom ID & Password (Optional) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-2xl bg-bg-secondary/40 border border-navy-border/40">
+                <div>
+                  <label className="text-brand-dim text-[10px] block mb-1">Custom Team ID (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="Leave empty for auto OPT-26-XXXX"
+                    value={newTeamData.customTeamCode}
+                    onChange={(e) => setNewTeamData({ ...newTeamData, customTeamCode: e.target.value })}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-white text-xs uppercase"
+                  />
+                </div>
+                <div>
+                  <label className="text-brand-dim text-[10px] block mb-1">Custom Password (Optional)</label>
+                  <input
+                    type="text"
+                    placeholder="Leave empty for auto secure password"
+                    value={newTeamData.customPassword}
+                    onChange={(e) => setNewTeamData({ ...newTeamData, customPassword: e.target.value })}
+                    className="w-full px-2.5 py-1.5 rounded-lg bg-bg-secondary border border-navy-border text-white text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAddTeamModal(false)}
+                  className="px-4 py-2 rounded-xl text-brand-muted hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isAddingTeam}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 font-bold text-white shadow-glow disabled:opacity-50 flex items-center gap-2"
+                >
+                  {isAddingTeam ? "Onboarding Team..." : "Submit & Onboard Team"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL: CREATED CREDENTIALS CARD MODAL ===== */}
+      {createdCredentialsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-3xl bg-bg-card border border-emerald-500/60 p-6 sm:p-8 space-y-6 shadow-2xl text-center">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+
+            <div>
+              <h3 className="font-display font-bold text-xl text-brand-white">
+                Team Successfully Onboarded!
+              </h3>
+              <p className="text-xs text-brand-muted mt-1">
+                The team is active with payment confirmed and can log in immediately.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-bg-secondary border border-navy-border text-left font-mono space-y-2.5 text-xs">
+              <div className="flex justify-between items-center pb-2 border-b border-navy-border/60">
+                <span className="text-brand-dim">Team Name:</span>
+                <span className="font-bold text-brand-white">{createdCredentialsModal.teamName}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-navy-border/60">
+                <span className="text-brand-dim">Team ID:</span>
+                <span className="font-bold text-teal-accent text-sm">{createdCredentialsModal.teamCode}</span>
+              </div>
+              <div className="flex justify-between items-center pb-2 border-b border-navy-border/60">
+                <span className="text-brand-dim">Password:</span>
+                <span className="font-bold text-orange-accent text-sm">{createdCredentialsModal.password}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-brand-dim">Assigned Venue:</span>
+                <span className="font-bold text-emerald-400">Room {createdCredentialsModal.venue || "1011"}</span>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <button
+                onClick={() => {
+                  const text = `OPTIFORGE 2026 OFFICIAL LOGIN CREDENTIALS\nTeam ID: ${createdCredentialsModal.teamCode}\nPassword: ${createdCredentialsModal.password}\nAssigned Venue: Room ${createdCredentialsModal.venue || "1011"}\nLogin Portal: /login`;
+                  navigator.clipboard.writeText(text);
+                  alert("Credentials copied to clipboard!");
+                }}
+                className="w-full py-2.5 rounded-xl bg-teal-accent text-bg-primary font-bold text-xs flex items-center justify-center gap-2 hover:brightness-110 shadow-glow"
+              >
+                <Copy className="w-4 h-4" />
+                <span>Copy Credentials to Clipboard</span>
+              </button>
+
+              <button
+                onClick={() => setCreatedCredentialsModal(null)}
+                className="w-full py-2 rounded-xl text-xs text-brand-muted hover:text-white"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL: 10 JUDGES EVALUATION ALLOCATION MATRIX ===== */}
+      {showJudgeModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-4xl rounded-3xl bg-bg-card border border-purple-500/60 p-6 sm:p-8 space-y-6 shadow-2xl overflow-y-auto max-h-[92vh]">
+            <div className="flex items-center justify-between border-b border-navy-border/60 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+                  <Gavel className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-brand-white">
+                    Official 10 Judges Evaluation Matrix
+                  </h3>
+                  <p className="text-xs text-brand-muted font-mono">
+                    Overview of the 10 evaluators, their credentials, and assigned teams workload
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowJudgeModal(false)}
+                className="p-1 rounded-lg text-brand-muted hover:text-brand-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-bg-secondary/70 border border-navy-border font-mono text-xs">
+              <div className="text-brand-muted">
+                Total Teams: <span className="font-bold text-brand-white">{teams?.length || 0}</span> ·{" "}
+                Active Evaluators: <span className="font-bold text-purple-400">{judges?.length || 10}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleAutoAssignJudges}
+                  disabled={isAutoAssigningJudges}
+                  className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>{isAutoAssigningJudges ? "Balancing..." : "⚡ Auto-Balance Teams Evenly"}</span>
+                </button>
+                <button
+                  onClick={handleCopyJudgeCredentials}
+                  className="px-3.5 py-1.5 rounded-xl bg-bg-secondary hover:bg-navy-deep border border-teal-accent/40 text-teal-accent font-bold text-xs transition-all flex items-center gap-1.5"
+                >
+                  {judgeCopiedSuccess ? <Check className="w-3.5 h-3.5 text-status-green" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{judgeCopiedSuccess ? "Copied!" : "📋 Copy All 10 Judge Logins"}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 10 Judges Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 font-mono text-xs">
+              {(judges && judges.length > 0 ? judges : []).map((j: any, idx: number) => {
+                const assignedTeamsCount = teams.filter((t) => t.assignedJudgeId === j.id).length;
+                const evaluatedCount = teams.filter((t) => t.assignedJudgeId === j.id && t.finalJudgeScore != null).length;
+                const rawPass = j.rawPassword || `OptiForge#Judge0${idx + 1}!`;
+
+                return (
+                  <div
+                    key={j.id || idx}
+                    className="p-4 rounded-2xl bg-bg-secondary/60 border border-navy-border hover:border-purple-500/50 transition-all space-y-2.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-purple-300">{j.username}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                        Venue {j.assignedVenue || (idx < 3 ? "1011" : idx < 7 ? "1019" : "1020")}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-brand-white font-sans font-medium line-clamp-1">
+                      {j.name}
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] pt-1 border-t border-navy-border/40">
+                      <span className="text-brand-dim">Teams Assigned:</span>
+                      <span className="font-bold text-teal-accent">{assignedTeamsCount} teams</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-brand-dim">Evaluated:</span>
+                      <span className={`font-bold ${evaluatedCount === assignedTeamsCount && assignedTeamsCount > 0 ? "text-status-green" : "text-orange-accent"}`}>
+                        {evaluatedCount} / {assignedTeamsCount}
+                      </span>
+                    </div>
+
+                    {/* Password slip */}
+                    <div className="flex items-center justify-between bg-bg-card p-2 rounded-lg border border-navy-border/80 text-[10px]">
+                      <span className="text-brand-muted">Pass: <span className="text-brand-white font-bold">{rawPass}</span></span>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`Username: ${j.username}\nPassword: ${rawPass}`);
+                          alert(`Copied login for ${j.username}`);
+                        }}
+                        className="p-1 rounded hover:bg-navy-deep text-brand-dim hover:text-teal-accent"
+                        title="Copy Login Slip"
+                      >
+                        <Copy className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

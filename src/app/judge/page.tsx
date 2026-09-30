@@ -36,11 +36,11 @@ export default function JudgePortal() {
   const [selectedSubIndex, setSelectedSubIndex] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
-  // Rubric Scores
-  const [codeQuality, setCodeQuality] = useState(20);
-  const [algorithmicReasoning, setAlgorithmicReasoning] = useState(28);
-  const [resultInterpretation, setResultInterpretation] = useState(16);
-  const [innovation, setInnovation] = useState(16);
+  // 4-Pillar Rubric Scores (Total 100)
+  const [algorithmicReasoning, setAlgorithmicReasoning] = useState(24); // /30 Technical Rigor
+  const [codeQuality, setCodeQuality] = useState(20);                   // /25 Code Quality
+  const [innovation, setInnovation] = useState(20);                     // /25 Innovation & Viability
+  const [resultInterpretation, setResultInterpretation] = useState(16); // /20 Oral Defense / Viva
   const [notes, setNotes] = useState("");
   const [submittingScore, setSubmittingScore] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -76,17 +76,17 @@ export default function JudgePortal() {
     setSuccessMsg(null);
 
     if (teamItem.evaluation) {
-      setCodeQuality(teamItem.evaluation.codeQuality);
-      setAlgorithmicReasoning(teamItem.evaluation.algorithmicReasoning);
-      setResultInterpretation(teamItem.evaluation.resultInterpretation);
-      setInnovation(teamItem.evaluation.innovation);
+      setAlgorithmicReasoning(teamItem.evaluation.algorithmicReasoning ?? 24);
+      setCodeQuality(teamItem.evaluation.codeQuality ?? 20);
+      setInnovation(teamItem.evaluation.innovation ?? 20);
+      setResultInterpretation(teamItem.evaluation.resultInterpretation ?? 16);
       setNotes(teamItem.evaluation.notes || "");
     } else {
-      // Default baseline rubric
+      // Default baseline rubric (Total: 80 / 100 benchmark)
+      setAlgorithmicReasoning(24);
       setCodeQuality(20);
-      setAlgorithmicReasoning(28);
+      setInnovation(20);
       setResultInterpretation(16);
-      setInnovation(16);
       setNotes("");
     }
   };
@@ -224,7 +224,12 @@ export default function JudgePortal() {
                   </div>
 
                   <div className="flex items-center justify-between text-xs font-mono text-brand-muted">
-                    <span>ID: {item.teamCode}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span>{item.teamCode}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                        Venue {item.venue || "1011"}
+                      </span>
+                    </div>
                     <span className="text-teal-accent">Auto: {item.bestScore.toFixed(1)}</span>
                   </div>
                 </button>
@@ -233,7 +238,7 @@ export default function JudgePortal() {
 
             {queue.length === 0 && (
               <p className="text-xs text-brand-muted p-4 bg-bg-card rounded-xl border border-navy-border">
-                No teams currently assigned to this track.
+                No teams currently assigned to your queue.
               </p>
             )}
           </div>
@@ -246,15 +251,21 @@ export default function JudgePortal() {
               {/* Team Profile Banner */}
               <div className="p-6 rounded-2xl bg-bg-card border border-navy-border/80 flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <span className="text-[10px] font-mono uppercase text-teal-accent font-bold px-2 py-0.5 rounded bg-teal-accent/10 border border-teal-accent/30">
-                    Evaluating Team
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono uppercase text-teal-accent font-bold px-2 py-0.5 rounded bg-teal-accent/10 border border-teal-accent/30">
+                      Evaluating Team
+                    </span>
+                    <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-1">
+                      <span>📍 Room {selectedTeam.venue || "1011"}</span>
+                    </span>
+                  </div>
                   <h2 className="font-display font-black text-2xl text-brand-white mt-1">
                     {selectedTeam.teamName}
                   </h2>
-                  <p className="text-xs font-mono text-brand-muted">
+                  <p className="text-xs font-mono text-brand-muted mt-0.5">
                     Team ID: <span className="text-brand-white">{selectedTeam.teamCode}</span> ·{" "}
-                    Track: <span className="text-teal-accent">{selectedTeam.trackName}</span>
+                    Track: <span className="text-teal-accent">{selectedTeam.trackName}</span> ·{" "}
+                    Designated Venue: <span className="text-emerald-400 font-semibold">Room {selectedTeam.venue || "1011"}</span>
                   </p>
                 </div>
 
@@ -442,13 +453,36 @@ export default function JudgePortal() {
                     </div>
                   )}
 
-                  {/* 4 Rubric Sliders */}
+                  {/* 4 Rubric Sliders (Total 100) */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
-                    {/* Rubric 1 */}
+                    {/* Pillar 1: Technical & Algorithmic Rigor (30 pts) */}
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="font-medium text-brand-white">
-                          Code Quality & Documentation
+                        <label className="font-semibold text-brand-white">
+                          1. Technical & Algorithmic Rigor
+                        </label>
+                        <span className="font-mono font-bold text-electric-violet">
+                          {algorithmicReasoning} / 30
+                        </span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={30}
+                        value={algorithmicReasoning}
+                        onChange={(e) => setAlgorithmicReasoning(Number(e.target.value))}
+                        className="w-full accent-electric-violet cursor-pointer"
+                      />
+                      <p className="text-[11px] text-brand-muted">
+                        Mathematical formulation, heuristic fitness function, convergence behavior, constraint penalty.
+                      </p>
+                    </div>
+
+                    {/* Pillar 2: Code Quality & Architecture (25 pts) */}
+                    <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <label className="font-semibold text-brand-white">
+                          2. Code Quality & Architecture
                         </label>
                         <span className="font-mono font-bold text-teal-accent">{codeQuality} / 25</span>
                       </div>
@@ -461,38 +495,38 @@ export default function JudgePortal() {
                         className="w-full accent-teal-accent cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Modularity, clean functions, error resilience, and code clarity.
+                        Modular clean functions, execution readiness, single-branch repo, no hardcoded dummies, under 10MB.
                       </p>
                     </div>
 
-                    {/* Rubric 2 */}
+                    {/* Pillar 3: Innovation & Real-World Viability (25 pts) */}
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="font-medium text-brand-white">
-                          Algorithmic Reasoning & Viva
+                        <label className="font-semibold text-brand-white">
+                          3. Innovation & Real-World Viability
                         </label>
-                        <span className="font-mono font-bold text-electric-violet">
-                          {algorithmicReasoning} / 35
+                        <span className="font-mono font-bold text-orange-accent">
+                          {innovation} / 25
                         </span>
                       </div>
                       <input
                         type="range"
                         min={0}
-                        max={35}
-                        value={algorithmicReasoning}
-                        onChange={(e) => setAlgorithmicReasoning(Number(e.target.value))}
-                        className="w-full accent-electric-violet cursor-pointer"
+                        max={25}
+                        value={innovation}
+                        onChange={(e) => setInnovation(Number(e.target.value))}
+                        className="w-full accent-orange-accent cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Selection of operators, fitness design, shift handling, and viva defense.
+                        Novelty over baselines, practical deployment usability, robustness under noise & perturbations.
                       </p>
                     </div>
 
-                    {/* Rubric 3 */}
+                    {/* Pillar 4: Oral Defense & Viva Voce (20 pts) */}
                     <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
                       <div className="flex justify-between items-center">
-                        <label className="font-medium text-brand-white">
-                          Convergence & Result Interpretation
+                        <label className="font-semibold text-brand-white">
+                          4. Oral Defense & Viva Voce
                         </label>
                         <span className="font-mono font-bold text-status-green">
                           {resultInterpretation} / 20
@@ -507,30 +541,7 @@ export default function JudgePortal() {
                         className="w-full accent-status-green cursor-pointer"
                       />
                       <p className="text-[11px] text-brand-muted">
-                        Interpretation of fitness curves, diversity preservation, and sensitivity.
-                      </p>
-                    </div>
-
-                    {/* Rubric 4 */}
-                    <div className="p-4 rounded-xl bg-bg-secondary/70 border border-navy-border/60 space-y-2">
-                      <div className="flex justify-between items-center">
-                        <label className="font-medium text-brand-white">
-                          Innovation & Shift Adaptability
-                        </label>
-                        <span className="font-mono font-bold text-orange-accent">
-                          {innovation} / 20
-                        </span>
-                      </div>
-                      <input
-                        type="range"
-                        min={0}
-                        max={20}
-                        value={innovation}
-                        onChange={(e) => setInnovation(Number(e.target.value))}
-                        className="w-full accent-orange-accent cursor-pointer"
-                      />
-                      <p className="text-[11px] text-brand-muted">
-                        Novel representations, hybrid operators, and Stage 7 live patch performance.
+                        Clarity during viva questions, team understanding, defense of assumptions and design decisions.
                       </p>
                     </div>
                   </div>

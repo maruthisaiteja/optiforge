@@ -440,6 +440,9 @@ export default function TeamDashboard() {
               </strong>
               {isTestAccount && <span className="ml-1.5 text-[10px] text-purple-300 font-mono">(Sandbox)</span>}
             </span>
+            <span className="px-2.5 py-1 rounded-md bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold flex items-center gap-1 text-xs">
+              📍 Lab Venue: Room {team?.venue || "1011"}
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-2.5 self-start md:self-auto">

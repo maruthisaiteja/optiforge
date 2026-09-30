@@ -81,6 +81,8 @@ export async function GET() {
         leaderEmail: team.leaderEmail,
         leaderPhone: team.leaderPhone,
         domainId: team.domainId,
+        venue: team.venue || "1011",
+        rawPassword: team.rawPassword || null,
         skillLevel: team.skillLevel,
         paymentStatus: team.paymentStatus,
         paymentAmount: team.paymentAmount,

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getServerSession, hashPassword, generateSecureTeamPassword } from "@/lib/auth";
+import { generateTeamCode } from "@/lib/utils";
 import { evaluateSubmission } from "@/lib/evaluator/runner";
 
 export async function POST(req: Request) {
@@ -114,7 +115,241 @@ export async function POST(req: Request) {
           },
         });
 
-        return NextResponse.json({ success: true, domainId });
+        return NextResponse.json({ success: true, teamCode, domainId });
+      }
+
+      case "ADD_TEAM": {
+        const {
+          teamName,
+          domainId,
+          venue,
+          leaderName,
+          leaderEmail,
+          leaderPhone,
+          members,
+          customTeamCode,
+          customPassword,
+        } = payload;
+
+        if (!teamName || !teamName.trim()) {
+          return NextResponse.json({ error: "Team name is required." }, { status: 400 });
+        }
+        if (!leaderEmail || !leaderEmail.trim()) {
+          return NextResponse.json({ error: "Leader email is required." }, { status: 400 });
+        }
+        if (!leaderPhone || !leaderPhone.trim()) {
+          return NextResponse.json({ error: "Leader phone is required." }, { status: 400 });
+        }
+
+        const existingTeams = await db.team.findMany();
+        let teamCode = (customTeamCode && customTeamCode.trim())
+          ? customTeamCode.trim().toUpperCase()
+          : generateTeamCode();
+
+        if (existingTeams.some((t) => t.teamCode.toUpperCase() === teamCode.toUpperCase())) {
+          if (customTeamCode) {
+            return NextResponse.json({ error: `Team Code ${teamCode} already exists.` }, { status: 400 });
+          }
+          while (existingTeams.some((t) => t.teamCode.toUpperCase() === teamCode.toUpperCase())) {
+            teamCode = generateTeamCode();
+          }
+        }
+
+        const rawPass = (customPassword && customPassword.trim())
+          ? customPassword.trim()
+          : generateSecureTeamPassword();
+        const hashedPassword = await hashPassword(rawPass);
+
+        const assignedDomain = domainId || "theme-1-biomedical-ai";
+        const assignedVenue = venue || "1011";
+
+        const membersList = Array.isArray(members) && members.length > 0 ? members : [
+          {
+            name: leaderName || "Team Leader",
+            rollNumber: "ROLL01",
+            branch: "CSE",
+            year: "3rd Year",
+            email: leaderEmail.trim().toLowerCase(),
+            phone: leaderPhone.trim(),
+            collegeName: "Vardhaman College of Engineering",
+          }
+        ];
+
+        const newTeam = await db.team.create({
+          data: {
+            teamCode,
+            teamName: teamName.trim(),
+            leaderEmail: leaderEmail.trim().toLowerCase(),
+            leaderPhone: leaderPhone.trim(),
+            password: hashedPassword,
+            rawPassword: rawPass,
+            domainId: assignedDomain,
+            venue: assignedVenue,
+            prefTrack1: assignedDomain,
+            skillLevel: "Standard",
+            paymentStatus: "CONFIRMED",
+            paymentAmount: membersList.length * 100,
+            razorpayPaymentId: `ADMIN_MANUAL_${Date.now()}`,
+            razorpaySignature: "ADMIN_MANUAL_ONBOARD",
+            attemptsUsed: 0,
+            bestScore: 0,
+            isDisqualified: false,
+            members: {
+              create: membersList.map((m: any, idx: number) => ({
+                name: m.name?.trim() || (idx === 0 ? (leaderName || "Team Leader") : `Member ${idx + 1}`),
+                collegeName: m.collegeName?.trim() || "Vardhaman College of Engineering",
+                rollNumber: m.rollNumber?.trim().toUpperCase() || `ROLL0${idx + 1}`,
+                branch: m.branch?.trim() || "CSE",
+                year: m.year?.trim() || "3rd Year",
+                email: m.email?.trim().toLowerCase() || (idx === 0 ? leaderEmail.trim().toLowerCase() : `member${idx + 1}_${teamCode.toLowerCase()}@vce.ac.in`),
+                phone: m.phone?.trim() || leaderPhone.trim(),
+                tshirtSize: null,
+              })),
+            },
+          },
+        });
+
+        // Also add or sync User record if team login checks User table
+        try {
+          const userHashed = hashedPassword;
+          await db.user.upsert({
+            where: { username: teamCode.toLowerCase() },
+            update: { password: userHashed, name: teamName.trim(), role: "TEAM" },
+            create: {
+              username: teamCode.toLowerCase(),
+              password: userHashed,
+              name: teamName.trim(),
+              role: "TEAM",
+              assignedDomainId: assignedDomain,
+            },
+          });
+        } catch {}
+
+        await db.auditLog.create({
+          data: {
+            action: "MANUAL_TEAM_ADDED",
+            performedBy: session.name,
+            details: `Manually added team "${teamName}" (${teamCode}) to track ${assignedDomain} and venue ${assignedVenue}.`,
+            reason: "Admin manual registration",
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          team: {
+            id: newTeam.id,
+            teamCode: newTeam.teamCode,
+            teamName: newTeam.teamName,
+            domainId: newTeam.domainId,
+            venue: newTeam.venue,
+            password: rawPass,
+          },
+          message: `Team ${teamCode} (${teamName}) successfully onboarded.`,
+        });
+      }
+
+      case "ASSIGN_VENUE": {
+        const { teamCode, venue } = payload;
+        if (!teamCode || !venue) {
+          return NextResponse.json({ error: "Team code and venue (1011, 1019, 1020) are required." }, { status: 400 });
+        }
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        await db.team.update({
+          where: { teamCode },
+          data: { venue },
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "VENUE_ASSIGNED",
+            performedBy: session.name,
+            details: `Team ${team.teamName} (${teamCode}) assigned to venue ${venue}.`,
+          },
+        });
+
+        return NextResponse.json({ success: true, teamCode, venue });
+      }
+
+      case "AUTO_ASSIGN_VENUES": {
+        const VENUES = ["1011", "1019", "1020"];
+        const allTeams = await db.team.findMany();
+        let idx = 0;
+        let count = 0;
+        for (const t of allTeams) {
+          const v = VENUES[idx % VENUES.length];
+          await db.team.update({
+            where: { teamCode: t.teamCode },
+            data: { venue: v },
+          });
+          idx++;
+          count++;
+        }
+
+        await db.auditLog.create({
+          data: {
+            action: "AUTO_ASSIGN_VENUES",
+            performedBy: session.name,
+            details: `Auto-distributed ${count} teams across venues 1011, 1019, and 1020.`,
+          },
+        });
+
+        return NextResponse.json({ success: true, count, message: `Successfully distributed ${count} teams across venues 1011, 1019, and 1020.` });
+      }
+
+      case "ASSIGN_JUDGE": {
+        const { teamCode, judgeId } = payload;
+        if (!teamCode) {
+          return NextResponse.json({ error: "Team code is required." }, { status: 400 });
+        }
+        const team = await db.team.findUnique({ where: { teamCode } });
+        if (!team) return NextResponse.json({ error: "Team not found." }, { status: 404 });
+
+        await db.team.update({
+          where: { teamCode },
+          data: { assignedJudgeId: judgeId || null },
+        });
+
+        await db.auditLog.create({
+          data: {
+            action: "JUDGE_ASSIGNED",
+            performedBy: session.name,
+            details: `Team ${team.teamName} (${teamCode}) assigned to judge ${judgeId || "None"}.`,
+          },
+        });
+
+        return NextResponse.json({ success: true, teamCode, assignedJudgeId: judgeId });
+      }
+
+      case "AUTO_ASSIGN_JUDGES": {
+        const allUsers = await db.user.findMany({ where: { role: "JUDGE" } });
+        const judges = allUsers.filter((u: any) => u.username.startsWith("judge"));
+        if (judges.length === 0) {
+          return NextResponse.json({ error: "No judges found to distribute." }, { status: 400 });
+        }
+        const allTeams = await db.team.findMany();
+        let jIdx = 0;
+        let count = 0;
+        for (const t of allTeams) {
+          const targetJudge = judges[jIdx % judges.length];
+          await db.team.update({
+            where: { teamCode: t.teamCode },
+            data: { assignedJudgeId: targetJudge.id },
+          });
+          jIdx++;
+          count++;
+        }
+
+        await db.auditLog.create({
+          data: {
+            action: "AUTO_ASSIGN_JUDGES",
+            performedBy: session.name,
+            details: `Auto-distributed ${count} teams across ${judges.length} judges.`,
+          },
+        });
+
+        return NextResponse.json({ success: true, count, judgesCount: judges.length, message: `Successfully distributed ${count} teams across ${judges.length} judges.` });
       }
 
       case "OVERRIDE_SCORE": {

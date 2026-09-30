@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { neon, neonConfig } from "@neondatabase/serverless";
 
 // CRITICAL: Disable Next.js fetch caching for Neon to prevent stale DB reads
@@ -19,9 +20,11 @@ export interface UserRecord {
   id: string;
   username: string;
   password: string;
+  rawPassword?: string | null;
   name: string;
   role: "ADMIN" | "JUDGE" | "TEAM";
   assignedDomainId?: string | null;
+  assignedVenue?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,6 +52,8 @@ export interface TeamRecord {
   password: string;
   rawPassword?: string | null;
   domainId?: string | null;
+  venue?: "1011" | "1019" | "1020" | string | null;
+  assignedJudgeId?: string | null;
   prefTrack1?: string | null;
   prefTrack2?: string | null;
   prefTrack3?: string | null;
@@ -259,9 +264,52 @@ export function ensureTestAccount(data: DatabaseSchema): DatabaseSchema {
   return data;
 }
 
+export const DEFAULT_JUDGES = [
+  { id: "judge-user-01", username: "judge1", name: "Dr. Evaluation Panel 1", assignedVenue: "1011", rawPassword: "OptiForge#Judge01!" },
+  { id: "judge-user-02", username: "judge2", name: "Prof. Evaluation Panel 2", assignedVenue: "1011", rawPassword: "OptiForge#Judge02!" },
+  { id: "judge-user-03", username: "judge3", name: "Dr. Evaluation Panel 3", assignedVenue: "1011", rawPassword: "OptiForge#Judge03!" },
+  { id: "judge-user-04", username: "judge4", name: "Prof. Evaluation Panel 4", assignedVenue: "1019", rawPassword: "OptiForge#Judge04!" },
+  { id: "judge-user-05", username: "judge5", name: "Dr. Evaluation Panel 5", assignedVenue: "1019", rawPassword: "OptiForge#Judge05!" },
+  { id: "judge-user-06", username: "judge6", name: "Prof. Evaluation Panel 6", assignedVenue: "1019", rawPassword: "OptiForge#Judge06!" },
+  { id: "judge-user-07", username: "judge7", name: "Dr. Evaluation Panel 7", assignedVenue: "1019", rawPassword: "OptiForge#Judge07!" },
+  { id: "judge-user-08", username: "judge8", name: "Prof. Evaluation Panel 8", assignedVenue: "1020", rawPassword: "OptiForge#Judge08!" },
+  { id: "judge-user-09", username: "judge9", name: "Dr. Evaluation Panel 9", assignedVenue: "1020", rawPassword: "OptiForge#Judge09!" },
+  { id: "judge-user-10", username: "judge10", name: "Lead Jury Chair Panel 10", assignedVenue: "1020", rawPassword: "OptiForge#Judge10!" },
+];
+
+export function ensureJudgeAccounts(data: DatabaseSchema): DatabaseSchema {
+  if (!data || !Array.isArray(data.users)) return data;
+
+  const now = new Date().toISOString();
+  for (const j of DEFAULT_JUDGES) {
+    const existing = data.users.find((u) => u.username.toLowerCase() === j.username.toLowerCase());
+    if (!existing) {
+      const hashedPassword = bcrypt.hashSync(j.rawPassword, 10);
+      data.users.push({
+        id: j.id,
+        username: j.username,
+        password: hashedPassword,
+        rawPassword: j.rawPassword,
+        name: j.name,
+        role: "JUDGE",
+        assignedVenue: j.assignedVenue,
+        createdAt: now,
+        updatedAt: now,
+      });
+    } else {
+      existing.rawPassword = j.rawPassword;
+      if (!existing.assignedVenue) existing.assignedVenue = j.assignedVenue;
+      if (!existing.name) existing.name = j.name;
+    }
+  }
+  return data;
+}
+
 function filterTestTeams(data: DatabaseSchema): DatabaseSchema {
   // Preserve all real participant registrations and ensure test sandbox account exists
-  return ensureTestAccount(data);
+  ensureTestAccount(data);
+  ensureJudgeAccounts(data);
+  return data;
 }
 
 let _hasTableChecked = false;
@@ -625,6 +673,9 @@ export const db = {
             bestScore: teamData.bestScore || 0,
             finalJudgeScore: teamData.finalJudgeScore || null,
             finalCombinedScore: teamData.finalCombinedScore || null,
+            venue: (teamData as any).venue || null,
+            assignedJudgeId: (teamData as any).assignedJudgeId || null,
+            rawPassword: (teamData as any).rawPassword || null,
             isDisqualified: teamData.isDisqualified || false,
             createdAt: now,
             updatedAt: now,

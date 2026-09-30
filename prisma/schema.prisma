@@ -13,6 +13,8 @@ model User {
   password     String
   name         String
   role         String            @default("JUDGE") // ADMIN, JUDGE
+  rawPassword  String?
+  assignedVenue String?
   assignedDomainId String?
   evaluations  JudgeEvaluation[]
   createdAt    DateTime          @default(now())
@@ -43,6 +45,8 @@ model Team {
   finalJudgeScore    Float?
   finalCombinedScore Float?
   isDisqualified     Boolean           @default(false)
+  venue              String?           // e.g. "1011", "1019", "1020"
+  assignedJudgeId    String?           // Assigned Judge User ID
   members            TeamMember[]
   submissions        Submission[]
   evaluations        JudgeEvaluation[]
